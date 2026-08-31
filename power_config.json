@@ -1,0 +1,8 @@
+{
+  "kwh_price_vnd": 2600.0,
+  "cpu_tdp_watts": 65.0,
+  "base_idle_watts": 35.0,
+  "gpu_tdp_watts": 75.0,
+  "daily_hours": 8.0,
+  "currency_symbol": "\u0111"
+}

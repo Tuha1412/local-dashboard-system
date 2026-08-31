@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "cpu_enabled": true,
+  "cpu_threshold": 92.0,
+  "cpu_sustained_sec": 25,
+  "ram_enabled": true,
+  "ram_threshold": 95.0,
+  "disk_enabled": true,
+  "disk_c_free_min_gb": 1.0,
+  "cooldown_minutes": 15,
+  "discord_enabled": true,
+  "discord_webhook_url": "https://discord.com/api/webhooks/1543626251590303857/IsUznsBRNL04SSyfo1usygY3QKOyFW3IFwz5L2S_8NnHPUCrtC7I4Kzx-3SY5Ik-dPMq",
+  "telegram_enabled": false,
+  "telegram_bot_token": "",
+  "telegram_chat_id": ""
+}
