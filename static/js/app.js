@@ -3617,10 +3617,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
         } else if (targetTab === 'disk') {
-            elements.headerViewTitle.textContent = 'Disk Breakdown';
+            elements.headerViewTitle.textContent = 'Disk Breakdown & Bloat Tracker';
             if (!state.diskBreakdownData) {
                 loadAvailableDrives();
                 fetchDiskBreakdown(state.selectedDrive, false);
+            }
+            if (typeof diskBloatManager !== 'undefined' && diskBloatManager.state.activeSubTab === 'bloat') {
+                diskBloatManager.scanDiff();
             }
             if (typeof focusDeckManager !== 'undefined') focusDeckManager.onTabDeactivated();
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
@@ -11631,6 +11634,594 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.vocabManager = vocabManager;
 
+    // =========================================================================
+    // DISK DELTA & BLOAT TRACKER MANAGER (TAB 2 SUB-VIEW B)
+    // =========================================================================
+    const diskBloatManager = {
+        state: {
+            activeSubTab: 'breakdown', // 'breakdown' or 'bloat'
+            baseline: null,
+            diffData: null,
+            snapshotList: [],
+            selectedSnapshotId: null,
+            filterCategory: 'all',
+            filterStatus: 'all',
+            searchQuery: '',
+            isScanning: false,
+            isCreatingSnapshot: false,
+            pendingPurgeItem: null,
+        },
+        dom: {},
+
+        init() {
+            this.cacheDom();
+            this.bindEvents();
+            this.loadLatestSnapshotInfo();
+            this.loadSnapshotList();
+        },
+
+        cacheDom() {
+            this.dom = {
+                subtabBreakdown: document.getElementById('disk-subtab-breakdown'),
+                subtabBloat: document.getElementById('disk-subtab-bloat'),
+                bloatBadge: document.getElementById('disk-bloat-badge'),
+                panelBreakdown: document.getElementById('disk-panel-breakdown'),
+                panelBloat: document.getElementById('disk-panel-bloat'),
+
+                baselineBadge: document.getElementById('bloat-baseline-badge'),
+                baselineInfo: document.getElementById('bloat-baseline-info'),
+                snapshotSelect: document.getElementById('bloat-snapshot-select'),
+                btnSnapshot: document.getElementById('btn-bloat-snapshot'),
+                btnScan: document.getElementById('btn-bloat-scan'),
+                snapSpin: document.getElementById('bloat-snap-spin'),
+                snapText: document.getElementById('bloat-snap-text'),
+                scanSpin: document.getElementById('bloat-scan-spin'),
+                scanText: document.getElementById('bloat-scan-text'),
+
+                cardTotalDelta: document.getElementById('bloat-card-total-delta'),
+                cardExpandedVal: document.getElementById('bloat-card-expanded-val'),
+                cardNewVal: document.getElementById('bloat-card-new-val'),
+                deltaStatusChip: document.getElementById('bloat-delta-status-chip'),
+                cardTopCat: document.getElementById('bloat-card-top-category'),
+                cardTopCatDelta: document.getElementById('bloat-card-top-cat-delta'),
+                cardTopCatCount: document.getElementById('bloat-card-top-cat-count'),
+                cardNewCount: document.getElementById('bloat-card-new-count'),
+                cardNewOnly: document.getElementById('bloat-card-new-only'),
+                cardExpOnly: document.getElementById('bloat-card-exp-only'),
+                cardOffendersBadge: document.getElementById('bloat-card-offenders-badge'),
+                cardDuration: document.getElementById('bloat-card-duration'),
+                cardMonitoredCount: document.getElementById('bloat-card-monitored-count'),
+                scanStatusBadge: document.getElementById('bloat-scan-status-badge'),
+
+                categoryPillsContainer: document.getElementById('bloat-category-pills'),
+                catFilterCount: document.getElementById('bloat-cat-filter-count'),
+
+                tableTotalCount: document.getElementById('bloat-table-total-count'),
+                statusTabs: document.querySelectorAll('.bloat-status-tabs .tab-pill'),
+                searchInput: document.getElementById('bloat-search-input'),
+                tbody: document.getElementById('bloat-offenders-tbody'),
+
+                purgeModal: document.getElementById('bloat-purge-modal'),
+                purgePath: document.getElementById('bloat-modal-path'),
+                purgeSize: document.getElementById('bloat-modal-size'),
+                purgeWarn: document.getElementById('bloat-modal-warn'),
+                btnPurgeConfirm: document.getElementById('btn-bloat-purge-confirm'),
+                btnPurgeCancel: document.getElementById('btn-bloat-purge-cancel'),
+
+                snapModal: document.getElementById('bloat-snapshot-modal'),
+                snapLabelInput: document.getElementById('bloat-snapshot-label-input'),
+                btnSnapModalConfirm: document.getElementById('btn-bloat-snap-modal-confirm'),
+                btnSnapModalCancel: document.getElementById('btn-bloat-snap-modal-cancel'),
+            };
+        },
+
+        bindEvents() {
+            if (this.dom.subtabBreakdown) {
+                this.dom.subtabBreakdown.addEventListener('click', () => this.switchSubTab('breakdown'));
+            }
+            if (this.dom.subtabBloat) {
+                this.dom.subtabBloat.addEventListener('click', () => this.switchSubTab('bloat'));
+            }
+
+            if (this.dom.btnSnapshot) {
+                this.dom.btnSnapshot.addEventListener('click', () => this.openSnapshotModal());
+            }
+            if (this.dom.btnScan) {
+                this.dom.btnScan.addEventListener('click', () => this.scanDiff());
+            }
+
+            if (this.dom.snapshotSelect) {
+                this.dom.snapshotSelect.addEventListener('change', (e) => {
+                    const val = e.target.value;
+                    this.state.selectedSnapshotId = val === 'latest' ? null : parseInt(val, 10);
+                    this.scanDiff();
+                });
+            }
+
+            if (this.dom.statusTabs) {
+                this.dom.statusTabs.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.dom.statusTabs.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.state.filterStatus = btn.getAttribute('data-status') || 'all';
+                        this.renderTable();
+                    });
+                });
+            }
+
+            if (this.dom.searchInput) {
+                this.dom.searchInput.addEventListener('input', (e) => {
+                    this.state.searchQuery = e.target.value.trim().toLowerCase();
+                    this.renderTable();
+                });
+            }
+
+            if (this.dom.btnPurgeCancel) {
+                this.dom.btnPurgeCancel.addEventListener('click', () => this.closePurgeModal());
+            }
+            if (this.dom.btnPurgeConfirm) {
+                this.dom.btnPurgeConfirm.addEventListener('click', () => this.confirmPurgeItem());
+            }
+            if (this.dom.btnSnapModalCancel) {
+                this.dom.btnSnapModalCancel.addEventListener('click', () => this.closeSnapshotModal());
+            }
+            if (this.dom.btnSnapModalConfirm) {
+                this.dom.btnSnapModalConfirm.addEventListener('click', () => this.confirmCreateSnapshot());
+            }
+
+            if (this.dom.tbody) {
+                this.dom.tbody.addEventListener('click', (e) => {
+                    const expBtn = e.target.closest('.btn-open-explorer');
+                    if (expBtn) {
+                        const path = expBtn.getAttribute('data-path');
+                        if (path) this.openExplorer(path);
+                        return;
+                    }
+
+                    const purgeBtn = e.target.closest('.btn-safe-purge');
+                    if (purgeBtn) {
+                        const path = purgeBtn.getAttribute('data-path');
+                        const size = purgeBtn.getAttribute('data-size') || '—';
+                        const name = purgeBtn.getAttribute('data-name') || '';
+                        const canPurge = purgeBtn.getAttribute('data-can-purge') === 'true';
+                        const warn = purgeBtn.getAttribute('data-warn') || '';
+                        if (path) {
+                            if (!canPurge) {
+                                showActionToast(`🛡️ ${warn || 'Mục này thuộc khu vực hệ thống Windows được bảo vệ an toàn!'}`);
+                                return;
+                            }
+                            this.openPurgeModal(path, size, name, warn);
+                        }
+                    }
+                });
+            }
+        },
+
+        switchSubTab(tab) {
+            this.state.activeSubTab = tab;
+            if (this.dom.subtabBreakdown) this.dom.subtabBreakdown.classList.toggle('active', tab === 'breakdown');
+            if (this.dom.subtabBloat) this.dom.subtabBloat.classList.toggle('active', tab === 'bloat');
+
+            if (this.dom.panelBreakdown) this.dom.panelBreakdown.classList.toggle('hidden', tab !== 'breakdown');
+            if (this.dom.panelBloat) this.dom.panelBloat.classList.toggle('hidden', tab !== 'bloat');
+
+            if (tab === 'bloat' && !this.state.diffData && !this.state.isScanning) {
+                this.scanDiff();
+            }
+        },
+
+        async loadLatestSnapshotInfo() {
+            try {
+                const res = await fetch('/api/disk/snapshot/latest');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.has_snapshot) {
+                        this.state.baseline = data;
+                        if (this.dom.baselineInfo) {
+                            this.dom.baselineInfo.textContent = `${data.label} (${data.created_at}) • ${data.total_formatted}`;
+                        }
+                    } else {
+                        if (this.dom.baselineInfo) {
+                            this.dom.baselineInfo.textContent = 'Chưa có mốc so sánh (Bấm "Tạo mốc mới" hoặc "Quét chênh lệch")';
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('[DiskBloat] Error fetching latest snapshot:', err);
+            }
+        },
+
+        async loadSnapshotList() {
+            try {
+                const res = await fetch('/api/disk/snapshot/list?limit=15');
+                if (res.ok) {
+                    const list = await res.json();
+                    this.state.snapshotList = list;
+                    if (this.dom.snapshotSelect) {
+                        let html = '<option value="latest">Mốc gần nhất (Latest)</option>';
+                        list.forEach(s => {
+                            html += `<option value="${s.id}">${escapeHtml(s.label)} (${s.created_at}) [${s.total_formatted}]</option>`;
+                        });
+                        this.dom.snapshotSelect.innerHTML = html;
+                    }
+                }
+            } catch (err) {
+                console.error('[DiskBloat] Error fetching snapshot list:', err);
+            }
+        },
+
+        openSnapshotModal() {
+            if (this.dom.snapLabelInput) this.dom.snapLabelInput.value = '';
+            if (this.dom.snapModal) this.dom.snapModal.classList.remove('hidden');
+        },
+
+        closeSnapshotModal() {
+            if (this.dom.snapModal) this.dom.snapModal.classList.add('hidden');
+        },
+
+        async confirmCreateSnapshot() {
+            const label = this.dom.snapLabelInput ? this.dom.snapLabelInput.value.trim() : '';
+            this.closeSnapshotModal();
+
+            if (this.state.isCreatingSnapshot) return;
+            this.state.isCreatingSnapshot = true;
+
+            if (this.dom.snapSpin) this.dom.snapSpin.classList.add('spin');
+            if (this.dom.snapText) this.dom.snapText.textContent = 'Đang lưu mốc...';
+
+            try {
+                const res = await fetch('/api/disk/snapshot/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ label: label || null })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    showActionToast(`📸 ${data.message || 'Đã ghi nhận mốc snapshot thành công!'}`);
+                    await this.loadLatestSnapshotInfo();
+                    await this.loadSnapshotList();
+                    await this.scanDiff();
+                } else {
+                    showActionToast('❌ Lỗi khi tạo snapshot mốc');
+                }
+            } catch (err) {
+                console.error('[DiskBloat] Create snapshot error:', err);
+                showActionToast('❌ Không thể kết nối tới máy chủ');
+            } finally {
+                this.state.isCreatingSnapshot = false;
+                if (this.dom.snapSpin) this.dom.snapSpin.classList.remove('spin');
+                if (this.dom.snapText) this.dom.snapText.textContent = '📸 Tạo mốc mới';
+            }
+        },
+
+        async scanDiff() {
+            if (this.state.isScanning) return;
+            this.state.isScanning = true;
+
+            if (this.dom.scanSpin) this.dom.scanSpin.classList.add('spin');
+            if (this.dom.scanText) this.dom.scanText.textContent = 'Đang quét diff...';
+
+            if (this.dom.tbody) {
+                this.dom.tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">
+                            <span class="badge-dot-scanning"></span> Đang quét và so sánh chênh lệch dung lượng với mốc Baseline...
+                        </td>
+                    </tr>
+                `;
+            }
+
+            try {
+                let url = '/api/disk/diff';
+                if (this.state.selectedSnapshotId) {
+                    url += `?snapshot_id=${this.state.selectedSnapshotId}`;
+                }
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    this.state.diffData = data;
+                    this.renderSummary(data);
+                    this.renderCategoryPills(data);
+                    this.renderTable();
+                } else {
+                    showActionToast('❌ Lỗi khi quét so sánh dung lượng');
+                }
+            } catch (err) {
+                console.error('[DiskBloat] Diff error:', err);
+                showActionToast('❌ Không thể kết nối máy chủ');
+            } finally {
+                this.state.isScanning = false;
+                if (this.dom.scanSpin) this.dom.scanSpin.classList.remove('spin');
+                if (this.dom.scanText) this.dom.scanText.textContent = '🔄 Quét chênh lệch ngay';
+            }
+        },
+
+        renderSummary(data) {
+            const sum = data.summary || {};
+            const base = data.baseline || {};
+
+            if (this.dom.baselineInfo) {
+                const bLabel = base.label || 'Baseline';
+                const bTime = base.created_at || '';
+                const bTotal = base.total_formatted || '0 GB';
+                const deltaTotal = sum.total_delta_formatted || '+0 B';
+                this.dom.baselineInfo.textContent = `${bLabel} (${bTime}) • Dung lượng mốc: ${bTotal} (Biến động: ${deltaTotal})`;
+            }
+
+            if (this.dom.cardTotalDelta) {
+                this.dom.cardTotalDelta.innerHTML = `${sum.total_delta_formatted || '+0 B'}`;
+                if (sum.total_delta_bytes > 1024 * 1024 * 500) {
+                    this.dom.cardTotalDelta.style.color = '#ef4444';
+                    if (this.dom.deltaStatusChip) {
+                        this.dom.deltaStatusChip.textContent = 'Tăng nhanh';
+                        this.dom.deltaStatusChip.className = 'chip-status chip-alert';
+                    }
+                } else if (sum.total_delta_bytes > 0) {
+                    this.dom.cardTotalDelta.style.color = '#f59e0b';
+                    if (this.dom.deltaStatusChip) {
+                        this.dom.deltaStatusChip.textContent = 'Tăng nhẹ';
+                        this.dom.deltaStatusChip.className = 'chip-status chip-warning';
+                    }
+                } else {
+                    this.dom.cardTotalDelta.style.color = '#bcf846';
+                    if (this.dom.deltaStatusChip) {
+                        this.dom.deltaStatusChip.textContent = 'Tối ưu';
+                        this.dom.deltaStatusChip.className = 'chip-status chip-normal';
+                    }
+                }
+            }
+            if (this.dom.cardExpandedVal) this.dom.cardExpandedVal.textContent = `Phình to: ${sum.total_expanded_formatted || '+0 B'}`;
+            if (this.dom.cardNewVal) this.dom.cardNewVal.textContent = `Mới sinh: ${sum.total_new_formatted || '+0 B'}`;
+
+            if (this.dom.cardTopCat) {
+                this.dom.cardTopCat.textContent = sum.top_category || 'Chưa phát hiện';
+            }
+            if (this.dom.cardTopCatDelta) {
+                this.dom.cardTopCatDelta.textContent = `Mức tăng: ${sum.top_category_formatted || '0 B'}`;
+            }
+            if (this.dom.cardTopCatCount) {
+                this.dom.cardTopCatCount.textContent = `${sum.total_offenders_count || 0} mục biến động`;
+            }
+
+            const totalChanged = (sum.new_files_count || 0) + (sum.expanded_count || 0);
+            if (this.dom.cardNewCount) this.dom.cardNewCount.innerHTML = `${totalChanged}<span class="unit">mục</span>`;
+            if (this.dom.cardNewOnly) this.dom.cardNewOnly.textContent = `Mới sinh: ${sum.new_files_count || 0}`;
+            if (this.dom.cardExpOnly) this.dom.cardExpOnly.textContent = `Phình to: ${sum.expanded_count || 0}`;
+            if (this.dom.cardOffendersBadge) {
+                this.dom.cardOffendersBadge.textContent = `${sum.total_offenders_count || 0} Bloat Items`;
+            }
+
+            if (this.dom.cardDuration) {
+                this.dom.cardDuration.innerHTML = `${sum.scan_duration_sec || 0.0}<span class="unit">s</span>`;
+            }
+            if (this.dom.cardMonitoredCount) {
+                this.dom.cardMonitoredCount.textContent = `Theo dõi: ${data.items ? data.items.length : 0} vị trí`;
+            }
+
+            if (this.dom.bloatBadge) {
+                const count = sum.total_offenders_count || 0;
+                if (count > 0) {
+                    this.dom.bloatBadge.textContent = count;
+                    this.dom.bloatBadge.classList.remove('hidden');
+                } else {
+                    this.dom.bloatBadge.classList.add('hidden');
+                }
+            }
+        },
+
+        renderCategoryPills(data) {
+            if (!this.dom.categoryPillsContainer) return;
+            const catList = data.category_deltas || [];
+            const totalItems = data.items ? data.items.length : 0;
+
+            let html = `
+                <button class="bloat-cat-pill ${this.state.filterCategory === 'all' ? 'active' : ''}" data-cat="all">
+                    Tất cả <span class="cat-pill-count">(${totalItems})</span>
+                </button>
+            `;
+
+            catList.forEach(c => {
+                const isActive = this.state.filterCategory === c.category;
+                html += `
+                    <button class="bloat-cat-pill ${isActive ? 'active' : ''}" data-cat="${escapeHtml(c.category)}">
+                        ${escapeHtml(c.category)} 
+                        <span class="cat-pill-delta">${c.delta_formatted}</span>
+                        <span class="cat-pill-count">(${c.item_count})</span>
+                    </button>
+                `;
+            });
+
+            this.dom.categoryPillsContainer.innerHTML = html;
+
+            this.dom.categoryPillsContainer.querySelectorAll('.bloat-cat-pill').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    this.dom.categoryPillsContainer.querySelectorAll('.bloat-cat-pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    this.state.filterCategory = pill.getAttribute('data-cat') || 'all';
+                    if (this.dom.catFilterCount) {
+                        this.dom.catFilterCount.textContent = this.state.filterCategory === 'all' ? 'Tất cả danh mục' : this.state.filterCategory;
+                    }
+                    this.renderTable();
+                });
+            });
+        },
+
+        renderTable() {
+            if (!this.dom.tbody) return;
+            const data = this.state.diffData;
+            if (!data || !data.items) return;
+
+            let items = [...data.items];
+
+            if (this.state.filterCategory && this.state.filterCategory !== 'all') {
+                items = items.filter(i => i.category === this.state.filterCategory);
+            }
+
+            if (this.state.filterStatus === 'bloat_only') {
+                items = items.filter(i => i.status === 'new' || i.status === 'expanded');
+            } else if (this.state.filterStatus === 'new') {
+                items = items.filter(i => i.status === 'new');
+            } else if (this.state.filterStatus === 'expanded') {
+                items = items.filter(i => i.status === 'expanded');
+            } else if (this.state.filterStatus === 'shrunk') {
+                items = items.filter(i => i.status === 'shrunk' || i.status === 'deleted');
+            }
+
+            if (this.state.searchQuery) {
+                const q = this.state.searchQuery;
+                items = items.filter(i => 
+                    (i.name && i.name.toLowerCase().includes(q)) ||
+                    (i.path && i.path.toLowerCase().includes(q)) ||
+                    (i.category && i.category.toLowerCase().includes(q))
+                );
+            }
+
+            if (this.dom.tableTotalCount) {
+                this.dom.tableTotalCount.textContent = `${items.length} Mục`;
+            }
+
+            if (items.length === 0) {
+                this.dom.tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">
+                            Không tìm thấy file hoặc thư mục phù hợp với bộ lọc hiện tại.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const html = items.map((item, idx) => {
+                const isDir = item.is_dir;
+                const iconSvg = isDir 
+                    ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`
+                    : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`;
+
+                let statusBadge = '';
+                if (item.status === 'new') {
+                    statusBadge = `<span class="badge-status-new">✨ Mới sinh</span>`;
+                } else if (item.status === 'expanded') {
+                    statusBadge = `<span class="badge-status-expanded">📈 Phình to</span>`;
+                } else if (item.status === 'shrunk' || item.status === 'deleted') {
+                    statusBadge = `<span class="badge-status-shrunk">🧹 Đã dọn</span>`;
+                } else {
+                    statusBadge = `<span class="badge-delta-zero">Không đổi</span>`;
+                }
+
+                let deltaBadge = '';
+                if (item.delta_size_bytes > 0) {
+                    deltaBadge = `<span class="badge-delta-pos">${item.delta_size_formatted}</span>`;
+                } else if (item.delta_size_bytes < 0) {
+                    deltaBadge = `<span class="badge-delta-neg">${item.delta_size_formatted}</span>`;
+                } else {
+                    deltaBadge = `<span class="badge-delta-zero">0 B</span>`;
+                }
+
+                const canPurge = Boolean(item.can_purge);
+                const purgeTooltip = canPurge ? 'Xóa an toàn tệp/thư mục rác này' : escapeHtml(item.purge_warning || 'Được bảo vệ bởi Windows Core');
+                const purgeBtnClass = canPurge ? 'btn-safe-purge' : 'btn-safe-purge disabled';
+
+                return `
+                    <tr data-path="${escapeHtml(item.path)}">
+                        <td class="proc-pid">#${idx + 1}</td>
+                        <td>
+                            <div class="disk-item-flex-cell">
+                                <span class="disk-icon-badge ${isDir ? 'folder-badge' : 'file-badge'}">${iconSvg}</span>
+                                <div class="disk-name-text-group">
+                                    <span class="disk-main-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
+                                    <span class="disk-path-muted" title="${escapeHtml(item.path)}">${escapeHtml(item.path)}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-cat-pill">${escapeHtml(item.category)}</span></td>
+                        <td>${statusBadge}</td>
+                        <td class="mono-text text-muted">${item.baseline_size_formatted || '0 B'}</td>
+                        <td class="mono-text" style="color: var(--text-white); font-weight: 600;">${item.current_size_formatted || '0 B'}</td>
+                        <td>${deltaBadge}</td>
+                        <td class="mono-text text-muted" style="font-size: 0.80rem;">${item.last_modified || '—'}</td>
+                        <td class="text-right">
+                            <div class="bloat-actions-cell">
+                                <button type="button" class="btn-open-explorer" data-path="${escapeHtml(item.path)}" title="Mở vị trí trong Windows Explorer">
+                                    📂 Mở
+                                </button>
+                                <button type="button" class="${purgeBtnClass}" data-path="${escapeHtml(item.path)}" data-size="${escapeHtml(item.current_size_formatted || '')}" data-name="${escapeHtml(item.name)}" data-can-purge="${canPurge}" data-warn="${escapeHtml(item.purge_warning || '')}" title="${purgeTooltip}">
+                                    🗑️ Xóa
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            this.dom.tbody.innerHTML = html;
+        },
+
+        async openExplorer(path) {
+            try {
+                const res = await fetch('/api/disk/open-item', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path })
+                });
+                if (res.ok) {
+                    showActionToast(`📂 Đang mở Explorer: ${path.split('\\').pop()}`);
+                } else {
+                    showActionToast('❌ Không thể mở thư mục Explorer');
+                }
+            } catch (err) {
+                console.error('[DiskBloat] Open Explorer error:', err);
+            }
+        },
+
+        openPurgeModal(path, size, name, warn) {
+            this.state.pendingPurgeItem = { path, size, name, warn };
+            if (this.dom.purgePath) this.dom.purgePath.textContent = path;
+            if (this.dom.purgeSize) this.dom.purgeSize.textContent = `Dung lượng: ${size}`;
+            if (this.dom.purgeWarn) {
+                this.dom.purgeWarn.textContent = warn || 'ℹ️ Hành động này sẽ xóa vĩnh viễn tệp/thư mục rác được chọn.';
+            }
+            if (this.dom.purgeModal) this.dom.purgeModal.classList.remove('hidden');
+        },
+
+        closePurgeModal() {
+            this.state.pendingPurgeItem = null;
+            if (this.dom.purgeModal) this.dom.purgeModal.classList.add('hidden');
+        },
+
+        async confirmPurgeItem() {
+            const item = this.state.pendingPurgeItem;
+            if (!item || !item.path) return;
+            const path = item.path;
+            this.closePurgeModal();
+
+            try {
+                const res = await fetch('/api/disk/purge-item', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        showActionToast(`🧹 ${data.message} (+${data.freed_formatted || '0 B'} đã giải phóng)`);
+                        await this.scanDiff();
+                    } else {
+                        showActionToast(`⚠️ ${data.message || 'Không thể xóa mục này'}`);
+                    }
+                } else {
+                    showActionToast('❌ Lỗi yêu cầu xóa từ máy chủ');
+                }
+            } catch (err) {
+                console.error('[DiskBloat] Purge item error:', err);
+                showActionToast('❌ Không thể kết nối tới máy chủ');
+            }
+        }
+    };
+
+    window.diskBloatManager = diskBloatManager;
+
     function renderMarkdownSimple(md) {
         if (!md) return '';
         return md
@@ -11658,6 +12249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mediaViewerManager.init();   // Initialize In-Browser Media & Document Viewer Module
     weatherManager.init();       // Initialize Weather & Dynamic Atmospheric Mood
     vocabManager.init();         // Initialize Tab 12 Daily English & Vocab Booster Module
+    diskBloatManager.init();     // Initialize Disk Delta & Bloat Tracker Module
     featureManager.init();       // Initialize Module Control Center (Feature Toggle Deck)
     setupEvents();
     updateChartsTheme(state.currentTheme === 'light'); // Apply theme styling to charts
@@ -11671,6 +12263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchNotifications(false);
     }, 30000);
 });
+
 
 
 

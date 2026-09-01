@@ -15106,6 +15106,623 @@ select option {
     color: #0f172a;
 }
 
+/* =========================================================================
+   DISK BREAKDOWN — SUB-TAB SWITCHER & DISK DELTA / BLOAT TRACKER STYLES
+   ========================================================================= */
+
+#disk-panel-breakdown,
+#disk-panel-bloat {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+}
+
+#disk-panel-breakdown.hidden,
+#disk-panel-bloat.hidden {
+    display: none !important;
+}
+
+.disk-subtab-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    border-bottom: none;
+}
+
+.disk-subtab-group {
+    display: inline-flex;
+    gap: 8px;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 5px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+
+.disk-subtab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 9px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.disk-subtab-btn:hover {
+    color: var(--text-white);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.disk-subtab-btn.active {
+    color: #090d16;
+    background: #bcf846;
+    background: linear-gradient(135deg, #bcf846 0%, #a3e635 100%);
+    box-shadow: 0 0 16px rgba(188, 248, 70, 0.35);
+    font-weight: 700;
+}
+
+.disk-subtab-count-badge {
+    background: rgba(0, 0, 0, 0.25);
+    color: #090d16;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 1px 7px;
+    border-radius: 20px;
+    margin-left: 4px;
+}
+
+/* Bloat Control Header Bar */
+.disk-bloat-control-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 14px 20px;
+    margin-bottom: 0px;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(188, 248, 70, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.bloat-control-left {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.bloat-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    background: rgba(188, 248, 70, 0.08);
+    border: 1px solid rgba(188, 248, 70, 0.25);
+}
+
+.bloat-pulse-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #bcf846;
+    box-shadow: 0 0 10px #bcf846;
+    animation: bloatPulse 1.8s infinite;
+}
+
+@keyframes bloatPulse {
+    0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 8px #bcf846; }
+    50% { transform: scale(1.35); opacity: 0.7; box-shadow: 0 0 16px #bcf846; }
+}
+
+.bloat-badge-text-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.bloat-badge-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #bcf846;
+    text-transform: uppercase;
+}
+
+.bloat-badge-val {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-white);
+}
+
+.bloat-history-select-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bloat-select-label {
+    font-size: 0.80rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.bloat-select-input {
+    background: rgba(15, 23, 42, 0.8);
+    color: var(--text-white);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bloat-select-input:focus {
+    border-color: #bcf846;
+    box-shadow: 0 0 10px rgba(188, 248, 70, 0.25);
+}
+
+.bloat-control-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Stat Cards for Bloat */
+.bloat-color {
+    background: rgba(188, 248, 70, 0.15);
+    color: #bcf846;
+}
+
+.cat-color {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.files-color {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+}
+
+.time-color {
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+}
+
+/* Category Filter Bar */
+.bloat-category-filter-panel {
+    margin-bottom: 0px;
+    padding: 16px 20px;
+}
+
+.bloat-filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.bloat-filter-header h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin: 0;
+}
+
+.bloat-category-pills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.bloat-cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.80rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bloat-cat-pill:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-white);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.bloat-cat-pill.active {
+    background: rgba(188, 248, 70, 0.15);
+    border-color: #bcf846;
+    color: #bcf846;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(188, 248, 70, 0.2);
+}
+
+.cat-pill-count {
+    font-size: 0.72rem;
+    opacity: 0.75;
+}
+
+.cat-pill-delta {
+    font-size: 0.75rem;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+}
+
+/* Status Tabs in Table */
+.bloat-table-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.bloat-status-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+/* Table Delta Badges */
+.badge-delta-pos {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #f87171;
+    text-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.badge-delta-neg {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34d399;
+}
+
+.badge-delta-zero {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(148, 163, 184, 0.1);
+    color: #94a3b8;
+}
+
+.badge-status-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    background: rgba(168, 85, 247, 0.18);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: #c084fc;
+}
+
+.badge-status-expanded {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #fbbf24;
+}
+
+.badge-status-shrunk {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34d399;
+}
+
+.badge-cat-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* Action Buttons inside Table */
+.bloat-actions-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.btn-open-explorer {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-open-explorer:hover {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.btn-safe-purge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-safe-purge:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+}
+
+.btn-safe-purge.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: transparent;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+}
+
+/* Modals */
+.bloat-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.2s ease;
+}
+
+.bloat-modal-overlay.hidden {
+    display: none;
+}
+
+.bloat-modal-box {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 520px;
+    padding: 24px;
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+    0% { transform: scale(0.92); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.bloat-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.bloat-modal-icon-wrap {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bloat-modal-header h3 {
+    margin: 0 0 2px 0;
+    font-size: 1.15rem;
+    color: var(--text-white);
+}
+
+.bloat-modal-body {
+    margin-bottom: 22px;
+}
+
+.bloat-modal-info-row {
+    margin-bottom: 10px;
+}
+
+.bloat-modal-info-row .info-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.bloat-modal-path {
+    display: block;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    word-break: break-all;
+    color: #38bdf8;
+}
+
+.bloat-modal-size {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #bcf846;
+}
+
+.bloat-modal-warn {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+    font-size: 0.80rem;
+    margin-top: 14px;
+    line-height: 1.4;
+}
+
+.bloat-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.bloat-btn-delete {
+    background: #ef4444;
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+}
+
+.bloat-btn-delete:hover {
+    background: #dc2626;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+}
+
+/* Light mode overrides for Bloat & Delta */
+[data-theme="light"] .disk-subtab-group {
+    background: #e2e8f0;
+    border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .disk-subtab-btn {
+    color: #64748b;
+}
+
+[data-theme="light"] .disk-subtab-btn.active {
+    background: #059669;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+[data-theme="light"] .disk-bloat-control-bar {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .bloat-badge-pill {
+    background: rgba(5, 150, 105, 0.08);
+    border-color: rgba(5, 150, 105, 0.25);
+}
+
+[data-theme="light"] .bloat-badge-title {
+    color: #059669;
+}
+
+[data-theme="light"] .bloat-badge-val {
+    color: #0f172a;
+}
+
+[data-theme="light"] .bloat-select-input {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: rgba(15, 23, 42, 0.15);
+}
+
+[data-theme="light"] .bloat-cat-pill {
+    background: #f8fafc;
+    color: #475569;
+    border-color: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .bloat-cat-pill.active {
+    background: rgba(5, 150, 105, 0.12);
+    border-color: #059669;
+    color: #059669;
+}
+
+[data-theme="light"] .bloat-modal-box {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .bloat-modal-header h3 {
+    color: #0f172a;
+}
+
+[data-theme="light"] .bloat-modal-path {
+    background: #f1f5f9;
+    color: #0284c7;
+    border-color: rgba(15, 23, 42, 0.1);
+}
+
+
 
 
 

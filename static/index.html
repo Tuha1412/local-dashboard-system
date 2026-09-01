@@ -1192,6 +1192,26 @@
                  TAB VIEW 2: DISK USAGE BREAKDOWN & FOLDER ANALYSIS
                  ================================================================ -->
             <main id="view-disk-analysis" class="tab-view hidden dashboard-content">
+
+                <!-- ── Disk Sub-Tab Switcher ──────────────────────────────────── -->
+                <section class="disk-subtab-bar">
+                    <div class="disk-subtab-group">
+                        <button type="button" id="disk-subtab-breakdown" class="disk-subtab-btn active" title="Phân bổ ổ đĩa tổng thể theo thư mục">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <span>📊 Phân Bổ Ổ Đĩa</span>
+                        </button>
+                        <button type="button" id="disk-subtab-bloat" class="disk-subtab-btn" title="Theo dõi chênh lệch & phình to dung lượng">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <span>🔍 Bloat &amp; Delta Inspector</span>
+                            <span id="disk-bloat-badge" class="disk-subtab-count-badge hidden">0</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ========================================================
+                     DISK SUB-VIEW A: BREAKDOWN (existing, wrapped in a div)
+                     ======================================================== -->
+                <div id="disk-panel-breakdown">
                 <!-- Disk Analysis Header Control Panel -->
                 <section class="dashboard-panel disk-control-bar">
                     <div class="disk-control-left">
@@ -1433,6 +1453,280 @@
                         </table>
                     </div>
                 </section>
+                </div> <!-- End #disk-panel-breakdown -->
+
+                <!-- ========================================================
+                     DISK SUB-VIEW B: BLOAT & DELTA INSPECTOR (NEW)
+                     ======================================================== -->
+                <div id="disk-panel-bloat" class="hidden">
+                    <!-- Delta Header Bar & Control Panel -->
+                    <section class="dashboard-panel disk-bloat-control-bar">
+                        <div class="bloat-control-left">
+                            <div class="bloat-badge-pill" id="bloat-baseline-badge">
+                                <span class="bloat-pulse-dot"></span>
+                                <div class="bloat-badge-text-group">
+                                    <span class="bloat-badge-title">MỐC SO SÁNH BASELINE:</span>
+                                    <span id="bloat-baseline-info" class="bloat-badge-val">Chưa có mốc so sánh</span>
+                                </div>
+                            </div>
+                            <div class="bloat-history-select-wrap">
+                                <label for="bloat-snapshot-select" class="bloat-select-label">Lịch sử mốc:</label>
+                                <select id="bloat-snapshot-select" class="bloat-select-input">
+                                    <option value="latest">Mốc gần nhất (Latest)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="bloat-control-right">
+                            <button type="button" id="btn-bloat-snapshot" class="control-btn secondary-action-btn" title="Lưu trạng thái hiện tại làm mốc so sánh chuẩn">
+                                <svg id="bloat-snap-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                                <span id="bloat-snap-text">📸 Tạo mốc mới</span>
+                            </button>
+                            <button type="button" id="btn-bloat-scan" class="control-btn primary-action-btn" title="Quét so sánh dung lượng thực tế ngay bây giờ">
+                                <svg id="bloat-scan-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                                </svg>
+                                <span id="bloat-scan-text">🔄 Quét chênh lệch ngay</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- 4 Bloat Summary Stat Cards -->
+                    <section class="stats-overview-grid bloat-stats-grid">
+                        <!-- Card 1: Total Delta Growth -->
+                        <div class="stat-card card-bloat-delta">
+                            <div class="card-glow"></div>
+                            <div class="card-top">
+                                <div class="stat-label-group">
+                                    <span class="stat-icon-wrapper bloat-color">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                            <polyline points="17 6 23 6 23 12"></polyline>
+                                        </svg>
+                                    </span>
+                                    <span class="stat-title">TỔNG DUNG LƯỢNG TĂNG THÊM</span>
+                                </div>
+                                <span id="bloat-delta-status-chip" class="chip-status chip-normal">Ổn định</span>
+                            </div>
+                            <div class="card-value-container">
+                                <div class="stat-main-value mono-text" id="bloat-card-total-delta">+0.0<span class="unit">MB</span></div>
+                            </div>
+                            <div class="card-sub-info">
+                                <span id="bloat-card-expanded-val" class="sub-pill">Phình to: +0 MB</span>
+                                <span id="bloat-card-new-val" class="sub-pill">Mới sinh: +0 MB</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Top Bloat Category -->
+                        <div class="stat-card card-bloat-cat">
+                            <div class="card-glow"></div>
+                            <div class="card-top">
+                                <div class="stat-label-group">
+                                    <span class="stat-icon-wrapper cat-color">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="stat-title">NHÓM TĂNG NHIỀU NHẤT</span>
+                                </div>
+                                <span class="chip-status chip-alert">Hotspot</span>
+                            </div>
+                            <div class="card-value-container">
+                                <div class="stat-main-value" id="bloat-card-top-category" style="font-size: 1.30rem; line-height: 1.3;">Chưa phát hiện</div>
+                            </div>
+                            <div class="card-sub-info">
+                                <span id="bloat-card-top-cat-delta" class="sub-pill">Mức tăng: +0 MB</span>
+                                <span id="bloat-card-top-cat-count" class="sub-pill">0 mục</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: New & Expanded Count -->
+                        <div class="stat-card card-bloat-count">
+                            <div class="card-glow"></div>
+                            <div class="card-top">
+                                <div class="stat-label-group">
+                                    <span class="stat-icon-wrapper files-color">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                                        </svg>
+                                    </span>
+                                    <span class="stat-title">MỤC PHÁT SINH / BIẾN ĐỘNG</span>
+                                </div>
+                                <span id="bloat-card-offenders-badge" class="chip-status chip-info">0 Mục</span>
+                            </div>
+                            <div class="card-value-container">
+                                <div class="stat-main-value mono-text" id="bloat-card-new-count">0<span class="unit">mục</span></div>
+                            </div>
+                            <div class="card-sub-info">
+                                <span id="bloat-card-new-only" class="sub-pill">Mới sinh: 0</span>
+                                <span id="bloat-card-exp-only" class="sub-pill">Phình to: 0</span>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Scan Speed & Safety -->
+                        <div class="stat-card card-bloat-time">
+                            <div class="card-glow"></div>
+                            <div class="card-top">
+                                <div class="stat-label-group">
+                                    <span class="stat-icon-wrapper time-color">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                    </span>
+                                    <span class="stat-title">TỐC ĐỘ QUÉT HOTSPOTS</span>
+                                </div>
+                                <span class="chip-status chip-live"><span class="dot-live"></span> Bounded BFS</span>
+                            </div>
+                            <div class="card-value-container">
+                                <div class="stat-main-value mono-text" id="bloat-card-duration">0.0<span class="unit">s</span></div>
+                            </div>
+                            <div class="card-sub-info">
+                                <span id="bloat-card-monitored-count" class="sub-pill">Theo dõi: 0 vị trí</span>
+                                <span class="sub-pill">Windows Core Safe</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Category Bloat Quick Filter Bar -->
+                    <section class="dashboard-panel bloat-category-filter-panel">
+                        <div class="bloat-filter-header">
+                            <div class="panel-title-group">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                                <h2>Phân loại theo khu vực phình to:</h2>
+                            </div>
+                            <span id="bloat-cat-filter-count" class="badge-soft">Tất cả danh mục</span>
+                        </div>
+                        <div id="bloat-category-pills" class="bloat-category-pills-container">
+                            <button class="bloat-cat-pill active" data-cat="all">Tất cả <span class="cat-pill-count">(0)</span></button>
+                        </div>
+                    </section>
+
+                    <!-- Detailed Top Bloat Offenders Table -->
+                    <section class="dashboard-panel bloat-table-panel">
+                        <div class="panel-header">
+                            <div class="panel-title-group">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                <h2>Top Bloat Offenders (File &amp; Thư mục phình to nhiều nhất)</h2>
+                                <span id="bloat-table-total-count" class="badge-soft">0 Mục</span>
+                            </div>
+
+                            <div class="proc-controls bloat-table-controls">
+                                <div class="tab-pill-group bloat-status-tabs">
+                                    <button class="tab-pill active" data-status="all">Tất cả</button>
+                                    <button class="tab-pill" data-status="bloat_only">⚠️ Phình to & Mới sinh</button>
+                                    <button class="tab-pill" data-status="new">✨ Mới sinh</button>
+                                    <button class="tab-pill" data-status="expanded">📈 Phình to</button>
+                                    <button class="tab-pill" data-status="shrunk">📉 Đã dọn / Giảm</button>
+                                </div>
+                                <div class="search-input-wrapper">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                    <input type="text" id="bloat-search-input" placeholder="Tìm theo tên file, thư mục, đường dẫn..." autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="custom-table" id="bloat-offenders-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 55px;">Rank</th>
+                                        <th>Tên File / Thư mục & Đường dẫn</th>
+                                        <th style="width: 140px;">Danh mục</th>
+                                        <th style="width: 130px;">Trạng thái</th>
+                                        <th style="width: 120px;">Gốc (Baseline)</th>
+                                        <th style="width: 120px;">Hiện tại</th>
+                                        <th style="width: 130px;">Mức tăng (Δ Size)</th>
+                                        <th style="width: 150px;">Thời gian sửa đổi</th>
+                                        <th style="width: 140px;" class="text-right">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bloat-offenders-tbody">
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-4">Bấm <strong>"🔄 Quét chênh lệch ngay"</strong> để so sánh dung lượng thực tế.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div> <!-- End #disk-panel-bloat -->
+
+                <!-- Safe Purge Confirmation Modal -->
+                <div id="bloat-purge-modal" class="bloat-modal-overlay hidden">
+                    <div class="bloat-modal-box">
+                        <div class="bloat-modal-header">
+                            <div class="bloat-modal-icon-wrap">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3>Xác nhận xóa an toàn</h3>
+                                <p class="text-muted" style="font-size: 0.8rem;">Hệ thống áp dụng Safe Purge Guardrails để bảo vệ Windows Core</p>
+                            </div>
+                        </div>
+                        <div class="bloat-modal-body">
+                            <div class="bloat-modal-info-row">
+                                <span class="info-label">Đường dẫn mục tiêu:</span>
+                                <code class="bloat-modal-path mono-text" id="bloat-modal-path">—</code>
+                            </div>
+                            <div class="bloat-modal-info-row">
+                                <span class="info-label">Dung lượng giải phóng ước tính:</span>
+                                <span class="bloat-modal-size mono-text" id="bloat-modal-size">—</span>
+                            </div>
+                            <div class="bloat-modal-warn" id="bloat-modal-warn">
+                                ℹ️ Hành động này sẽ xóa vĩnh viễn tệp/thư mục rác được chọn.
+                            </div>
+                        </div>
+                        <div class="bloat-modal-actions">
+                            <button type="button" id="btn-bloat-purge-cancel" class="control-btn secondary-action-btn">Hủy bỏ</button>
+                            <button type="button" id="btn-bloat-purge-confirm" class="control-btn bloat-btn-delete">🗑️ Xóa ngay bây giờ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Baseline Snapshot Modal -->
+                <div id="bloat-snapshot-modal" class="bloat-modal-overlay hidden">
+                    <div class="bloat-modal-box">
+                        <div class="bloat-modal-header">
+                            <div class="bloat-modal-icon-wrap" style="background: rgba(188, 248, 70, 0.15); color: #bcf846;">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3>Tạo mốc Snapshot mới</h3>
+                                <p class="text-muted" style="font-size: 0.8rem;">Ghi nhận trạng thái ổ đĩa làm mốc chuẩn (Baseline) sau khi dọn dẹp</p>
+                            </div>
+                        </div>
+                        <div class="bloat-modal-body">
+                            <label for="bloat-snapshot-label-input" class="info-label" style="display:block; margin-bottom: 6px;">Tên gợi nhớ cho mốc (Tùy chọn):</label>
+                            <input type="text" id="bloat-snapshot-label-input" class="custom-input" placeholder="Ví dụ: Sau khi dọn dẹp ổ C, Trước khi cài Docker..." style="width: 100%;" autocomplete="off">
+                        </div>
+                        <div class="bloat-modal-actions">
+                            <button type="button" id="btn-bloat-snap-modal-cancel" class="control-btn secondary-action-btn">Hủy bỏ</button>
+                            <button type="button" id="btn-bloat-snap-modal-confirm" class="control-btn primary-action-btn">📸 Ghi nhận mốc ngay</button>
+                        </div>
+                    </div>
+                </div>
             </main>
 
             <!-- ================================================================

@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Set
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+# pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -26,6 +27,7 @@ from app.weather_service import weather_service
 from app.snippet_lab_service import snippet_lab_service
 from app.media_preview_service import media_preview_service
 from app.vocab_service import vocab_service
+from app.disk_delta_service import disk_delta_service
 from fastapi import Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -208,6 +210,52 @@ async def get_disk_usage_breakdown(drive: str = "C", force: bool = False):
 async def get_disk_sub_items(path: str, force: bool = False):
     """Scan and return child files/folders for a given directory path."""
     return await disk_analyzer.scan_subfolder_async(path, force=force)
+
+# ===========================================================================
+# DISK DELTA & BLOAT TRACKER — Snapshot, Diff & Safe Purge API
+# ===========================================================================
+
+class DiskSnapshotCreateRequest(BaseModel):
+    label: Optional[str] = None
+
+class DiskPurgeItemRequest(BaseModel):
+    path: str
+
+class DiskOpenItemRequest(BaseModel):
+    path: str
+
+@app.post("/api/disk/snapshot/create")
+async def create_disk_snapshot(req: DiskSnapshotCreateRequest):
+    """Create a new baseline snapshot of disk hotspot directories for delta tracking."""
+    return await disk_delta_service.create_snapshot(label=req.label)
+
+@app.get("/api/disk/snapshot/latest")
+async def get_latest_disk_snapshot():
+    """Retrieve the most recent baseline snapshot metadata."""
+    result = await disk_delta_service.get_latest_snapshot()
+    if result is None:
+        return {"has_snapshot": False, "message": "Chưa có mốc snapshot nào được tạo."}
+    return {"has_snapshot": True, **result}
+
+@app.get("/api/disk/snapshot/list")
+async def list_disk_snapshots(limit: int = 15):
+    """List historical baseline snapshots (newest first)."""
+    return await disk_delta_service.list_snapshots(limit=limit)
+
+@app.get("/api/disk/diff")
+async def get_disk_diff(snapshot_id: Optional[int] = None):
+    """Compare current disk hotspot state against baseline snapshot, return top bloat offenders."""
+    return await disk_delta_service.compute_diff(snapshot_id=snapshot_id)
+
+@app.post("/api/disk/purge-item")
+async def purge_disk_item(req: DiskPurgeItemRequest):
+    """Safely delete a detected bloat file or folder with built-in Windows Core protection."""
+    return await disk_delta_service.purge_item(req.path)
+
+@app.post("/api/disk/open-item")
+async def open_disk_item(req: DiskOpenItemRequest):
+    """Open Windows Explorer and highlight the specified file or folder."""
+    return disk_delta_service.open_item_location(req.path)
 
 @app.get("/api/apps/analytics")
 async def get_app_analytics(range: str = "today"):
