@@ -13130,7 +13130,7 @@ ${css}`;
     window.diskBloatManager = diskBloatManager;
 
     // =========================================================================
-    // GLOBAL WEATHER ATMOSPHERIC THEMES & DYNAMIC SKIN ENGINE (16 PRESETS)
+    // DUAL-LAYER WEATHER FX BLENDING & LIVE PARTICLE PHYSICS ENGINE (16 PRESETS)
     // =========================================================================
     const weatherThemeEngine = {
         presets: {
@@ -13200,67 +13200,67 @@ ${css}`;
             },
             kyoto_sakura: {
                 key: 'kyoto_sakura',
-                name: 'Kyoto Cherry Blossom Mist',
+                name: 'Kyoto Spring Sakura Blossom',
                 shortName: 'Kyoto Sakura',
                 location: 'Kyoto, Japan',
                 category: 'nature',
                 icon: '🌸',
-                accent: '#ffb7b2',
-                secondary: '#ff758c',
-                accentGlow: 'rgba(255, 183, 178, 0.35)',
-                sidebarGlow: 'rgba(255, 117, 140, 0.18)',
-                cardGlow: 'rgba(255, 183, 178, 0.25)',
-                bannerGradient: 'linear-gradient(135deg, rgba(26, 15, 24, 0.95), rgba(162, 28, 97, 0.3), rgba(15, 23, 42, 0.95))',
+                accent: '#ff758c',
+                secondary: '#ff7eb3',
+                accentGlow: 'rgba(255, 117, 140, 0.35)',
+                sidebarGlow: 'rgba(255, 126, 179, 0.18)',
+                cardGlow: 'rgba(255, 117, 140, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(25, 12, 20, 0.95), rgba(190, 24, 93, 0.3), rgba(15, 23, 42, 0.95))',
                 type: 'sakura',
-                desc: 'Cánh hoa hồng phấn lượn sóng xoay nhẹ trong sương mờ'
-            },
-            saigon_thunder: {
-                key: 'saigon_thunder',
-                name: 'Saigon Tropical Thunderstorm',
-                shortName: 'Saigon Storm',
-                location: 'Ho Chi Minh City, VN',
-                category: 'rain',
-                icon: '⚡',
-                accent: '#38bdf8',
-                secondary: '#e0f2fe',
-                accentGlow: 'rgba(56, 189, 248, 0.35)',
-                sidebarGlow: 'rgba(56, 189, 248, 0.18)',
-                cardGlow: 'rgba(56, 189, 248, 0.25)',
-                bannerGradient: 'linear-gradient(135deg, rgba(10, 18, 32, 0.95), rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.95))',
-                type: 'thunder',
-                desc: 'Mưa rào nhiệt đới lớn kèm chớp sáng nền sấm sét'
+                desc: 'Cánh hoa anh đào hồng phấn chao nghiêng xoay tròn nhẹ nhàng'
             },
             london_fog: {
                 key: 'london_fog',
-                name: 'London Thames Evening Fog',
+                name: 'London Midnight Mystery Fog',
                 shortName: 'London Fog',
                 location: 'London, UK',
                 category: 'fog',
                 icon: '🌫️',
-                accent: '#cbd5e1',
-                secondary: '#94a3b8',
-                accentGlow: 'rgba(203, 213, 225, 0.30)',
-                sidebarGlow: 'rgba(148, 163, 184, 0.15)',
-                cardGlow: 'rgba(203, 213, 225, 0.25)',
-                bannerGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(51, 65, 85, 0.45), rgba(15, 23, 42, 0.95))',
+                accent: '#94a3b8',
+                secondary: '#cbd5e1',
+                accentGlow: 'rgba(148, 163, 184, 0.35)',
+                sidebarGlow: 'rgba(203, 213, 225, 0.15)',
+                cardGlow: 'rgba(148, 163, 184, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(71, 85, 105, 0.35), rgba(2, 6, 23, 0.95))',
                 type: 'fog',
-                desc: 'Khối sương mờ xám trôi êm ả ngang dòng sông Thames'
+                desc: 'Lớp sương mù bảng lảng trôi lững lờ theo làn gió đêm'
             },
             atacama_stars: {
                 key: 'atacama_stars',
-                name: 'Atacama Milky Way & Galaxy',
+                name: 'Atacama Starlight & Milky Way',
                 shortName: 'Atacama Stars',
                 location: 'Atacama, Chile',
                 category: 'aurora',
                 icon: '✨',
-                accent: '#a855f7',
+                accent: '#c084fc',
                 secondary: '#38bdf8',
-                accentGlow: 'rgba(168, 85, 247, 0.35)',
-                sidebarGlow: 'rgba(168, 85, 247, 0.18)',
-                cardGlow: 'rgba(168, 85, 247, 0.25)',
-                bannerGradient: 'linear-gradient(135deg, rgba(10, 6, 24, 0.95), rgba(76, 29, 149, 0.35), rgba(15, 23, 42, 0.95))',
+                accentGlow: 'rgba(192, 132, 252, 0.35)',
+                sidebarGlow: 'rgba(56, 189, 248, 0.18)',
+                cardGlow: 'rgba(192, 132, 252, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(10, 10, 30, 0.95), rgba(91, 33, 182, 0.35), rgba(15, 23, 42, 0.95))',
                 type: 'stars',
-                desc: 'Bầu trời ngàn sao lấp lánh và vệt sao băng bay lướt'
+                desc: 'Bầu trời sao lấp lánh đa sắc và vệt sao băng bất chợt'
+            },
+            singapore_storm: {
+                key: 'singapore_storm',
+                name: 'Singapore Tropical Thunderstorm',
+                shortName: 'Singapore Storm',
+                location: 'Marina Bay, Singapore',
+                category: 'rain',
+                icon: '⛈️',
+                accent: '#38bdf8',
+                secondary: '#f43f5e',
+                accentGlow: 'rgba(56, 189, 248, 0.35)',
+                sidebarGlow: 'rgba(244, 63, 94, 0.18)',
+                cardGlow: 'rgba(56, 189, 248, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(14, 116, 144, 0.4), rgba(2, 6, 23, 0.95))',
+                type: 'storm',
+                desc: 'Mưa rào xối xả kèm chớp sáng nền sấm sét nhiệt đới'
             },
             volcanic_ember: {
                 key: 'volcanic_ember',
@@ -13392,65 +13392,78 @@ ${css}`;
             }
         },
 
-        // Legacy aliases
         aliasMap: {
             sahara_sunset: 'sahara_sandstorm',
             nordic_blizzard: 'reykjavik_blizzard',
-            kyoto_mist: 'london_fog'
+            kyoto_mist: 'london_fog',
+            deep_freeze: 'antarctica_freeze',
+            sakura_bloom: 'kyoto_sakura'
+        },
+
+        // Dual-Layer Blending State
+        blend: {
+            layer1: 'tokyo_rain',
+            layer2: 'atacama_stars',
+            ratio: 0.5
+        },
+
+        // Live Particle Physics Console State
+        physics: {
+            particleDensity: 120,    // 15 - 350 particles total
+            fallSpeed: 1.0,          // 0.2x - 3.0x speed multiplier
+            windForce: 0,            // -45° to +45° wind angle / vector
+            particleSize: 2.5,       // 0.5px - 8.0px
+            glowIntensity: 8,        // 0px - 20px blur radius
+            atmosphereOpacity: 100,  // 10% - 100% opacity
+            ambientLightning: true,  // Flash toggle
+            turbulenceGusts: true    // Turbulence flutter toggle
         },
 
         currentThemeKey: 'tokyo_rain',
         mode: 'auto', // 'auto' or 'manual'
         autoTimer: null,
         animFrameId: null,
+
+        // Header & Ambient Backdrop Canvas Contexts
         canvas: null,
         ctx: null,
         width: 0,
         height: 0,
-        particles: [],
-        ambientParticles: [],
+        ambientCanvas: null,
+        ambientCtx: null,
+        ambientWidth: 0,
+        ambientHeight: 0,
+
+        // Particle Pools for Dual Layer
+        l1Particles: [],
+        l2Particles: [],
+        ambientL1Particles: [],
+        ambientL2Particles: [],
         auroraPhase: 0,
-        lightning: 0,
-        shootingStar: null,
-        isRendering: false,
+        lightningTimer: 0,
+        lightningAlpha: 0,
+        fpsLastTime: performance.now(),
+        fpsFrames: 0,
+        currentFPS: 60,
         dom: {},
 
-        userConfig: {
-            density: 1.0,
-            speed: 1.0,
-            opacity: 1.0,
-            turbulence: true
-        },
-
         init() {
-            this.loadUserConfig();
+            this.loadSavedState();
             this.cacheDom();
             this.bindEvents();
             this.initCanvas();
 
             const savedMode = localStorage.getItem('weather_theme_mode') || 'auto';
-            let savedTheme = localStorage.getItem('weather_theme_key');
-            if (savedTheme && this.aliasMap[savedTheme]) {
-                savedTheme = this.aliasMap[savedTheme];
-            }
-
             this.mode = savedMode;
             if (this.dom.toggleAuto) {
                 this.dom.toggleAuto.checked = this.mode === 'auto';
             }
 
+            // Apply active layer theme
+            this.applyTheme(this.blend.layer1, this.mode === 'manual', false);
+
             if (this.mode === 'auto') {
-                if (savedTheme && this.presets[savedTheme]) {
-                    this.applyTheme(savedTheme, false, false);
-                } else {
-                    const keys = Object.keys(this.presets);
-                    const randomKey = keys[Math.floor(Math.random() * keys.length)];
-                    this.applyTheme(randomKey, false, false);
-                }
                 this.startAutoRotation();
-            } else {
-                const targetKey = (savedTheme && this.presets[savedTheme]) ? savedTheme : 'tokyo_rain';
-                this.applyTheme(targetKey, true, false);
             }
 
             document.addEventListener('visibilitychange', () => {
@@ -13464,31 +13477,169 @@ ${css}`;
             window.weatherThemeEngine = this;
         },
 
-        loadUserConfig() {
+        loadSavedState() {
             try {
-                const d = parseFloat(localStorage.getItem('weather_density'));
-                const s = parseFloat(localStorage.getItem('weather_speed'));
-                const o = parseFloat(localStorage.getItem('weather_opacity'));
-                const t = localStorage.getItem('weather_turbulence');
+                // 1. Blend State
+                const savedL1 = localStorage.getItem('weather_blend_layer1');
+                const savedL2 = localStorage.getItem('weather_blend_layer2');
+                const savedRatio = parseFloat(localStorage.getItem('weather_blend_ratio'));
 
-                if (!isNaN(d)) this.userConfig.density = Math.max(0.3, Math.min(2.0, d));
-                if (!isNaN(s)) this.userConfig.speed = Math.max(0.4, Math.min(2.5, s));
-                if (!isNaN(o)) this.userConfig.opacity = Math.max(0.3, Math.min(1.5, o));
-                if (t !== null) this.userConfig.turbulence = t !== 'false';
+                if (savedL1 && (this.presets[savedL1] || this.aliasMap[savedL1])) {
+                    this.blend.layer1 = this.aliasMap[savedL1] || savedL1;
+                    this.currentThemeKey = this.blend.layer1;
+                }
+                if (savedL2) {
+                    this.blend.layer2 = savedL2 === 'none' ? 'none' : (this.aliasMap[savedL2] || savedL2);
+                }
+                if (!isNaN(savedRatio)) {
+                    this.blend.ratio = Math.max(0.1, Math.min(0.9, savedRatio));
+                }
+
+                // 2. Physics State
+                const d = parseInt(localStorage.getItem('weather_phys_density'), 10);
+                const s = parseFloat(localStorage.getItem('weather_phys_speed'));
+                const w = parseInt(localStorage.getItem('weather_phys_wind'), 10);
+                const sz = parseFloat(localStorage.getItem('weather_phys_size'));
+                const g = parseInt(localStorage.getItem('weather_phys_glow'), 10);
+                const o = parseInt(localStorage.getItem('weather_phys_opacity'), 10);
+                const l = localStorage.getItem('weather_phys_lightning');
+                const tg = localStorage.getItem('weather_phys_turbulence');
+
+                if (!isNaN(d)) this.physics.particleDensity = Math.max(15, Math.min(350, d));
+                if (!isNaN(s)) this.physics.fallSpeed = Math.max(0.2, Math.min(3.0, s));
+                if (!isNaN(w)) this.physics.windForce = Math.max(-45, Math.min(45, w));
+                if (!isNaN(sz)) this.physics.particleSize = Math.max(0.5, Math.min(8.0, sz));
+                if (!isNaN(g)) this.physics.glowIntensity = Math.max(0, Math.min(20, g));
+                if (!isNaN(o)) this.physics.atmosphereOpacity = Math.max(10, Math.min(100, o));
+                if (l !== null) this.physics.ambientLightning = l !== 'false';
+                if (tg !== null) this.physics.turbulenceGusts = tg !== 'false';
             } catch (e) {
-                console.warn('[WeatherEngine] Load config error:', e);
+                console.warn('[WeatherEngine] Load state error:', e);
             }
         },
 
-        saveUserConfig(config) {
-            this.userConfig = Object.assign(this.userConfig, config);
-            localStorage.setItem('weather_density', this.userConfig.density);
-            localStorage.setItem('weather_speed', this.userConfig.speed);
-            localStorage.setItem('weather_opacity', this.userConfig.opacity);
-            localStorage.setItem('weather_turbulence', this.userConfig.turbulence);
+        saveState() {
+            try {
+                localStorage.setItem('weather_blend_layer1', this.blend.layer1);
+                localStorage.setItem('weather_blend_layer2', this.blend.layer2);
+                localStorage.setItem('weather_blend_ratio', this.blend.ratio);
+                localStorage.setItem('weather_phys_density', this.physics.particleDensity);
+                localStorage.setItem('weather_phys_speed', this.physics.fallSpeed);
+                localStorage.setItem('weather_phys_wind', this.physics.windForce);
+                localStorage.setItem('weather_phys_size', this.physics.particleSize);
+                localStorage.setItem('weather_phys_glow', this.physics.glowIntensity);
+                localStorage.setItem('weather_phys_opacity', this.physics.atmosphereOpacity);
+                localStorage.setItem('weather_phys_lightning', this.physics.ambientLightning);
+                localStorage.setItem('weather_phys_turbulence', this.physics.turbulenceGusts);
+            } catch (e) {
+                console.warn('[WeatherEngine] Save state error:', e);
+            }
+        },
 
-            const currentType = this.presets[this.currentThemeKey]?.type || 'rain';
-            this.resetParticles(currentType);
+        updatePhysicsParam(key, value) {
+            this.physics[key] = value;
+            this.saveState();
+
+            if (key === 'particleDensity') {
+                this.rebuildAllParticles();
+            }
+        },
+
+        setLayers(l1Key, l2Key, notify = false) {
+            if (this.aliasMap[l1Key]) l1Key = this.aliasMap[l1Key];
+            if (l2Key && l2Key !== 'none' && this.aliasMap[l2Key]) l2Key = this.aliasMap[l2Key];
+
+            if (this.presets[l1Key]) this.blend.layer1 = l1Key;
+            this.blend.layer2 = (l2Key && this.presets[l2Key]) ? l2Key : (l2Key === 'none' ? 'none' : 'atacama_stars');
+            this.currentThemeKey = this.blend.layer1;
+
+            this.saveState();
+            this.applyTheme(this.blend.layer1, true, notify);
+
+            if (window.weatherStudioManager) {
+                window.weatherStudioManager.syncBlendUI();
+            }
+        },
+
+        setBlendRatio(ratio) {
+            this.blend.ratio = Math.max(0.1, Math.min(0.9, ratio));
+            this.saveState();
+            this.rebuildAllParticles();
+            if (window.weatherStudioManager) {
+                window.weatherStudioManager.syncBlendUI();
+            }
+        },
+
+        surpriseMix() {
+            const keys = Object.keys(this.presets);
+            const l1 = keys[Math.floor(Math.random() * keys.length)];
+            let l2 = keys[Math.floor(Math.random() * keys.length)];
+            while (l2 === l1) {
+                l2 = keys[Math.floor(Math.random() * keys.length)];
+            }
+
+            const p1 = this.presets[l1];
+            const p2 = this.presets[l2];
+
+            this.blend.layer1 = l1;
+            this.blend.layer2 = l2;
+            this.blend.ratio = 0.5;
+            this.currentThemeKey = l1;
+
+            // Randomize gentle natural physics
+            this.physics.particleDensity = Math.floor(Math.random() * 80) + 100;
+            this.physics.fallSpeed = parseFloat((Math.random() * 0.8 + 0.8).toFixed(1));
+            this.physics.windForce = Math.floor(Math.random() * 24) - 12;
+            this.physics.glowIntensity = Math.floor(Math.random() * 8) + 6;
+
+            this.saveState();
+            this.applyTheme(l1, true, false);
+
+            if (window.weatherStudioManager) {
+                window.weatherStudioManager.syncAllUI();
+            }
+
+            showActionToast(`⚡ Surprise Mix: ${p1.shortName} 🔀 ${p2.shortName}`);
+        },
+
+        applyBlendAsGlobalTheme() {
+            const p1 = this.presets[this.blend.layer1] || this.presets.tokyo_rain;
+            const p2 = (this.blend.layer2 !== 'none' && this.presets[this.blend.layer2]) ? this.presets[this.blend.layer2] : null;
+
+            const root = document.documentElement;
+            root.style.setProperty('--theme-accent', p1.accent);
+            root.style.setProperty('--theme-secondary', p2 ? p2.accent : p1.secondary);
+            root.style.setProperty('--theme-accent-glow', p1.accentGlow);
+            root.style.setProperty('--sidebar-glow', p1.sidebarGlow);
+            root.style.setProperty('--card-glow-ambient', p1.cardGlow);
+            root.style.setProperty('--accent-lime', p1.accent);
+            root.style.setProperty('--accent-lime-hover', p1.accent);
+            root.style.setProperty('--accent-lime-glow', p1.accentGlow);
+            root.style.setProperty('--border-highlight', p1.accentGlow);
+            root.style.setProperty('--grad-lime', `linear-gradient(135deg, ${p1.accent} 0%, ${p2 ? p2.accent : p1.secondary} 100%)`);
+            root.style.setProperty('--banner-gradient', p1.bannerGradient);
+
+            this.saveState();
+            showActionToast(`🌟 Đã áp dụng ${p1.shortName} ${p2 ? '🔀 ' + p2.shortName : ''} làm Theme toàn Dashboard!`);
+        },
+
+        resetPhysicsDefaults() {
+            this.physics = {
+                particleDensity: 120,
+                fallSpeed: 1.0,
+                windForce: 0,
+                particleSize: 2.5,
+                glowIntensity: 8,
+                atmosphereOpacity: 100,
+                ambientLightning: true,
+                turbulenceGusts: true
+            };
+            this.saveState();
+            this.rebuildAllParticles();
+            if (window.weatherStudioManager) {
+                window.weatherStudioManager.syncPhysicsUI();
+            }
+            showActionToast('🔄 Đã khôi phục thông số Vật lý hạt về mặc định');
         },
 
         cacheDom() {
@@ -13503,7 +13654,6 @@ ${css}`;
                 btnClose: document.getElementById('btn-close-theme-flyout'),
                 toggleAuto: document.getElementById('toggle-theme-auto-rotate'),
                 presetsContainer: document.getElementById('theme-presets-container'),
-                presetCards: document.querySelectorAll('.theme-preset-card'),
                 canvas: document.getElementById('header-weather-canvas'),
                 ambientCanvas: document.getElementById('ambient-weather-canvas')
             };
@@ -13540,7 +13690,7 @@ ${css}`;
                     if (card) {
                         const key = card.getAttribute('data-theme-key');
                         if (key && (this.presets[key] || this.aliasMap[key])) {
-                            this.applyTheme(key, true, true);
+                            this.setLayers(key, 'none', true);
                             if (this.dom.toggleAuto) {
                                 this.dom.toggleAuto.checked = false;
                                 this.setAutoRotate(false);
@@ -13600,11 +13750,11 @@ ${css}`;
                 showActionToast('🔄 Đã kích hoạt tự động đổi chủ đề thời tiết mỗi 30 phút');
             } else {
                 this.stopAutoRotation();
-                showActionToast(`🔒 Đã khóa chủ đề thời tiết: ${this.presets[this.currentThemeKey]?.name || 'Theme'}`);
+                showActionToast(`🔒 Đã khóa chủ đề: ${this.presets[this.currentThemeKey]?.name || 'Theme'}`);
             }
 
             if (window.weatherStudioManager) {
-                window.weatherStudioManager.syncStatus();
+                window.weatherStudioManager.syncBlendUI();
             }
         },
 
@@ -13627,37 +13777,35 @@ ${css}`;
         rollRandomTheme(showToast = true) {
             const keys = Object.keys(this.presets).filter(k => k !== this.currentThemeKey);
             const nextKey = keys[Math.floor(Math.random() * keys.length)] || 'tokyo_rain';
-            this.applyTheme(nextKey, this.mode === 'manual', showToast);
+            this.setLayers(nextKey, 'none', showToast);
         },
 
         applyTheme(key, isManual = false, notify = true) {
-            if (this.aliasMap[key]) {
-                key = this.aliasMap[key];
-            }
+            if (this.aliasMap[key]) key = this.aliasMap[key];
             const preset = this.presets[key];
             if (!preset) return;
 
             this.currentThemeKey = key;
+            this.blend.layer1 = key;
             localStorage.setItem('weather_theme_key', key);
 
-            // Apply CSS Variables on Document Root
+            // Apply Document CSS variables
             const root = document.documentElement;
+            const p2 = (this.blend.layer2 !== 'none' && this.presets[this.blend.layer2]) ? this.presets[this.blend.layer2] : null;
+
             root.style.setProperty('--theme-accent', preset.accent);
-            root.style.setProperty('--theme-secondary', preset.secondary);
+            root.style.setProperty('--theme-secondary', p2 ? p2.accent : preset.secondary);
             root.style.setProperty('--theme-accent-glow', preset.accentGlow);
             root.style.setProperty('--sidebar-glow', preset.sidebarGlow);
             root.style.setProperty('--card-glow-ambient', preset.cardGlow);
             root.style.setProperty('--banner-gradient', preset.bannerGradient);
             root.style.setProperty('--accent-lime', preset.accent);
             root.style.setProperty('--accent-lime-hover', preset.accent);
-            root.style.setProperty('--accent-lime-dark', preset.accent);
             root.style.setProperty('--accent-lime-glow', preset.accentGlow);
             root.style.setProperty('--border-highlight', preset.accentGlow);
-            root.style.setProperty('--shadow-glow', `0 0 24px ${preset.accentGlow}`);
-            root.style.setProperty('--grad-lime', `linear-gradient(135deg, ${preset.accent} 0%, ${preset.secondary} 100%)`);
-            root.style.setProperty('--grad-cpu', `linear-gradient(135deg, ${preset.accent} 0%, ${preset.secondary} 100%)`);
+            root.style.setProperty('--grad-lime', `linear-gradient(135deg, ${preset.accent} 0%, ${p2 ? p2.accent : preset.secondary} 100%)`);
 
-            // Update UI Header Widget
+            // Header elements
             if (this.dom.headerIcon) this.dom.headerIcon.textContent = preset.icon;
             if (this.dom.headerName) this.dom.headerName.textContent = preset.shortName;
             if (this.dom.headerMode) {
@@ -13670,28 +13818,12 @@ ${css}`;
                 }
             }
 
-            // Update Preset flyout list active states
-            if (this.dom.presetsContainer) {
-                const cards = this.dom.presetsContainer.querySelectorAll('.theme-preset-card');
-                cards.forEach(c => {
-                    let cKey = c.getAttribute('data-theme-key');
-                    if (this.aliasMap[cKey]) cKey = this.aliasMap[cKey];
-                    const isActive = cKey === key;
-                    c.classList.toggle('active', isActive);
-                    const tag = c.querySelector('.preset-status-tag');
-                    if (tag) {
-                        tag.textContent = isActive ? 'Đang áp dụng' : 'Chọn';
-                    }
-                });
-            }
-
-            // Sync with Tab 13 Weather Studio
+            // Sync with Tab 13
             if (window.weatherStudioManager) {
-                window.weatherStudioManager.syncStatus();
+                window.weatherStudioManager.syncBlendUI();
             }
 
-            // Reset and configure particle system for canvas
-            this.resetParticles(preset.type);
+            this.rebuildAllParticles();
 
             if (notify) {
                 showActionToast(`${preset.icon} Áp dụng chủ đề: ${preset.name}`);
@@ -13706,7 +13838,6 @@ ${css}`;
             if (this.ambientCanvas) this.ambientCtx = this.ambientCanvas.getContext('2d');
 
             this.resizeCanvas();
-
             window.addEventListener('resize', () => {
                 this.resizeCanvas();
             });
@@ -13727,7 +13858,7 @@ ${css}`;
                 if (this.ctx) this.ctx.scale(dpr, dpr);
             }
 
-            // 2. Fullscreen Ambient Background Canvas (Whole Website Backdrop)
+            // 2. Fullscreen Ambient Canvas
             if (this.ambientCanvas) {
                 this.ambientWidth = window.innerWidth;
                 this.ambientHeight = window.innerHeight;
@@ -13736,201 +13867,60 @@ ${css}`;
                 if (this.ambientCtx) this.ambientCtx.scale(dpr, dpr);
             }
 
-            const currentType = this.presets[this.currentThemeKey]?.type || 'rain';
-            this.resetParticles(currentType);
+            this.rebuildAllParticles();
         },
 
-        resetParticles(type) {
-            this.particles = [];
-            this.ambientParticles = [];
-            const density = this.userConfig.density || 1.0;
+        createParticle(preset, w, h) {
+            const windRad = (this.physics.windForce || 0) * (Math.PI / 180);
+            return {
+                x: Math.random() * (w + 100) - 50,
+                y: Math.random() * (h + 40) - 20,
+                length: Math.random() * 16 + 8,
+                speed: (Math.random() * 3.5 + 2.0),
+                radius: Math.random() * 2.2 + 1.0,
+                opacity: Math.random() * 0.5 + 0.45,
+                color: Math.random() > 0.4 ? preset.accent : preset.secondary,
+                angle: windRad,
+                drift: Math.random() * 2 - 1,
+                flutter: Math.random() * Math.PI * 2,
+                type: preset.type
+            };
+        },
+
+        rebuildAllParticles() {
+            const p1 = this.presets[this.blend.layer1] || this.presets.tokyo_rain;
+            const hasL2 = this.blend.layer2 !== 'none' && this.presets[this.blend.layer2];
+            const p2 = hasL2 ? this.presets[this.blend.layer2] : null;
+
+            const total = this.physics.particleDensity || 120;
+            const countL1 = hasL2 ? Math.round(total * this.blend.ratio) : total;
+            const countL2 = hasL2 ? Math.round(total * (1.0 - this.blend.ratio)) : 0;
 
             const w = this.width || 800;
             const h = this.height || 70;
             const aw = this.ambientWidth || window.innerWidth;
             const ah = this.ambientHeight || window.innerHeight;
 
-            const localCount = Math.round(25 * density);
-            const ambientCount = Math.round(75 * density);
+            // Header Particles
+            this.l1Particles = [];
+            for (let i = 0; i < countL1; i++) this.l1Particles.push(this.createParticle(p1, w, h));
 
-            switch (type) {
-                case 'rain':
-                case 'thunder':
-                case 'drizzle': {
-                    const speedMultiplier = type === 'drizzle' ? 0.6 : (type === 'thunder' ? 1.4 : 1.0);
-                    const colorChoices = type === 'drizzle' ? ['#10b981', '#06b6d4'] : (type === 'thunder' ? ['#38bdf8', '#e0f2fe'] : ['#00f2fe', '#bcf846']);
+            this.l2Particles = [];
+            if (p2) {
+                for (let i = 0; i < countL2; i++) this.l2Particles.push(this.createParticle(p2, w, h));
+            }
 
-                    for (let i = 0; i < localCount; i++) {
-                        this.particles.push({
-                            x: Math.random() * (w + 100) - 50,
-                            y: Math.random() * h,
-                            length: (Math.random() * 18 + 10) * (type === 'drizzle' ? 0.6 : 1),
-                            speed: (Math.random() * 5 + 6) * speedMultiplier,
-                            opacity: Math.random() * 0.4 + 0.45,
-                            color: colorChoices[Math.floor(Math.random() * colorChoices.length)]
-                        });
-                    }
-                    for (let i = 0; i < ambientCount; i++) {
-                        this.ambientParticles.push({
-                            x: Math.random() * (aw + 200) - 100,
-                            y: Math.random() * ah,
-                            length: (Math.random() * 30 + 16) * (type === 'drizzle' ? 0.6 : 1),
-                            speed: (Math.random() * 7 + 9) * speedMultiplier,
-                            opacity: Math.random() * 0.45 + 0.35,
-                            color: colorChoices[Math.floor(Math.random() * colorChoices.length)]
-                        });
-                    }
-                    break;
-                }
+            // Ambient Backdrop Particles (scaled for background)
+            const ambTotal = Math.round(total * 0.6);
+            const ambCountL1 = hasL2 ? Math.round(ambTotal * this.blend.ratio) : ambTotal;
+            const ambCountL2 = hasL2 ? Math.round(ambTotal * (1.0 - this.blend.ratio)) : 0;
 
-                case 'snow':
-                case 'gentle_snow':
-                case 'freeze': {
-                    const isGentle = type === 'gentle_snow';
-                    const isFreeze = type === 'freeze';
-                    const glowColor = isFreeze ? '#e0f7fa' : '#80deea';
+            this.ambientL1Particles = [];
+            for (let i = 0; i < ambCountL1; i++) this.ambientL1Particles.push(this.createParticle(p1, aw, ah));
 
-                    for (let i = 0; i < localCount; i++) {
-                        this.particles.push({
-                            x: Math.random() * w,
-                            y: Math.random() * h,
-                            radius: Math.random() * 2.2 + 1.0,
-                            speed: isGentle ? (Math.random() * 0.4 + 0.25) : (Math.random() * 0.8 + 0.35),
-                            swaySpeed: Math.random() * 0.02 + 0.01,
-                            swayAngle: Math.random() * Math.PI * 2,
-                            opacity: Math.random() * 0.4 + 0.55,
-                            glowColor
-                        });
-                    }
-                    for (let i = 0; i < ambientCount; i++) {
-                        this.ambientParticles.push({
-                            x: Math.random() * aw,
-                            y: Math.random() * ah,
-                            radius: (Math.random() * 3.2 + 1.2) * (isFreeze ? 0.8 : 1),
-                            speed: isGentle ? (Math.random() * 0.5 + 0.3) : (Math.random() * 1.1 + 0.4),
-                            swaySpeed: Math.random() * 0.02 + 0.01,
-                            swayAngle: Math.random() * Math.PI * 2,
-                            opacity: Math.random() * 0.45 + 0.45,
-                            glowColor
-                        });
-                    }
-                    break;
-                }
-
-                case 'golden_dust':
-                case 'embers':
-                case 'dubai_dust':
-                case 'sunbeams': {
-                    const colors = type === 'embers' ? ['#ff4500', '#ff8c00', '#ff2200'] : (type === 'dubai_dust' ? ['#ec4899', '#f59e0b', '#ffd700'] : (type === 'sunbeams' ? ['#fbbf24', '#f59e0b'] : ['#ffd700', '#ff7e5f']));
-                    for (let i = 0; i < localCount; i++) {
-                        this.particles.push({
-                            x: Math.random() * w,
-                            y: Math.random() * h,
-                            radius: Math.random() * 2.4 + 1.2,
-                            vy: -(Math.random() * 0.5 + 0.2),
-                            vx: (Math.random() - 0.5) * 0.35,
-                            alpha: Math.random() * 0.45 + 0.5,
-                            color: colors[Math.floor(Math.random() * colors.length)]
-                        });
-                    }
-                    for (let i = 0; i < ambientCount; i++) {
-                        this.ambientParticles.push({
-                            x: Math.random() * aw,
-                            y: Math.random() * ah,
-                            radius: Math.random() * 3.2 + 1.4,
-                            vy: -(Math.random() * 0.6 + 0.25),
-                            vx: (Math.random() - 0.5) * 0.45,
-                            alpha: Math.random() * 0.5 + 0.4,
-                            color: colors[Math.floor(Math.random() * colors.length)]
-                        });
-                    }
-                    break;
-                }
-
-                case 'sakura': {
-                    for (let i = 0; i < localCount; i++) {
-                        this.particles.push({
-                            x: Math.random() * (w + 60) - 30,
-                            y: Math.random() * h,
-                            size: Math.random() * 5 + 4,
-                            speedY: Math.random() * 0.8 + 0.5,
-                            speedX: Math.random() * 0.6 + 0.3,
-                            angle: Math.random() * Math.PI * 2,
-                            angularSpeed: Math.random() * 0.03 - 0.015,
-                            opacity: Math.random() * 0.4 + 0.55
-                        });
-                    }
-                    for (let i = 0; i < ambientCount; i++) {
-                        this.ambientParticles.push({
-                            x: Math.random() * (aw + 100) - 50,
-                            y: Math.random() * ah,
-                            size: Math.random() * 7 + 5,
-                            speedY: Math.random() * 1.1 + 0.6,
-                            speedX: Math.random() * 0.8 + 0.4,
-                            angle: Math.random() * Math.PI * 2,
-                            angularSpeed: Math.random() * 0.04 - 0.02,
-                            opacity: Math.random() * 0.45 + 0.5
-                        });
-                    }
-                    break;
-                }
-
-                case 'stars': {
-                    for (let i = 0; i < localCount; i++) {
-                        this.particles.push({
-                            x: Math.random() * w,
-                            y: Math.random() * h,
-                            radius: Math.random() * 1.6 + 0.8,
-                            alpha: Math.random() * 0.6 + 0.3,
-                            twinkleSpeed: Math.random() * 0.04 + 0.02,
-                            phase: Math.random() * Math.PI * 2
-                        });
-                    }
-                    for (let i = 0; i < ambientCount * 1.5; i++) {
-                        this.ambientParticles.push({
-                            x: Math.random() * aw,
-                            y: Math.random() * ah,
-                            radius: Math.random() * 2.2 + 0.8,
-                            alpha: Math.random() * 0.6 + 0.35,
-                            twinkleSpeed: Math.random() * 0.03 + 0.015,
-                            phase: Math.random() * Math.PI * 2
-                        });
-                    }
-                    break;
-                }
-
-                case 'fog':
-                case 'emerald_mist':
-                case 'wind': {
-                    const mistColor = type === 'emerald_mist' ? '52, 211, 153' : (type === 'wind' ? '200, 225, 255' : '203, 213, 225');
-                    const count = Math.max(6, Math.round(10 * density));
-                    const ambCount = Math.max(10, Math.round(18 * density));
-
-                    for (let i = 0; i < count; i++) {
-                        this.particles.push({
-                            x: Math.random() * w,
-                            y: Math.random() * h,
-                            radius: Math.random() * 60 + 35,
-                            speed: (Math.random() * 0.3 + 0.1) * (type === 'wind' ? 2.5 : 1),
-                            alpha: Math.random() * 0.16 + 0.12,
-                            mistColor
-                        });
-                    }
-                    for (let i = 0; i < ambCount; i++) {
-                        this.ambientParticles.push({
-                            x: Math.random() * aw,
-                            y: Math.random() * ah,
-                            radius: Math.random() * 240 + 120,
-                            speed: (Math.random() * 0.4 + 0.15) * (type === 'wind' ? 3.0 : 1),
-                            alpha: Math.random() * 0.15 + 0.08,
-                            mistColor
-                        });
-                    }
-                    break;
-                }
-
-                default:
-                    this.auroraPhase = 0;
+            this.ambientL2Particles = [];
+            if (p2) {
+                for (let i = 0; i < ambCountL2; i++) this.ambientL2Particles.push(this.createParticle(p2, aw, ah));
             }
         },
 
@@ -13938,13 +13928,31 @@ ${css}`;
             if (this.isRendering) return;
             this.isRendering = true;
 
-            const render = () => {
+            const renderLoop = (timestamp) => {
                 if (!this.isRendering) return;
-                this.drawFrame();
-                this.animFrameId = requestAnimationFrame(render);
+
+                // FPS rolling calculator
+                this.fpsFrames++;
+                if (timestamp - this.fpsLastTime >= 500) {
+                    this.currentFPS = Math.min(60, Math.round((this.fpsFrames * 1000) / (timestamp - this.fpsLastTime)));
+                    this.fpsFrames = 0;
+                    this.fpsLastTime = timestamp;
+                }
+
+                // Render Header Canvas
+                if (this.ctx && this.canvas) {
+                    this.renderCanvasParticles(this.ctx, this.width, this.height, this.l1Particles, this.l2Particles);
+                }
+
+                // Render Fullscreen Ambient Backdrop Canvas (subtle)
+                if (this.ambientCtx && this.ambientCanvas) {
+                    this.renderCanvasParticles(this.ambientCtx, this.ambientWidth, this.ambientHeight, this.ambientL1Particles, this.ambientL2Particles, 0.45);
+                }
+
+                this.animFrameId = requestAnimationFrame(renderLoop);
             };
 
-            this.animFrameId = requestAnimationFrame(render);
+            this.animFrameId = requestAnimationFrame(renderLoop);
         },
 
         stopAnimation() {
@@ -13955,365 +13963,110 @@ ${css}`;
             }
         },
 
-        drawFrame() {
-            const preset = this.presets[this.currentThemeKey];
-            const type = preset ? preset.type : 'rain';
-            const speedMul = this.userConfig.speed || 1.0;
-            const opMul = this.userConfig.opacity || 1.0;
-            const turb = this.userConfig.turbulence !== false;
+        renderCanvasParticles(ctx, w, h, l1List, l2List, alphaMul = 1.0) {
+            ctx.clearRect(0, 0, w, h);
 
-            this.auroraPhase += 0.015 * speedMul;
+            const speedMul = this.physics.fallSpeed || 1.0;
+            const windAngle = (this.physics.windForce || 0) * (Math.PI / 180);
+            const windTan = Math.tan(windAngle);
+            const sizeMul = (this.physics.particleSize || 2.5) / 2.5;
+            const glow = this.physics.glowIntensity || 0;
+            const opacityPct = (this.physics.atmosphereOpacity || 100) / 100;
+            const turbulence = this.physics.turbulenceGusts;
 
-            // 1. Render Local Header Bar Canvas
-            if (this.ctx && this.canvas) {
-                const w = this.width;
-                const h = this.height;
-                this.ctx.clearRect(0, 0, w, h);
+            // Render Layer 1 particles
+            this.drawParticleCollection(ctx, l1List, w, h, speedMul, windTan, sizeMul, glow, opacityPct * alphaMul, turbulence);
 
-                if (type === 'rain' || type === 'thunder' || type === 'drizzle') {
-                    this.particles.forEach(p => {
-                        this.ctx.beginPath();
-                        this.ctx.strokeStyle = p.color;
-                        this.ctx.globalAlpha = Math.min(1.0, p.opacity * opMul);
-                        this.ctx.lineWidth = type === 'drizzle' ? 1.0 : 1.5;
-                        this.ctx.shadowColor = p.color;
-                        this.ctx.shadowBlur = 6;
-                        this.ctx.moveTo(p.x, p.y);
-                        this.ctx.lineTo(p.x - p.length * 0.3, p.y + p.length);
-                        this.ctx.stroke();
-                        this.ctx.shadowBlur = 0;
-
-                        p.y += p.speed * speedMul;
-                        p.x -= p.speed * 0.3 * speedMul;
-
-                        if (p.y > h + 20 || p.x < -30) {
-                            p.y = -20;
-                            p.x = Math.random() * (w + 100) - 20;
-                        }
-                    });
-                } else if (type === 'aurora') {
-                    const grad = this.ctx.createLinearGradient(0, 0, w, 0);
-                    grad.addColorStop(0, 'rgba(0, 255, 135, 0.0)');
-                    grad.addColorStop(0.3, `rgba(0, 255, 135, ${0.35 * opMul})`);
-                    grad.addColorStop(0.7, `rgba(96, 239, 255, ${0.42 * opMul})`);
-                    grad.addColorStop(1, 'rgba(0, 255, 135, 0.0)');
-
-                    this.ctx.fillStyle = grad;
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(0, h);
-                    for (let x = 0; x <= w; x += 20) {
-                        const y = h * 0.38 + Math.sin(x * 0.008 + this.auroraPhase) * 18 + Math.cos(x * 0.012 - this.auroraPhase * 0.8) * 10;
-                        this.ctx.lineTo(x, y);
-                    }
-                    this.ctx.lineTo(w, h);
-                    this.ctx.closePath();
-                    this.ctx.fill();
-                } else if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
-                    this.particles.forEach(p => {
-                        p.swayAngle += p.swaySpeed * speedMul;
-                        p.x += (turb ? Math.sin(p.swayAngle) * 0.5 : 0.1);
-                        p.y += p.speed * speedMul;
-
-                        this.ctx.beginPath();
-                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ctx.fillStyle = '#ffffff';
-                        this.ctx.globalAlpha = Math.min(1.0, p.opacity * opMul);
-                        this.ctx.shadowColor = p.glowColor || '#80deea';
-                        this.ctx.shadowBlur = 8;
-                        this.ctx.fill();
-                        this.ctx.shadowBlur = 0;
-
-                        if (p.y > h + 10) {
-                            p.y = -10;
-                            p.x = Math.random() * w;
-                        }
-                    });
-                } else if (type === 'golden_dust' || type === 'embers' || type === 'dubai_dust' || type === 'sunbeams') {
-                    this.particles.forEach(p => {
-                        this.ctx.beginPath();
-                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ctx.fillStyle = p.color;
-                        this.ctx.globalAlpha = Math.min(1.0, p.alpha * opMul);
-                        this.ctx.shadowColor = p.color;
-                        this.ctx.shadowBlur = 12;
-                        this.ctx.fill();
-                        this.ctx.shadowBlur = 0;
-
-                        p.y += p.vy * speedMul;
-                        p.x += p.vx * speedMul;
-
-                        if (p.y < -10) {
-                            p.y = h + 10;
-                            p.x = Math.random() * w;
-                        }
-                        if (p.x < 0) p.x = w;
-                        if (p.x > w) p.x = 0;
-                    });
-                } else if (type === 'sakura') {
-                    this.particles.forEach(p => {
-                        p.angle += p.angularSpeed * speedMul;
-                        p.x += (p.speedX + (turb ? Math.sin(p.angle) * 0.4 : 0)) * speedMul;
-                        p.y += p.speedY * speedMul;
-
-                        this.ctx.save();
-                        this.ctx.translate(p.x, p.y);
-                        this.ctx.rotate(p.angle);
-                        this.ctx.beginPath();
-                        this.ctx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
-                        this.ctx.fillStyle = '#ffb7b2';
-                        this.ctx.globalAlpha = Math.min(1.0, p.opacity * opMul);
-                        this.ctx.shadowColor = '#ff758c';
-                        this.ctx.shadowBlur = 6;
-                        this.ctx.fill();
-                        this.ctx.restore();
-
-                        if (p.y > h + 10 || p.x > w + 20) {
-                            p.y = -10;
-                            p.x = Math.random() * (w + 40) - 20;
-                        }
-                    });
-                } else if (type === 'stars') {
-                    this.particles.forEach(p => {
-                        p.phase += p.twinkleSpeed * speedMul;
-                        const alpha = Math.max(0.1, Math.min(0.95, p.alpha + Math.sin(p.phase) * 0.35)) * opMul;
-
-                        this.ctx.beginPath();
-                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ctx.fillStyle = '#ffffff';
-                        this.ctx.globalAlpha = Math.min(1.0, alpha);
-                        this.ctx.shadowColor = '#a855f7';
-                        this.ctx.shadowBlur = 6;
-                        this.ctx.fill();
-                        this.ctx.shadowBlur = 0;
-                    });
-                } else if (type === 'fog' || type === 'emerald_mist' || type === 'wind') {
-                    this.particles.forEach(p => {
-                        p.x += p.speed * speedMul;
-                        if (p.x - p.radius > w) {
-                            p.x = -p.radius;
-                            p.y = Math.random() * h;
-                        }
-
-                        const grad = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-                        grad.addColorStop(0, `rgba(${p.mistColor || '203, 213, 225'}, ${p.alpha * opMul})`);
-                        grad.addColorStop(1, `rgba(${p.mistColor || '203, 213, 225'}, 0)`);
-
-                        this.ctx.fillStyle = grad;
-                        this.ctx.beginPath();
-                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ctx.fill();
-                    });
-                }
-                this.ctx.globalAlpha = 1.0;
+            // Render Layer 2 particles
+            if (l2List && l2List.length > 0) {
+                this.drawParticleCollection(ctx, l2List, w, h, speedMul, windTan, sizeMul, glow, opacityPct * alphaMul, turbulence);
             }
+        },
 
-            // 2. Render Fullscreen Global Ambient Background Canvas
-            if (this.ambientCtx && this.ambientCanvas) {
-                const aw = this.ambientWidth;
-                const ah = this.ambientHeight;
-                this.ambientCtx.clearRect(0, 0, aw, ah);
+        drawParticleCollection(ctx, particles, w, h, speedMul, windTan, sizeMul, glow, alpha, turbulence) {
+            const p1Preset = this.presets[this.currentThemeKey];
 
-                if (type === 'thunder') {
-                    if (Math.random() < 0.006) {
-                        this.lightning = 0.35 * opMul;
-                    }
-                    if (this.lightning > 0) {
-                        this.ambientCtx.fillStyle = `rgba(224, 242, 254, ${this.lightning})`;
-                        this.ambientCtx.fillRect(0, 0, aw, ah);
-                        this.lightning = Math.max(0, this.lightning - 0.03);
-                    }
+            particles.forEach(p => {
+                ctx.save();
+                ctx.globalAlpha = p.opacity * alpha;
+                if (glow > 0) {
+                    ctx.shadowColor = p.color || '#00f2fe';
+                    ctx.shadowBlur = glow;
                 }
 
-                if (type === 'rain' || type === 'thunder' || type === 'drizzle') {
-                    this.ambientParticles.forEach(p => {
-                        this.ambientCtx.beginPath();
-                        this.ambientCtx.strokeStyle = p.color;
-                        this.ambientCtx.globalAlpha = Math.min(1.0, p.opacity * opMul);
-                        this.ambientCtx.lineWidth = type === 'drizzle' ? 1.0 : 1.5;
-                        this.ambientCtx.shadowColor = p.color;
-                        this.ambientCtx.shadowBlur = 8;
-                        this.ambientCtx.moveTo(p.x, p.y);
-                        this.ambientCtx.lineTo(p.x - p.length * 0.35, p.y + p.length);
-                        this.ambientCtx.stroke();
-                        this.ambientCtx.shadowBlur = 0;
+                const type = p.type || 'rain';
+                const turbOffset = turbulence ? Math.sin(p.y * 0.04 + p.flutter) * 0.8 : 0;
 
-                        p.y += p.speed * speedMul;
-                        p.x -= p.speed * 0.35 * speedMul;
-
-                        if (p.y > ah + 40 || p.x < -60) {
-                            p.y = -40;
-                            p.x = Math.random() * (aw + 200) - 60;
-                        }
-                    });
-                } else if (type === 'aurora') {
-                    const grad = this.ambientCtx.createLinearGradient(0, 0, aw, 0);
-                    grad.addColorStop(0, 'rgba(0, 255, 135, 0.0)');
-                    grad.addColorStop(0.25, `rgba(0, 255, 135, ${0.30 * opMul})`);
-                    grad.addColorStop(0.5, `rgba(96, 239, 255, ${0.36 * opMul})`);
-                    grad.addColorStop(0.75, `rgba(0, 255, 135, ${0.28 * opMul})`);
-                    grad.addColorStop(1, 'rgba(0, 255, 135, 0.0)');
-
-                    this.ambientCtx.fillStyle = grad;
-                    this.ambientCtx.beginPath();
-                    this.ambientCtx.moveTo(0, ah * 0.65);
-                    for (let x = 0; x <= aw; x += 30) {
-                        const y = ah * 0.28 + Math.sin(x * 0.003 + this.auroraPhase) * 45 + Math.cos(x * 0.005 - this.auroraPhase * 0.7) * 30;
-                        this.ambientCtx.lineTo(x, y);
-                    }
-                    this.ambientCtx.lineTo(aw, ah * 0.65);
-                    this.ambientCtx.closePath();
-                    this.ambientCtx.fill();
-
-                    // Second layer
-                    this.ambientCtx.fillStyle = `rgba(96, 239, 255, ${0.18 * opMul})`;
-                    this.ambientCtx.beginPath();
-                    this.ambientCtx.moveTo(0, ah * 0.55);
-                    for (let x = 0; x <= aw; x += 40) {
-                        const y = ah * 0.2 + Math.cos(x * 0.004 - this.auroraPhase * 1.1) * 35;
-                        this.ambientCtx.lineTo(x, y);
-                    }
-                    this.ambientCtx.lineTo(aw, ah * 0.55);
-                    this.ambientCtx.closePath();
-                    this.ambientCtx.fill();
-                } else if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
-                    this.ambientParticles.forEach(p => {
-                        p.swayAngle += p.swaySpeed * speedMul;
-                        p.x += (turb ? Math.sin(p.swayAngle) * 0.7 : 0.2);
-                        p.y += p.speed * speedMul;
-
-                        this.ambientCtx.beginPath();
-                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ambientCtx.fillStyle = '#ffffff';
-                        this.ambientCtx.globalAlpha = Math.min(1.0, p.opacity * opMul);
-                        this.ambientCtx.shadowColor = p.glowColor || '#80deea';
-                        this.ambientCtx.shadowBlur = 10;
-                        this.ambientCtx.fill();
-                        this.ambientCtx.shadowBlur = 0;
-
-                        if (p.y > ah + 20) {
-                            p.y = -20;
-                            p.x = Math.random() * aw;
-                        }
-                        if (p.x < -20) p.x = aw + 10;
-                        if (p.x > aw + 20) p.x = -10;
-                    });
+                if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
+                    p.x += windTan * p.speed * speedMul + turbOffset;
+                    p.y += p.speed * 0.6 * speedMul;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius * sizeMul, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
                 } else if (type === 'golden_dust' || type === 'embers' || type === 'dubai_dust' || type === 'sunbeams') {
-                    this.ambientParticles.forEach(p => {
-                        this.ambientCtx.beginPath();
-                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ambientCtx.fillStyle = p.color;
-                        this.ambientCtx.globalAlpha = Math.min(1.0, p.alpha * opMul);
-                        this.ambientCtx.shadowColor = p.color;
-                        this.ambientCtx.shadowBlur = 14;
-                        this.ambientCtx.fill();
-                        this.ambientCtx.shadowBlur = 0;
-
-                        p.y += p.vy * speedMul;
-                        p.x += p.vx * speedMul;
-
-                        if (p.y < -20) {
-                            p.y = ah + 20;
-                            p.x = Math.random() * aw;
-                        }
-                        if (p.x < 0) p.x = aw;
-                        if (p.x > aw) p.x = 0;
-                    });
+                    p.y -= p.speed * 0.4 * speedMul;
+                    p.x += windTan * p.speed * speedMul + turbOffset * 0.5;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius * sizeMul, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
                 } else if (type === 'sakura') {
-                    this.ambientParticles.forEach(p => {
-                        p.angle += p.angularSpeed * speedMul;
-                        p.x += (p.speedX + (turb ? Math.sin(p.angle) * 0.5 : 0)) * speedMul;
-                        p.y += p.speedY * speedMul;
-
-                        this.ambientCtx.save();
-                        this.ambientCtx.translate(p.x, p.y);
-                        this.ambientCtx.rotate(p.angle);
-                        this.ambientCtx.beginPath();
-                        this.ambientCtx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
-                        this.ambientCtx.fillStyle = '#ffb7b2';
-                        this.ambientCtx.globalAlpha = Math.min(1.0, p.opacity * opMul);
-                        this.ambientCtx.shadowColor = '#ff758c';
-                        this.ambientCtx.shadowBlur = 8;
-                        this.ambientCtx.fill();
-                        this.ambientCtx.restore();
-
-                        if (p.y > ah + 20 || p.x > aw + 30) {
-                            p.y = -20;
-                            p.x = Math.random() * (aw + 60) - 30;
-                        }
-                    });
+                    p.y += p.speed * 0.55 * speedMul;
+                    p.x += windTan * p.speed * speedMul + (Math.sin(p.y * 0.05) + turbOffset) * 0.9;
+                    ctx.beginPath();
+                    ctx.ellipse(p.x, p.y, p.radius * 2.2 * sizeMul, p.radius * 1.2 * sizeMul, p.y * 0.05, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
                 } else if (type === 'stars') {
-                    this.ambientParticles.forEach(p => {
-                        p.phase += p.twinkleSpeed * speedMul;
-                        const alpha = Math.max(0.1, Math.min(0.95, p.alpha + Math.sin(p.phase) * 0.35)) * opMul;
-
-                        this.ambientCtx.beginPath();
-                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ambientCtx.fillStyle = '#ffffff';
-                        this.ambientCtx.globalAlpha = Math.min(1.0, alpha);
-                        this.ambientCtx.shadowColor = '#a855f7';
-                        this.ambientCtx.shadowBlur = 8;
-                        this.ambientCtx.fill();
-                        this.ambientCtx.shadowBlur = 0;
-                    });
-
-                    // Occasional shooting star
-                    if (!this.shootingStar && Math.random() < 0.008) {
-                        this.shootingStar = {
-                            x: Math.random() * (aw * 0.8),
-                            y: Math.random() * (ah * 0.4),
-                            len: Math.random() * 80 + 50,
-                            speed: Math.random() * 12 + 15,
-                            alpha: 1.0
-                        };
-                    }
-                    if (this.shootingStar) {
-                        const s = this.shootingStar;
-                        this.ambientCtx.beginPath();
-                        this.ambientCtx.strokeStyle = '#ffffff';
-                        this.ambientCtx.lineWidth = 2.0;
-                        this.ambientCtx.globalAlpha = s.alpha * opMul;
-                        this.ambientCtx.shadowColor = '#38bdf8';
-                        this.ambientCtx.shadowBlur = 12;
-                        this.ambientCtx.moveTo(s.x, s.y);
-                        this.ambientCtx.lineTo(s.x - s.len * 0.7, s.y + s.len * 0.7);
-                        this.ambientCtx.stroke();
-                        this.ambientCtx.shadowBlur = 0;
-
-                        s.x += s.speed * speedMul;
-                        s.y += s.speed * speedMul;
-                        s.alpha -= 0.02 * speedMul;
-
-                        if (s.alpha <= 0 || s.x > aw || s.y > ah) {
-                            this.shootingStar = null;
-                        }
-                    }
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius * sizeMul * 0.85, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
                 } else if (type === 'fog' || type === 'emerald_mist' || type === 'wind') {
-                    this.ambientParticles.forEach(p => {
-                        p.x += p.speed * speedMul;
-                        if (p.x - p.radius > aw) {
-                            p.x = -p.radius;
-                            p.y = Math.random() * ah;
-                        }
+                    p.x += (p.speed * 0.8 * speedMul) + windTan * 2;
+                    const r = 24 * sizeMul;
+                    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+                    grad.addColorStop(0, p.color);
+                    grad.addColorStop(1, 'transparent');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Rain & Storm
+                    ctx.beginPath();
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 1.3 * sizeMul;
+                    const len = p.length * sizeMul;
+                    const slant = windTan * len * 0.8;
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p.x + slant, p.y + len);
+                    ctx.stroke();
 
-                        const grad = this.ambientCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-                        grad.addColorStop(0, `rgba(${p.mistColor || '203, 213, 225'}, ${p.alpha * opMul})`);
-                        grad.addColorStop(1, `rgba(${p.mistColor || '203, 213, 225'}, 0)`);
-
-                        this.ambientCtx.fillStyle = grad;
-                        this.ambientCtx.beginPath();
-                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        this.ambientCtx.fill();
-                    });
+                    p.y += p.speed * 1.3 * speedMul;
+                    p.x += windTan * p.speed * 1.3 * speedMul;
                 }
-                this.ambientCtx.globalAlpha = 1.0;
-            }
+
+                ctx.restore();
+
+                // Recycle bounds
+                if (p.y > h + 30 || p.x > w + 60 || p.x < -60) {
+                    p.y = -20;
+                    p.x = Math.random() * (w + 100) - 50;
+                }
+                if (p.y < -30) {
+                    p.y = h + 20;
+                    p.x = Math.random() * w;
+                }
+            });
         }
     };
 
     window.weatherThemeEngine = weatherThemeEngine;
 
     // =========================================================================
-    // TAB 13: ATMOSPHERE & WEATHER STUDIO MANAGER
+    // TAB 13: ATMOSPHERE & WEATHER STUDIO MANAGER (LIVE BLEND & PHYSICS UI)
     // =========================================================================
     const weatherStudioManager = {
         state: {
@@ -14321,13 +14074,17 @@ ${css}`;
             searchQuery: '',
             is24Hour: true,
             clockTimer: null,
-            zenCanvas: null,
-            zenCtx: null,
-            zenWidth: 0,
-            zenHeight: 0,
-            zenParticles: [],
+            showZenClock: true,
+            isZenFullscreen: false,
+            viewportCanvas: null,
+            viewportCtx: null,
+            viewportWidth: 0,
+            viewportHeight: 0,
             miniCanvases: [],
-            isZenFullscreen: false
+            isAnimRunning: false,
+            v1Particles: [],
+            v2Particles: [],
+            animFrameId: null
         },
 
         quotes: [
@@ -14341,56 +14098,99 @@ ${css}`;
 
         init() {
             this.cacheDom();
+            this.populateDropdowns();
             this.bindEvents();
+            this.initViewportCanvas();
+            this.syncAllUI();
             this.renderCards();
             this.startClock();
-            this.initZenCanvas();
         },
 
         cacheDom() {
             this.dom = {
+                // Hero elements
                 activeIcon: document.getElementById('ws-active-icon'),
                 activeName: document.getElementById('ws-active-name'),
+                layer2Pill: document.getElementById('ws-active-layer2-pill'),
+                layer2Icon: document.getElementById('ws-layer2-icon'),
+                layer2Name: document.getElementById('ws-layer2-name'),
                 modeText: document.getElementById('ws-mode-text'),
-                btnRollRandom: document.getElementById('btn-ws-roll-random'),
-                btnOpenCustomizer: document.getElementById('btn-ws-open-customizer'),
+                btnSurpriseMix: document.getElementById('btn-ws-surprise-mix'),
+                btnApplyGlobal: document.getElementById('btn-ws-apply-global'),
                 btnZenScreensaver: document.getElementById('btn-ws-zen-screensaver'),
+
+                // Blend bar
+                selectLayer1: document.getElementById('ws-select-layer1'),
+                selectLayer2: document.getElementById('ws-select-layer2'),
+                ratioChips: document.getElementById('ws-ratio-chips'),
+
+                // Viewport Canvas & HUD
+                canvasWrapper: document.getElementById('ws-canvas-wrapper'),
+                viewportCanvas: document.getElementById('ws-viewport-canvas'),
+                hudLayersText: document.getElementById('ws-hud-layers-text'),
+                hudParticleCount: document.getElementById('ws-hud-particle-count'),
+                hudFps: document.getElementById('ws-hud-fps'),
+                hudZenClock: document.getElementById('ws-hud-zen-clock'),
+                hudDigitalTime: document.getElementById('ws-hud-digital-time'),
+                hudDigitalDate: document.getElementById('ws-hud-digital-date'),
+                hudLocation: document.getElementById('ws-hud-location'),
+                hudQuoteText: document.getElementById('ws-hud-quote-text'),
+                btnHudClockToggle: document.getElementById('btn-ws-hud-clock-toggle'),
+                btnHudFullscreen: document.getElementById('btn-ws-hud-fullscreen'),
+                quickBlendPresets: document.getElementById('ws-quick-blend-presets'),
+                btnSaveCustom: document.getElementById('btn-ws-save-custom'),
+
+                // Physics Dock elements
+                btnResetPhysics: document.getElementById('btn-ws-reset-physics'),
+                sliderDensity: document.getElementById('ws-phys-density'),
+                sliderSpeed: document.getElementById('ws-phys-speed'),
+                sliderWind: document.getElementById('ws-phys-wind'),
+                sliderSize: document.getElementById('ws-phys-size'),
+                sliderGlow: document.getElementById('ws-phys-glow'),
+                sliderOpacity: document.getElementById('ws-phys-opacity'),
+                valDensity: document.getElementById('ws-val-density'),
+                valSpeed: document.getElementById('ws-val-speed'),
+                valWind: document.getElementById('ws-val-wind'),
+                valSize: document.getElementById('ws-val-size'),
+                valGlow: document.getElementById('ws-val-glow'),
+                valOpacity: document.getElementById('ws-val-opacity'),
+                toggleLightning: document.getElementById('ws-toggle-lightning'),
+                toggleTurbulence: document.getElementById('ws-toggle-turbulence-gusts'),
+
+                // Showcase Grid
                 categoryFilters: document.getElementById('ws-category-filters'),
                 searchInput: document.getElementById('ws-search-input'),
-                cardsGrid: document.getElementById('ws-cards-grid'),
-                zenStagePanel: document.getElementById('ws-zen-stage-panel'),
-                zenCanvas: document.getElementById('zen-stage-canvas'),
-                zenDigitalTime: document.getElementById('zen-digital-time'),
-                zenDigitalDate: document.getElementById('zen-digital-date'),
-                zenClockLocation: document.getElementById('zen-clock-location'),
-                zenQuoteText: document.getElementById('zen-quote-text'),
-                btnClockFormat: document.getElementById('btn-zen-clock-format'),
-                btnZenFullscreen: document.getElementById('btn-zen-fullscreen'),
-                customizerModal: document.getElementById('ws-customizer-modal'),
-                btnCloseCustomizer: document.getElementById('btn-close-ws-customizer'),
-                sliderDensity: document.getElementById('ws-slider-density'),
-                sliderSpeed: document.getElementById('ws-slider-speed'),
-                sliderOpacity: document.getElementById('ws-slider-opacity'),
-                toggleTurbulence: document.getElementById('ws-toggle-turbulence'),
-                valDensity: document.getElementById('ws-density-val'),
-                valSpeed: document.getElementById('ws-speed-val'),
-                valOpacity: document.getElementById('ws-opacity-val'),
-                btnResetCustomizer: document.getElementById('btn-ws-reset-customizer'),
-                btnSaveCustomizer: document.getElementById('btn-ws-save-customizer')
+                cardsGrid: document.getElementById('ws-cards-grid')
             };
         },
 
+        populateDropdowns() {
+            if (!this.dom.selectLayer1 || !this.dom.selectLayer2) return;
+
+            const presets = Object.values(weatherThemeEngine.presets);
+            let optsL1 = '';
+            let optsL2 = '<option value="none">-- Tắt (Không Trộn Lớp 2) --</option>';
+
+            presets.forEach(p => {
+                optsL1 += `<option value="${p.key}">${p.icon} ${p.shortName} (${p.location})</option>`;
+                optsL2 += `<option value="${p.key}">${p.icon} ${p.shortName} (${p.location})</option>`;
+            });
+
+            this.dom.selectLayer1.innerHTML = optsL1;
+            this.dom.selectLayer2.innerHTML = optsL2;
+        },
+
         bindEvents() {
-            if (this.dom.btnRollRandom) {
-                this.dom.btnRollRandom.addEventListener('click', () => {
-                    weatherThemeEngine.rollRandomTheme();
-                    this.syncStatus();
+            // 1. Surprise Mix & Global Apply
+            if (this.dom.btnSurpriseMix) {
+                this.dom.btnSurpriseMix.addEventListener('click', () => {
+                    weatherThemeEngine.surpriseMix();
                 });
             }
 
-            if (this.dom.btnOpenCustomizer) {
-                this.dom.btnOpenCustomizer.addEventListener('click', () => {
-                    this.openCustomizer();
+            if (this.dom.btnApplyGlobal) {
+                this.dom.btnApplyGlobal.addEventListener('click', () => {
+                    weatherThemeEngine.applyBlendAsGlobalTheme();
                 });
             }
 
@@ -14400,110 +14200,446 @@ ${css}`;
                 });
             }
 
+            // 2. Blend Selectors
+            if (this.dom.selectLayer1) {
+                this.dom.selectLayer1.addEventListener('change', (e) => {
+                    weatherThemeEngine.setLayers(e.target.value, weatherThemeEngine.blend.layer2, true);
+                });
+            }
+
+            if (this.dom.selectLayer2) {
+                this.dom.selectLayer2.addEventListener('change', (e) => {
+                    weatherThemeEngine.setLayers(weatherThemeEngine.blend.layer1, e.target.value, true);
+                });
+            }
+
+            // Ratio Chips
+            if (this.dom.ratioChips) {
+                this.dom.ratioChips.addEventListener('click', (e) => {
+                    const chip = e.target.closest('.ws-ratio-chip');
+                    if (chip) {
+                        const ratio = parseFloat(chip.getAttribute('data-ratio'));
+                        if (!isNaN(ratio)) {
+                            weatherThemeEngine.setBlendRatio(ratio);
+                        }
+                    }
+                });
+            }
+
+            // Quick Blend Preset Chips
+            if (this.dom.quickBlendPresets) {
+                this.dom.quickBlendPresets.addEventListener('click', (e) => {
+                    const chip = e.target.closest('.ws-quick-chip');
+                    if (chip) {
+                        const l1 = chip.getAttribute('data-l1');
+                        const l2 = chip.getAttribute('data-l2');
+                        if (l1) {
+                            weatherThemeEngine.setLayers(l1, l2 || 'none', true);
+                            showActionToast(`⚡ Đã tải tổ hợp nhanh: ${chip.textContent}`);
+                        }
+                    }
+                });
+            }
+
+            // Custom Preset Save
+            if (this.dom.btnSaveCustom) {
+                this.dom.btnSaveCustom.addEventListener('click', () => {
+                    this.saveCustomPreset();
+                });
+            }
+
+            // 3. Physics Sliders & Switches
+            const bindSlider = (slider, valEl, key, formatFn) => {
+                if (!slider) return;
+                const updateVal = (val) => {
+                    weatherThemeEngine.updatePhysicsParam(key, val);
+                    if (valEl) valEl.textContent = formatFn(val);
+                    this.syncHUDStats();
+                };
+
+                slider.addEventListener('input', (e) => updateVal(parseFloat(e.target.value)));
+            };
+
+            bindSlider(this.dom.sliderDensity, this.dom.valDensity, 'particleDensity', (v) => `${Math.round(v)} hạt`);
+            bindSlider(this.dom.sliderSpeed, this.dom.valSpeed, 'fallSpeed', (v) => `${v.toFixed(1)}x`);
+            bindSlider(this.dom.sliderWind, this.dom.valWind, 'windForce', (v) => {
+                if (v === 0) return '0° (Thẳng đứng)';
+                return v < 0 ? `${v}° (Gió Trái)` : `+${v}° (Gió Phải)`;
+            });
+            bindSlider(this.dom.sliderSize, this.dom.valSize, 'particleSize', (v) => `${v.toFixed(1)}px`);
+            bindSlider(this.dom.sliderGlow, this.dom.valGlow, 'glowIntensity', (v) => `${Math.round(v)}px`);
+            bindSlider(this.dom.sliderOpacity, this.dom.valOpacity, 'atmosphereOpacity', (v) => `${Math.round(v)}%`);
+
+            if (this.dom.toggleLightning) {
+                this.dom.toggleLightning.addEventListener('change', (e) => {
+                    weatherThemeEngine.updatePhysicsParam('ambientLightning', e.target.checked);
+                });
+            }
+
+            if (this.dom.toggleTurbulence) {
+                this.dom.toggleTurbulence.addEventListener('change', (e) => {
+                    weatherThemeEngine.updatePhysicsParam('turbulenceGusts', e.target.checked);
+                });
+            }
+
+            if (this.dom.btnResetPhysics) {
+                this.dom.btnResetPhysics.addEventListener('click', () => {
+                    weatherThemeEngine.resetPhysicsDefaults();
+                });
+            }
+
+            // 4. Viewport HUD Controls
+            if (this.dom.btnHudClockToggle) {
+                this.dom.btnHudClockToggle.addEventListener('click', () => {
+                    this.state.showZenClock = !this.state.showZenClock;
+                    if (this.dom.hudZenClock) {
+                        this.dom.hudZenClock.classList.toggle('hidden', !this.state.showZenClock);
+                    }
+                });
+            }
+
+            if (this.dom.btnHudFullscreen) {
+                this.dom.btnHudFullscreen.addEventListener('click', () => {
+                    this.toggleZenFullscreen();
+                });
+            }
+
+            // 5. Category Filters & Search
             if (this.dom.categoryFilters) {
-                this.dom.categoryFilters.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.ws-cat-btn');
-                    if (btn) {
+                this.dom.categoryFilters.querySelectorAll('.ws-cat-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
                         this.dom.categoryFilters.querySelectorAll('.ws-cat-btn').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         this.state.activeCategory = btn.getAttribute('data-cat') || 'all';
                         this.renderCards();
-                    }
+                    });
                 });
             }
 
             if (this.dom.searchInput) {
                 this.dom.searchInput.addEventListener('input', (e) => {
-                    this.state.searchQuery = (e.target.value || '').trim().toLowerCase();
+                    this.state.searchQuery = e.target.value.toLowerCase().trim();
                     this.renderCards();
                 });
             }
 
-            if (this.dom.btnClockFormat) {
-                this.dom.btnClockFormat.addEventListener('click', () => {
-                    this.state.is24Hour = !this.state.is24Hour;
-                    this.updateClock();
-                });
-            }
-
-            if (this.dom.btnZenFullscreen) {
-                this.dom.btnZenFullscreen.addEventListener('click', () => {
-                    this.toggleZenFullscreen();
-                });
-            }
-
-            // Customizer modal events
-            if (this.dom.btnCloseCustomizer) {
-                this.dom.btnCloseCustomizer.addEventListener('click', () => {
-                    this.closeCustomizer();
-                });
-            }
-
-            if (this.dom.customizerModal) {
-                this.dom.customizerModal.addEventListener('click', (e) => {
-                    if (e.target === this.dom.customizerModal) this.closeCustomizer();
-                });
-            }
-
-            if (this.dom.sliderDensity) {
-                this.dom.sliderDensity.addEventListener('input', (e) => {
-                    if (this.dom.valDensity) this.dom.valDensity.textContent = `${e.target.value}%`;
-                });
-            }
-
-            if (this.dom.sliderSpeed) {
-                this.dom.sliderSpeed.addEventListener('input', (e) => {
-                    if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${parseFloat(e.target.value).toFixed(1)}x`;
-                });
-            }
-
-            if (this.dom.sliderOpacity) {
-                this.dom.sliderOpacity.addEventListener('input', (e) => {
-                    if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${e.target.value}%`;
-                });
-            }
-
-            if (this.dom.btnResetCustomizer) {
-                this.dom.btnResetCustomizer.addEventListener('click', () => {
-                    this.dom.sliderDensity.value = 100;
-                    this.dom.sliderSpeed.value = 1.0;
-                    this.dom.sliderOpacity.value = 100;
-                    this.dom.toggleTurbulence.checked = true;
-                    if (this.dom.valDensity) this.dom.valDensity.textContent = '100%';
-                    if (this.dom.valSpeed) this.dom.valSpeed.textContent = '1.0x';
-                    if (this.dom.valOpacity) this.dom.valOpacity.textContent = '100%';
-                });
-            }
-
-            if (this.dom.btnSaveCustomizer) {
-                this.dom.btnSaveCustomizer.addEventListener('click', () => {
-                    const density = parseFloat(this.dom.sliderDensity.value) / 100;
-                    const speed = parseFloat(this.dom.sliderSpeed.value);
-                    const opacity = parseFloat(this.dom.sliderOpacity.value) / 100;
-                    const turbulence = this.dom.toggleTurbulence.checked;
-
-                    weatherThemeEngine.saveUserConfig({ density, speed, opacity, turbulence });
-                    this.closeCustomizer();
-                    showActionToast('✅ Đã lưu cấu hình hạt khí tượng!');
-                });
-            }
-
+            // ESC to exit fullscreen
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    if (this.state.isZenFullscreen) {
-                        this.toggleZenFullscreen(false);
-                    }
-                    if (this.dom.customizerModal && !this.dom.customizerModal.classList.contains('hidden')) {
-                        this.closeCustomizer();
-                    }
+                if (e.key === 'Escape' && this.state.isZenFullscreen) {
+                    this.toggleZenFullscreen(false);
                 }
             });
+        },
+
+        initViewportCanvas() {
+            if (!this.dom.viewportCanvas) return;
+            this.state.viewportCanvas = this.dom.viewportCanvas;
+            this.state.viewportCtx = this.dom.viewportCanvas.getContext('2d');
+            this.resizeViewportCanvas();
+
+            window.addEventListener('resize', () => {
+                this.resizeViewportCanvas();
+            });
+
+            this.startViewportLoop();
+        },
+
+        resizeViewportCanvas() {
+            if (!this.state.viewportCanvas || !this.state.viewportCanvas.parentElement) return;
+            const rect = this.state.viewportCanvas.parentElement.getBoundingClientRect();
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            this.state.viewportWidth = Math.max(rect.width, 400);
+            this.state.viewportHeight = Math.max(rect.height, 320);
+            this.state.viewportCanvas.width = this.state.viewportWidth * dpr;
+            this.state.viewportCanvas.height = this.state.viewportHeight * dpr;
+            if (this.state.viewportCtx) this.state.viewportCtx.scale(dpr, dpr);
+
+            this.rebuildViewportParticles();
+        },
+
+        rebuildViewportParticles() {
+            const p1 = weatherThemeEngine.presets[weatherThemeEngine.blend.layer1] || weatherThemeEngine.presets.tokyo_rain;
+            const hasL2 = weatherThemeEngine.blend.layer2 !== 'none' && weatherThemeEngine.presets[weatherThemeEngine.blend.layer2];
+            const p2 = hasL2 ? weatherThemeEngine.presets[weatherThemeEngine.blend.layer2] : null;
+
+            const total = weatherThemeEngine.physics.particleDensity || 120;
+            const countL1 = hasL2 ? Math.round(total * weatherThemeEngine.blend.ratio) : total;
+            const countL2 = hasL2 ? Math.round(total * (1.0 - weatherThemeEngine.blend.ratio)) : 0;
+
+            const w = this.state.viewportWidth;
+            const h = this.state.viewportHeight;
+
+            this.state.v1Particles = [];
+            for (let i = 0; i < countL1; i++) {
+                this.state.v1Particles.push(weatherThemeEngine.createParticle(p1, w, h));
+            }
+
+            this.state.v2Particles = [];
+            if (p2) {
+                for (let i = 0; i < countL2; i++) {
+                    this.state.v2Particles.push(weatherThemeEngine.createParticle(p2, w, h));
+                }
+            }
+
+            this.syncHUDStats();
+        },
+
+        startViewportLoop() {
+            if (this.state.isAnimRunning) return;
+            this.state.isAnimRunning = true;
+
+            const loop = () => {
+                if (!this.state.isAnimRunning) return;
+
+                // Animate Viewport Canvas when on Tab 13
+                if (this.state.viewportCtx && state.activeTab === 'weather_studio') {
+                    const ctx = this.state.viewportCtx;
+                    const w = this.state.viewportWidth;
+                    const h = this.state.viewportHeight;
+
+                    weatherThemeEngine.renderCanvasParticles(ctx, w, h, this.state.v1Particles, this.state.v2Particles, 1.0);
+                    this.syncHUDStats();
+                }
+
+                // Animate Mini Canvases in Showcase
+                if (state.activeTab === 'weather_studio' && this.state.miniCanvases.length > 0) {
+                    this.animateMiniCanvases();
+                }
+
+                this.state.animFrameId = requestAnimationFrame(loop);
+            };
+
+            this.state.animFrameId = requestAnimationFrame(loop);
+        },
+
+        animateMiniCanvases() {
+            this.state.miniCanvases.forEach(item => {
+                const { ctx, type, accent, secondary, particles } = item;
+                ctx.clearRect(0, 0, 260, 125);
+
+                if (type === 'aurora') {
+                    item.phase = (item.phase || 0) + 0.025;
+                    const grad = ctx.createLinearGradient(0, 0, 260, 0);
+                    grad.addColorStop(0, 'rgba(0, 255, 135, 0)');
+                    grad.addColorStop(0.5, 'rgba(0, 255, 135, 0.45)');
+                    grad.addColorStop(1, 'rgba(96, 239, 255, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 125);
+                    for (let x = 0; x <= 260; x += 20) {
+                        const y = 50 + Math.sin(x * 0.02 + item.phase) * 15;
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.lineTo(260, 125);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    particles.forEach(p => {
+                        if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
+                            p.y += p.speed * 0.5;
+                            p.x += Math.sin(p.y * 0.1) * 0.4;
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                            ctx.fillStyle = '#ffffff';
+                            ctx.globalAlpha = p.opacity;
+                            ctx.fill();
+                        } else if (type === 'golden_dust' || type === 'embers' || type === 'dubai_dust' || type === 'sunbeams') {
+                            p.y -= p.speed * 0.4;
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                            ctx.fillStyle = accent;
+                            ctx.globalAlpha = p.opacity;
+                            ctx.fill();
+                        } else if (type === 'sakura') {
+                            p.y += p.speed * 0.5;
+                            p.x += Math.sin(p.y * 0.08) * 0.6;
+                            ctx.beginPath();
+                            ctx.ellipse(p.x, p.y, p.radius * 2, p.radius, p.y * 0.1, 0, Math.PI * 2);
+                            ctx.fillStyle = '#ffb7b2';
+                            ctx.globalAlpha = p.opacity;
+                            ctx.fill();
+                        } else if (type === 'stars') {
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                            ctx.fillStyle = '#ffffff';
+                            ctx.globalAlpha = p.opacity;
+                            ctx.fill();
+                        } else if (type === 'fog' || type === 'emerald_mist' || type === 'wind') {
+                            p.x += p.speed * 0.4;
+                            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 25);
+                            grad.addColorStop(0, `rgba(203, 213, 225, 0.25)`);
+                            grad.addColorStop(1, 'rgba(203, 213, 225, 0)');
+                            ctx.fillStyle = grad;
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 25, 0, Math.PI * 2);
+                            ctx.fill();
+                        } else {
+                            // Rain
+                            ctx.beginPath();
+                            ctx.strokeStyle = p.color;
+                            ctx.globalAlpha = p.opacity;
+                            ctx.lineWidth = 1.2;
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p.x - p.length * 0.3, p.y + p.length);
+                            ctx.stroke();
+                            p.y += p.speed;
+                            p.x -= p.speed * 0.3;
+                        }
+
+                        if (p.y > 135 || p.x < -20) {
+                            p.y = -10;
+                            p.x = Math.random() * 280 - 10;
+                        }
+                        if (p.y < -10) {
+                            p.y = 135;
+                            p.x = Math.random() * 260;
+                        }
+                    });
+                    ctx.globalAlpha = 1.0;
+                }
+            });
+        },
+
+        syncAllUI() {
+            this.syncBlendUI();
+            this.syncPhysicsUI();
+            this.syncHUDStats();
+        },
+
+        syncBlendUI() {
+            const p1 = weatherThemeEngine.presets[weatherThemeEngine.blend.layer1] || weatherThemeEngine.presets.tokyo_rain;
+            const hasL2 = weatherThemeEngine.blend.layer2 !== 'none' && weatherThemeEngine.presets[weatherThemeEngine.blend.layer2];
+            const p2 = hasL2 ? weatherThemeEngine.presets[weatherThemeEngine.blend.layer2] : null;
+
+            // Hero badges
+            if (this.dom.activeIcon) this.dom.activeIcon.textContent = p1.icon;
+            if (this.dom.activeName) this.dom.activeName.textContent = p1.name;
+
+            if (this.dom.layer2Pill) {
+                if (p2) {
+                    this.dom.layer2Pill.classList.remove('hidden');
+                    if (this.dom.layer2Icon) this.dom.layer2Icon.textContent = p2.icon;
+                    if (this.dom.layer2Name) this.dom.layer2Name.textContent = p2.name;
+                } else {
+                    this.dom.layer2Pill.classList.add('hidden');
+                }
+            }
+
+            if (this.dom.modeText) {
+                this.dom.modeText.textContent = hasL2 ? `🔀 Blend: ${p1.shortName} + ${p2.shortName}` : `🔒 Single: ${p1.shortName}`;
+            }
+
+            // Select Dropdowns
+            if (this.dom.selectLayer1) this.dom.selectLayer1.value = weatherThemeEngine.blend.layer1;
+            if (this.dom.selectLayer2) this.dom.selectLayer2.value = weatherThemeEngine.blend.layer2;
+
+            // Ratio chips
+            if (this.dom.ratioChips) {
+                const currentRatio = weatherThemeEngine.blend.ratio.toFixed(1);
+                this.dom.ratioChips.querySelectorAll('.ws-ratio-chip').forEach(chip => {
+                    const r = parseFloat(chip.getAttribute('data-ratio')).toFixed(1);
+                    chip.classList.toggle('active', r === currentRatio);
+                });
+            }
+
+            // HUD Layers Text
+            if (this.dom.hudLayersText) {
+                this.dom.hudLayersText.textContent = hasL2 ? `${p1.shortName} 🔀 ${p2.shortName}` : `${p1.name}`;
+            }
+            if (this.dom.hudLocation) {
+                this.dom.hudLocation.textContent = hasL2 ? `${p1.location.toUpperCase()} & ${p2.location.toUpperCase()}` : `${p1.location.toUpperCase()} • ${p1.name.toUpperCase()}`;
+            }
+
+            // Sync visual cards active state
+            if (this.dom.cardsGrid) {
+                this.dom.cardsGrid.querySelectorAll('.ws-card').forEach(card => {
+                    const cKey = card.getAttribute('data-key');
+                    const isL1 = cKey === weatherThemeEngine.blend.layer1;
+                    const isL2 = cKey === weatherThemeEngine.blend.layer2;
+                    card.classList.toggle('active-theme', isL1 || isL2);
+                    const btn = card.querySelector('.ws-apply-theme-btn');
+                    if (btn) {
+                        if (isL1) {
+                            btn.innerHTML = '<span>🌟 Layer 1 (Chính)</span>';
+                        } else if (isL2) {
+                            btn.innerHTML = '<span>🔀 Layer 2 (Trộn)</span>';
+                        } else {
+                            btn.innerHTML = '<span>Áp Dụng Làm Theme</span>';
+                        }
+                    }
+                });
+            }
+
+            this.rebuildViewportParticles();
+        },
+
+        syncPhysicsUI() {
+            const p = weatherThemeEngine.physics;
+            if (this.dom.sliderDensity) this.dom.sliderDensity.value = p.particleDensity;
+            if (this.dom.valDensity) this.dom.valDensity.textContent = `${p.particleDensity} hạt`;
+
+            if (this.dom.sliderSpeed) this.dom.sliderSpeed.value = p.fallSpeed;
+            if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${p.fallSpeed.toFixed(1)}x`;
+
+            if (this.dom.sliderWind) this.dom.sliderWind.value = p.windForce;
+            if (this.dom.valWind) {
+                this.dom.valWind.textContent = p.windForce === 0 ? '0° (Thẳng đứng)' : (p.windForce < 0 ? `${p.windForce}° (Gió Trái)` : `+${p.windForce}° (Gió Phải)`);
+            }
+
+            if (this.dom.sliderSize) this.dom.sliderSize.value = p.particleSize;
+            if (this.dom.valSize) this.dom.valSize.textContent = `${p.particleSize.toFixed(1)}px`;
+
+            if (this.dom.sliderGlow) this.dom.sliderGlow.value = p.glowIntensity;
+            if (this.dom.valGlow) this.dom.valGlow.textContent = `${p.glowIntensity}px`;
+
+            if (this.dom.sliderOpacity) this.dom.sliderOpacity.value = p.atmosphereOpacity;
+            if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${p.atmosphereOpacity}%`;
+
+            if (this.dom.toggleLightning) this.dom.toggleLightning.checked = p.ambientLightning !== false;
+            if (this.dom.toggleTurbulence) this.dom.toggleTurbulence.checked = p.turbulenceGusts !== false;
+        },
+
+        syncHUDStats() {
+            const total = (this.state.v1Particles.length || 0) + (this.state.v2Particles.length || 0);
+            if (this.dom.hudParticleCount) {
+                this.dom.hudParticleCount.textContent = `⚡ ${total} Hạt`;
+            }
+            if (this.dom.hudFps) {
+                const fps = weatherThemeEngine.currentFPS || 60;
+                const dot = fps >= 50 ? '🟢' : (fps >= 30 ? '🟡' : '🔴');
+                this.dom.hudFps.textContent = `${dot} ${fps} FPS`;
+            }
+        },
+
+        saveCustomPreset() {
+            const l1 = weatherThemeEngine.blend.layer1;
+            const l2 = weatherThemeEngine.blend.layer2;
+            const p1 = weatherThemeEngine.presets[l1] || { shortName: 'Theme' };
+            const p2 = weatherThemeEngine.presets[l2] || { shortName: 'None' };
+
+            const presetName = prompt('Nhập tên cho Custom Preset này:', `${p1.shortName} + ${p2.shortName}`);
+            if (!presetName) return;
+
+            const customList = JSON.parse(localStorage.getItem('weather_custom_presets') || '[]');
+            customList.push({
+                name: presetName,
+                layer1: l1,
+                layer2: l2,
+                ratio: weatherThemeEngine.blend.ratio,
+                physics: Object.assign({}, weatherThemeEngine.physics),
+                createdAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('weather_custom_presets', JSON.stringify(customList));
+            showActionToast(`💾 Đã lưu "${presetName}" vào danh sách Custom Presets thành công!`);
         },
 
         renderCards() {
             if (!this.dom.cardsGrid) return;
             const presets = Object.values(weatherThemeEngine.presets);
-            const activeKey = weatherThemeEngine.currentThemeKey;
+            const activeL1 = weatherThemeEngine.blend.layer1;
+            const activeL2 = weatherThemeEngine.blend.layer2;
             const cat = this.state.activeCategory;
             const q = this.state.searchQuery;
 
@@ -14531,14 +14667,16 @@ ${css}`;
 
             let html = '';
             filtered.forEach(p => {
-                const isActive = p.key === activeKey;
+                const isL1 = p.key === activeL1;
+                const isL2 = p.key === activeL2;
+                const isActive = isL1 || isL2;
                 const catLabel = p.category === 'rain' ? '🌧️ MƯA' : (p.category === 'snow' ? '❄️ TUYẾT' : (p.category === 'aurora' ? '🌌 CỰC QUANG' : (p.category === 'nature' ? '🌸 THIÊN NHIÊN' : '🌫️ SƯƠNG MÙ')));
 
                 html += `
                     <div class="ws-card ${isActive ? 'active-theme' : ''}" data-key="${p.key}" style="--card-accent:${p.accent}; --card-glow:${p.accentGlow};">
                         <div class="ws-mini-canvas-wrap">
                             <canvas class="ws-mini-canvas" data-type="${p.type}" data-accent="${p.accent}" data-secondary="${p.secondary}"></canvas>
-                            ${isActive ? '<span class="ws-card-active-tag">ĐANG ÁP DỤNG</span>' : ''}
+                            ${isL1 ? '<span class="ws-card-active-tag">LAYER 1 (CHÍNH)</span>' : (isL2 ? '<span class="ws-card-active-tag" style="background:#c084fc;">LAYER 2 (TRỘN)</span>' : '')}
                             <span class="ws-card-cat-badge">${catLabel}</span>
                         </div>
                         <div class="ws-card-info">
@@ -14554,7 +14692,7 @@ ${css}`;
                         </div>
                         <div class="ws-card-footer">
                             <button class="ws-apply-theme-btn btn-apply-theme" data-key="${p.key}">
-                                <span>${isActive ? '🌟 Đang Kích Hoạt' : 'Áp Dụng Làm Theme'}</span>
+                                <span>${isL1 ? '🌟 Layer 1 (Chính)' : (isL2 ? '🔀 Layer 2 (Trộn)' : 'Chọn Làm Layer 1')}</span>
                             </button>
                         </div>
                     </div>
@@ -14563,12 +14701,12 @@ ${css}`;
 
             this.dom.cardsGrid.innerHTML = html;
 
-            // Bind Card clicks
+            // Bind Card clicks to select Layer 1
             this.dom.cardsGrid.querySelectorAll('.ws-card').forEach(card => {
                 card.addEventListener('click', (e) => {
                     const key = card.getAttribute('data-key');
                     if (key) {
-                        weatherThemeEngine.applyTheme(key, true, true);
+                        weatherThemeEngine.setLayers(key, weatherThemeEngine.blend.layer2, true);
                         this.renderCards();
                     }
                 });
@@ -14603,211 +14741,6 @@ ${css}`;
 
                 this.state.miniCanvases.push({ canvas, ctx, type, accent, secondary, particles, phase: 0 });
             });
-
-            this.startAnimationLoop();
-        },
-
-        startAnimationLoop() {
-            if (this.state.isAnimRunning) return;
-            this.state.isAnimRunning = true;
-
-            const loop = () => {
-                if (!this.state.isAnimRunning) return;
-
-                // 1. Animate Zen Focus Canvas if active
-                if (this.state.zenCtx && this.state.zenCanvas && state.activeTab === 'weather_studio') {
-                    const zctx = this.state.zenCtx;
-                    const zw = this.state.zenWidth || 600;
-                    const zh = this.state.zenHeight || 380;
-                    zctx.clearRect(0, 0, zw, zh);
-
-                    const activePreset = weatherThemeEngine.presets[weatherThemeEngine.currentThemeKey];
-                    const activeType = activePreset ? activePreset.type : 'rain';
-
-                    if (activeType === 'aurora') {
-                        this.state.zenPhase = (this.state.zenPhase || 0) + 0.015;
-                        const grad = zctx.createLinearGradient(0, 0, zw, 0);
-                        grad.addColorStop(0, 'rgba(0, 255, 135, 0.0)');
-                        grad.addColorStop(0.3, 'rgba(0, 255, 135, 0.35)');
-                        grad.addColorStop(0.7, 'rgba(96, 239, 255, 0.42)');
-                        grad.addColorStop(1, 'rgba(0, 255, 135, 0.0)');
-
-                        zctx.fillStyle = grad;
-                        zctx.beginPath();
-                        zctx.moveTo(0, zh * 0.7);
-                        for (let x = 0; x <= zw; x += 30) {
-                            const y = zh * 0.32 + Math.sin(x * 0.005 + this.state.zenPhase) * 35 + Math.cos(x * 0.008 - this.state.zenPhase * 0.8) * 20;
-                            zctx.lineTo(x, y);
-                        }
-                        zctx.lineTo(zw, zh * 0.7);
-                        zctx.closePath();
-                        zctx.fill();
-                    } else {
-                        this.state.zenParticles.forEach(p => {
-                            if (activeType === 'snow' || activeType === 'gentle_snow' || activeType === 'freeze') {
-                                p.x += Math.sin(p.y * 0.05) * 0.4;
-                                p.y += p.speed * 0.6;
-                                zctx.beginPath();
-                                zctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                                zctx.fillStyle = '#ffffff';
-                                zctx.globalAlpha = p.opacity;
-                                zctx.shadowColor = '#80deea';
-                                zctx.shadowBlur = 8;
-                                zctx.fill();
-                                zctx.shadowBlur = 0;
-                            } else if (activeType === 'golden_dust' || activeType === 'embers' || activeType === 'dubai_dust' || activeType === 'sunbeams') {
-                                p.y -= p.speed * 0.4;
-                                p.x += (Math.sin(p.y * 0.03) - 0.5) * 0.5;
-                                zctx.beginPath();
-                                zctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                                zctx.fillStyle = activePreset.accent;
-                                zctx.globalAlpha = p.opacity;
-                                zctx.shadowColor = activePreset.accent;
-                                zctx.shadowBlur = 10;
-                                zctx.fill();
-                                zctx.shadowBlur = 0;
-                            } else if (activeType === 'sakura') {
-                                p.y += p.speed * 0.6;
-                                p.x += Math.sin(p.y * 0.04) * 0.8;
-                                zctx.beginPath();
-                                zctx.ellipse(p.x, p.y, p.radius * 2.2, p.radius * 1.2, p.y * 0.05, 0, Math.PI * 2);
-                                zctx.fillStyle = '#ffb7b2';
-                                zctx.globalAlpha = p.opacity;
-                                zctx.shadowColor = '#ff758c';
-                                zctx.shadowBlur = 6;
-                                zctx.fill();
-                                zctx.shadowBlur = 0;
-                            } else if (activeType === 'stars') {
-                                zctx.beginPath();
-                                zctx.arc(p.x, p.y, p.radius * 0.8, 0, Math.PI * 2);
-                                zctx.fillStyle = '#ffffff';
-                                zctx.globalAlpha = p.opacity * (0.5 + 0.5 * Math.sin(Date.now() * 0.003 + p.x));
-                                zctx.shadowColor = '#a855f7';
-                                zctx.shadowBlur = 6;
-                                zctx.fill();
-                                zctx.shadowBlur = 0;
-                            } else {
-                                zctx.beginPath();
-                                zctx.strokeStyle = activePreset.accent;
-                                zctx.globalAlpha = p.opacity;
-                                zctx.lineWidth = 1.4;
-                                zctx.shadowColor = activePreset.accent;
-                                zctx.shadowBlur = 6;
-                                zctx.moveTo(p.x, p.y);
-                                zctx.lineTo(p.x - p.length * 0.35, p.y + p.length);
-                                zctx.stroke();
-                                zctx.shadowBlur = 0;
-
-                                p.y += p.speed * 1.2;
-                                p.x -= p.speed * 0.35;
-                            }
-
-                            if (p.y > zh + 20 || p.x < -30) {
-                                p.y = -20;
-                                p.x = Math.random() * (zw + 60) - 30;
-                            }
-                            if (p.y < -20) {
-                                p.y = zh + 20;
-                                p.x = Math.random() * zw;
-                            }
-                        });
-                        zctx.globalAlpha = 1.0;
-                    }
-                }
-
-                // 2. Animate 16 Mini Preview Canvases when on Tab 13
-                if (state.activeTab === 'weather_studio' && this.state.miniCanvases.length > 0) {
-                    this.state.miniCanvases.forEach(item => {
-                        const { ctx, type, accent, secondary, particles } = item;
-                        ctx.clearRect(0, 0, 260, 125);
-
-                        if (type === 'aurora') {
-                            item.phase = (item.phase || 0) + 0.03;
-                            const grad = ctx.createLinearGradient(0, 0, 260, 0);
-                            grad.addColorStop(0, 'rgba(0, 255, 135, 0)');
-                            grad.addColorStop(0.5, 'rgba(0, 255, 135, 0.45)');
-                            grad.addColorStop(1, 'rgba(96, 239, 255, 0)');
-                            ctx.fillStyle = grad;
-                            ctx.beginPath();
-                            ctx.moveTo(0, 125);
-                            for (let x = 0; x <= 260; x += 20) {
-                                const y = 50 + Math.sin(x * 0.02 + item.phase) * 15;
-                                ctx.lineTo(x, y);
-                            }
-                            ctx.lineTo(260, 125);
-                            ctx.closePath();
-                            ctx.fill();
-                        } else {
-                            particles.forEach(p => {
-                                if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
-                                    p.y += p.speed * 0.5;
-                                    p.x += Math.sin(p.y * 0.1) * 0.4;
-                                    ctx.beginPath();
-                                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                                    ctx.fillStyle = '#ffffff';
-                                    ctx.globalAlpha = p.opacity;
-                                    ctx.fill();
-                                } else if (type === 'golden_dust' || type === 'embers' || type === 'dubai_dust' || type === 'sunbeams') {
-                                    p.y -= p.speed * 0.4;
-                                    ctx.beginPath();
-                                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                                    ctx.fillStyle = accent;
-                                    ctx.globalAlpha = p.opacity;
-                                    ctx.fill();
-                                } else if (type === 'sakura') {
-                                    p.y += p.speed * 0.5;
-                                    p.x += Math.sin(p.y * 0.08) * 0.6;
-                                    ctx.beginPath();
-                                    ctx.ellipse(p.x, p.y, p.radius * 2, p.radius, p.y * 0.1, 0, Math.PI * 2);
-                                    ctx.fillStyle = '#ffb7b2';
-                                    ctx.globalAlpha = p.opacity;
-                                    ctx.fill();
-                                } else if (type === 'stars') {
-                                    ctx.beginPath();
-                                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                                    ctx.fillStyle = '#ffffff';
-                                    ctx.globalAlpha = p.opacity;
-                                    ctx.fill();
-                                } else if (type === 'fog' || type === 'emerald_mist' || type === 'wind') {
-                                    p.x += p.speed * 0.4;
-                                    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 25);
-                                    grad.addColorStop(0, `rgba(203, 213, 225, 0.25)`);
-                                    grad.addColorStop(1, 'rgba(203, 213, 225, 0)');
-                                    ctx.fillStyle = grad;
-                                    ctx.beginPath();
-                                    ctx.arc(p.x, p.y, 25, 0, Math.PI * 2);
-                                    ctx.fill();
-                                } else {
-                                    // Rain
-                                    ctx.beginPath();
-                                    ctx.strokeStyle = p.color;
-                                    ctx.globalAlpha = p.opacity;
-                                    ctx.lineWidth = 1.2;
-                                    ctx.moveTo(p.x, p.y);
-                                    ctx.lineTo(p.x - p.length * 0.3, p.y + p.length);
-                                    ctx.stroke();
-                                    p.y += p.speed;
-                                    p.x -= p.speed * 0.3;
-                                }
-
-                                if (p.y > 135 || p.x < -20) {
-                                    p.y = -10;
-                                    p.x = Math.random() * 280 - 10;
-                                }
-                                if (p.y < -10) {
-                                    p.y = 135;
-                                    p.x = Math.random() * 260;
-                                }
-                            });
-                            ctx.globalAlpha = 1.0;
-                        }
-                    });
-                }
-
-                this.state.animFrameId = requestAnimationFrame(loop);
-            };
-
-            this.state.animFrameId = requestAnimationFrame(loop);
         },
 
         startClock() {
@@ -14832,122 +14765,37 @@ ${css}`;
             const strMinutes = String(now.getMinutes()).padStart(2, '0');
             const strSeconds = String(now.getSeconds()).padStart(2, '0');
 
-            if (this.dom.zenDigitalTime) {
-                this.dom.zenDigitalTime.textContent = `${strHours}:${strMinutes}:${strSeconds}${ampm}`;
+            if (this.dom.hudDigitalTime) {
+                this.dom.hudDigitalTime.textContent = `${strHours}:${strMinutes}:${strSeconds}${ampm}`;
             }
 
-            if (this.dom.zenDigitalDate) {
+            if (this.dom.hudDigitalDate) {
                 const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
                 const dayName = days[now.getDay()];
                 const dateStr = `${dayName}, ${now.getDate()} Tháng ${now.getMonth() + 1}, ${now.getFullYear()}`;
-                this.dom.zenDigitalDate.textContent = dateStr;
-            }
-        },
-
-        initZenCanvas() {
-            if (!this.dom.zenCanvas) return;
-            this.state.zenCanvas = this.dom.zenCanvas;
-            this.state.zenCtx = this.dom.zenCanvas.getContext('2d');
-            this.resizeZenCanvas();
-
-            window.addEventListener('resize', () => {
-                this.resizeZenCanvas();
-            });
-
-            this.syncStatus();
-        },
-
-        resizeZenCanvas() {
-            if (!this.state.zenCanvas || !this.state.zenCanvas.parentElement) return;
-            const rect = this.state.zenCanvas.parentElement.getBoundingClientRect();
-            this.state.zenWidth = rect.width;
-            this.state.zenHeight = rect.height;
-            this.state.zenCanvas.width = rect.width;
-            this.state.zenCanvas.height = rect.height;
-
-            this.state.zenParticles = [];
-            for (let i = 0; i < 45; i++) {
-                this.state.zenParticles.push({
-                    x: Math.random() * rect.width,
-                    y: Math.random() * rect.height,
-                    length: Math.random() * 22 + 10,
-                    speed: Math.random() * 5 + 4,
-                    radius: Math.random() * 2.5 + 1.2,
-                    opacity: Math.random() * 0.5 + 0.4
-                });
-            }
-        },
-
-        syncStatus() {
-            const key = weatherThemeEngine.currentThemeKey;
-            const preset = weatherThemeEngine.presets[key];
-            if (!preset) return;
-
-            if (this.dom.activeIcon) this.dom.activeIcon.textContent = preset.icon;
-            if (this.dom.activeName) this.dom.activeName.textContent = preset.name;
-            if (this.dom.zenClockLocation) {
-                this.dom.zenClockLocation.textContent = `${preset.location.toUpperCase()} • ${preset.name.toUpperCase()}`;
+                this.dom.hudDigitalDate.textContent = dateStr;
             }
 
-            if (this.dom.modeText) {
-                this.dom.modeText.textContent = weatherThemeEngine.mode === 'auto' ? '🔄 Tự xoay vòng 30m' : '🔒 Đã khóa cố định';
-            }
-
-            // Pick random quote occasionally
-            if (this.dom.zenQuoteText && Math.random() < 0.3) {
+            if (this.dom.hudQuoteText && Math.random() < 0.05) {
                 const q = this.quotes[Math.floor(Math.random() * this.quotes.length)];
-                this.dom.zenQuoteText.textContent = q;
-            }
-
-            // Sync visual cards active state
-            if (this.dom.cardsGrid) {
-                this.dom.cardsGrid.querySelectorAll('.ws-card').forEach(card => {
-                    const cKey = card.getAttribute('data-key');
-                    const isActive = cKey === key;
-                    card.classList.toggle('active-theme', isActive);
-                    const btn = card.querySelector('.ws-apply-theme-btn');
-                    if (btn) {
-                        btn.innerHTML = `<span>${isActive ? '🌟 Đang Kích Hoạt' : 'Áp Dụng Làm Theme'}</span>`;
-                    }
-                });
+                this.dom.hudQuoteText.textContent = q;
             }
         },
 
         toggleZenFullscreen(forceState) {
             this.state.isZenFullscreen = forceState !== undefined ? forceState : !this.state.isZenFullscreen;
-            if (this.dom.zenStagePanel) {
-                this.dom.zenStagePanel.classList.toggle('fullscreen-zen', this.state.isZenFullscreen);
-                setTimeout(() => this.resizeZenCanvas(), 50);
+            if (this.dom.canvasWrapper) {
+                this.dom.canvasWrapper.classList.toggle('ws-fullscreen-viewport', this.state.isZenFullscreen);
+                setTimeout(() => this.resizeViewportCanvas(), 60);
             }
             if (this.state.isZenFullscreen) {
                 showActionToast('🧘 Zen Focus Screensaver đã kích hoạt! Nhấn ESC để thoát.');
             }
         },
 
-        openCustomizer() {
-            if (!this.dom.customizerModal) return;
-            const c = weatherThemeEngine.userConfig;
-            if (this.dom.sliderDensity) this.dom.sliderDensity.value = Math.round((c.density || 1.0) * 100);
-            if (this.dom.sliderSpeed) this.dom.sliderSpeed.value = c.speed || 1.0;
-            if (this.dom.sliderOpacity) this.dom.sliderOpacity.value = Math.round((c.opacity || 1.0) * 100);
-            if (this.dom.toggleTurbulence) this.dom.toggleTurbulence.checked = c.turbulence !== false;
-
-            if (this.dom.valDensity) this.dom.valDensity.textContent = `${this.dom.sliderDensity.value}%`;
-            if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${parseFloat(this.dom.sliderSpeed.value).toFixed(1)}x`;
-            if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${this.dom.sliderOpacity.value}%`;
-
-            this.dom.customizerModal.classList.remove('hidden');
-        },
-
-        closeCustomizer() {
-            if (this.dom.customizerModal) {
-                this.dom.customizerModal.classList.add('hidden');
-            }
-        },
-
         onTabActivated() {
-            this.syncStatus();
-            this.resizeZenCanvas();
+            this.syncAllUI();
+            this.resizeViewportCanvas();
         }
     };
 

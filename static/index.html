@@ -5177,7 +5177,7 @@
                 </section>
 
                 <!-- ================================================================
-                     TAB 13: ATMOSPHERE & WEATHER STUDIO (16 GLOBAL PRESETS)
+                     TAB 13: ATMOSPHERE & WEATHER STUDIO (LIVE PHYSICS & DUAL-LAYER FX BLEND)
                      ================================================================ -->
                 <section id="tab-weather-studio" class="tab-view hidden" aria-labelledby="nav-item-weather-studio">
                     <!-- 1. Atmospheric Studio Hero & Control Bar -->
@@ -5187,41 +5187,275 @@
                             <div class="ws-hero-left">
                                 <div class="ws-hero-badge">
                                     <span class="pulse-dot-lime"></span>
-                                    <span>GLOBAL ATMOSPHERIC STUDIO</span>
+                                    <span>DUAL-LAYER WEATHER FX BLENDER & LIVE PHYSICS</span>
                                 </div>
-                                <h2 class="ws-hero-title">16 Không Gian Thời Tiết Toàn Cầu</h2>
+                                <h2 class="ws-hero-title">Atmosphere & Weather Studio</h2>
                                 <p class="ws-hero-desc">
-                                    Phòng trưng bày, tùy chỉnh và kích hoạt hơn 15 hiện tượng khí tượng sống động trên khắp thế giới thành Theme nền cho toàn bộ Dashboard.
+                                    Trộn đa hiệu ứng khí quyển 2 tầng (Dual-Layer Blending), điều khiển vật lý hạt thời gian thực (Zero-Lag) và đồng bộ làm theme nền toàn trang.
                                 </p>
                                 <div class="ws-current-status-row">
                                     <div class="ws-active-pill" id="ws-active-theme-pill">
                                         <span class="active-icon" id="ws-active-icon">🌧️</span>
-                                        <span class="active-label">Đang áp dụng:</span>
+                                        <span class="active-label">Layer 1:</span>
                                         <strong id="ws-active-name" class="active-name">Tokyo Cyberpunk Rain</strong>
                                     </div>
+                                    <div class="ws-layer2-pill" id="ws-active-layer2-pill">
+                                        <span class="active-icon" id="ws-layer2-icon">✨</span>
+                                        <span class="active-label">Layer 2:</span>
+                                        <strong id="ws-layer2-name" class="layer2-name">Atacama Milky Way</strong>
+                                    </div>
                                     <div class="ws-mode-pill" id="ws-active-mode-pill">
-                                        <span id="ws-mode-text">🔄 Tự xoay vòng 30m</span>
+                                        <span id="ws-mode-text">🔒 Live Blend Mode</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="ws-hero-right">
-                                <button id="btn-ws-roll-random" class="btn-primary ws-action-btn" title="Đổi ngẫu nhiên 1 trong 16 chủ đề ngay lập tức">
-                                    <span>🎲 Đổi Ngẫu Nhiên</span>
+                                <button id="btn-ws-surprise-mix" class="btn-primary ws-action-btn btn-surprise-mix" title="Tự động phối ngẫu nhiên 2 hiệu ứng thời tiết độc đáo">
+                                    <span class="sparkle-icon">⚡</span>
+                                    <span>Trộn Ngẫu Nhiên (Surprise Mix)</span>
                                 </button>
-                                <button id="btn-ws-open-customizer" class="control-btn ws-action-btn" title="Tinh chỉnh số lượng hạt, tốc độ gió và độ trong suốt">
-                                    <span>⚙️ Tinh Chỉnh Hạt</span>
+                                <button id="btn-ws-apply-global" class="control-btn ws-action-btn btn-apply-global" title="Áp dụng cấu hình và hiệu ứng hòa trộn này làm Theme nền toàn Dashboard">
+                                    <span>🌟 Áp Dụng Làm Theme Toàn Trang</span>
                                 </button>
-                                <button id="btn-ws-zen-screensaver" class="control-btn ws-action-btn ws-zen-quick-btn" title="Mở chế độ Zen Focus Screensaver toàn màn hình">
-                                    <span>🧘 Zen Focus Clock</span>
+                                <button id="btn-ws-zen-screensaver" class="control-btn ws-action-btn ws-zen-quick-btn" title="Mở chế độ Zen Focus Screensaver toàn màn hình (Phím Esc để thoát)">
+                                    <span>🧘 Zen Screensaver</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 2. Filter & Category Bar -->
+                    <!-- 2. Dual Studio Workspace: Viewport & Blend Dock (65%) + Live Physics Console (35%) -->
+                    <div class="ws-studio-workspace">
+                        
+                        <!-- LEFT 65%: Viewport & Blend Dock -->
+                        <div class="ws-viewport-col">
+                            <div class="ws-viewport-card dashboard-panel">
+                                
+                                <!-- Floating Blend Selector Toolbar -->
+                                <div class="ws-floating-blend-bar">
+                                    <div class="ws-blend-select-group">
+                                        <span class="ws-blend-tag l1-tag">LAYER 1 (CHÍNH)</span>
+                                        <select id="ws-select-layer1" class="ws-blend-select" title="Chọn hiệu ứng thời tiết lớp nền chính">
+                                            <!-- Populated dynamically via JS -->
+                                        </select>
+                                    </div>
+
+                                    <div class="ws-blend-connector">
+                                        <span class="ws-blend-icon" title="Hòa trộn cùng lúc">🔀</span>
+                                    </div>
+
+                                    <div class="ws-blend-select-group">
+                                        <span class="ws-blend-tag l2-tag">LAYER 2 (HÒA TRỘN)</span>
+                                        <select id="ws-select-layer2" class="ws-blend-select" title="Chọn hiệu ứng lớp phủ thứ 2 (hoặc tắt)">
+                                            <option value="none">-- Tắt (Không Trộn) --</option>
+                                            <!-- Populated dynamically via JS -->
+                                        </select>
+                                    </div>
+
+                                    <div class="ws-blend-ratio-group">
+                                        <span class="ws-blend-tag ratio-tag">TỶ LỆ BLEND</span>
+                                        <div class="ws-ratio-chips" id="ws-ratio-chips">
+                                            <button class="ws-ratio-chip" data-ratio="0.8">80/20</button>
+                                            <button class="ws-ratio-chip active" data-ratio="0.5">50/50</button>
+                                            <button class="ws-ratio-chip" data-ratio="0.3">30/70</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Canvas Viewport with Smoked Glass Aesthetic -->
+                                <div class="ws-canvas-wrapper" id="ws-canvas-wrapper">
+                                    <canvas id="ws-viewport-canvas" class="ws-viewport-canvas"></canvas>
+                                    
+                                    <!-- HUD Overlay on Viewport Canvas -->
+                                    <div class="ws-canvas-hud">
+                                        <div class="ws-hud-top-row">
+                                            <div class="ws-hud-chip" id="ws-hud-layers-chip">
+                                                <span class="pulse-dot-lime"></span>
+                                                <span id="ws-hud-layers-text">Tokyo Rain + Atacama Stars</span>
+                                            </div>
+                                            <div class="ws-hud-stats">
+                                                <span class="ws-hud-badge" id="ws-hud-particle-count">⚡ 160 Hạt</span>
+                                                <span class="ws-hud-badge" id="ws-hud-fps">🟢 60 FPS</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Optional Zen Clock in Viewport -->
+                                        <div class="ws-hud-zen-clock" id="ws-hud-zen-clock">
+                                            <div class="zen-digital-time" id="ws-hud-digital-time">12:00:00</div>
+                                            <div class="zen-digital-date" id="ws-hud-digital-date">Thứ Hai, 1 Tháng 9, 2026</div>
+                                            <div class="zen-clock-location" id="ws-hud-location">TOKYO & ATACAMA ATMOSPHERE</div>
+                                        </div>
+
+                                        <div class="ws-hud-bottom-row">
+                                            <div class="ws-hud-quote" id="ws-hud-quote">
+                                                <span>✨</span>
+                                                <span id="ws-hud-quote-text">Stay focused, code with passion, and build the future.</span>
+                                            </div>
+                                            <div class="ws-hud-actions">
+                                                <button id="btn-ws-hud-clock-toggle" class="ws-hud-btn" title="Ẩn/Hiện đồng hồ số trên khung nhìn">🕒 Đồng Hồ</button>
+                                                <button id="btn-ws-hud-fullscreen" class="ws-hud-btn" title="Toàn màn hình (Esc)">⛶ Screensaver</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Toolbar below Viewport -->
+                                <div class="ws-viewport-footer">
+                                    <div class="ws-footer-left">
+                                        <span class="ws-preset-quick-label">⚡ Lối tắt nhanh:</span>
+                                        <div class="ws-quick-blend-presets" id="ws-quick-blend-presets">
+                                            <button class="ws-quick-chip" data-l1="tromso_aurora" data-l2="atacama_stars">🌌 Cực Quang & Sao</button>
+                                            <button class="ws-quick-chip" data-l1="tokyo_rain" data-l2="sakura_bloom">🌧️ Mưa Cyber & Hoa</button>
+                                            <button class="ws-quick-chip" data-l1="sahara_sunset" data-l2="volcanic_ember">🔥 Hoàng Hôn & Tàn Tro</button>
+                                            <button class="ws-quick-chip" data-l1="nordic_blizzard" data-l2="deep_freeze">❄️ Bão Tuyết & Băng Giá</button>
+                                        </div>
+                                    </div>
+                                    <div class="ws-footer-right">
+                                        <button id="btn-ws-save-custom" class="control-btn" title="Lưu cấu hình phối trộn và vật lý hiện tại thành Custom Preset">
+                                            <span>💾 Lưu Custom Preset</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- RIGHT 35%: Particle Physics Console -->
+                        <div class="ws-physics-col">
+                            <div class="ws-physics-card dashboard-panel">
+                                <div class="ws-physics-header">
+                                    <div class="ws-physics-title-wrap">
+                                        <span class="ws-physics-icon">🎛️</span>
+                                        <div>
+                                            <h3 class="ws-physics-title">Particle Physics Console</h3>
+                                            <span class="ws-physics-sub">Bảng điều khiển Vật lý hạt Thời gian thực (Zero-Lag)</span>
+                                        </div>
+                                    </div>
+                                    <button id="btn-ws-reset-physics" class="control-btn ws-reset-physics-btn" title="Khôi phục toàn bộ thông số vật lý về mặc định">
+                                        <span>🔄 Reset Mặc Định</span>
+                                    </button>
+                                </div>
+
+                                <div class="ws-physics-body">
+                                    <!-- Slider 1: Particle Density -->
+                                    <div class="ws-physics-slider-row">
+                                        <div class="ws-slider-head">
+                                            <label for="ws-phys-density">🌪️ Mật Độ Hạt (Density)</label>
+                                            <span id="ws-val-density" class="ws-val-pill">120 hạt</span>
+                                        </div>
+                                        <input type="range" id="ws-phys-density" class="ws-physics-range" min="15" max="350" step="5" value="120">
+                                        <div class="ws-range-marks">
+                                            <span>15 (Thưa nhẹ)</span>
+                                            <span>120</span>
+                                            <span>350 (Dày đặc)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Slider 2: Fall Speed Multiplier -->
+                                    <div class="ws-physics-slider-row">
+                                        <div class="ws-slider-head">
+                                            <label for="ws-phys-speed">⚡ Tốc Độ Rơi & Chuyển Động (Speed)</label>
+                                            <span id="ws-val-speed" class="ws-val-pill">1.0x</span>
+                                        </div>
+                                        <input type="range" id="ws-phys-speed" class="ws-physics-range" min="0.2" max="3.0" step="0.1" value="1.0">
+                                        <div class="ws-range-marks">
+                                            <span>0.2x (Slow-mo)</span>
+                                            <span>1.0x</span>
+                                            <span>3.0x (Bão tố)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Slider 3: Wind Force & Angle -->
+                                    <div class="ws-physics-slider-row">
+                                        <div class="ws-slider-head">
+                                            <label for="ws-phys-wind">💨 Hướng Gió & Góc Nghiêng (Wind Vector)</label>
+                                            <span id="ws-val-wind" class="ws-val-pill">0° (Thẳng đứng)</span>
+                                        </div>
+                                        <input type="range" id="ws-phys-wind" class="ws-physics-range" min="-45" max="45" step="1" value="0">
+                                        <div class="ws-range-marks">
+                                            <span>-45° ⬅️ Gió Trái</span>
+                                            <span>0° Đứng</span>
+                                            <span>+45° ➡️ Gió Phải</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Slider 4: Particle Size -->
+                                    <div class="ws-physics-slider-row">
+                                        <div class="ws-slider-head">
+                                            <label for="ws-phys-size">🔮 Kích Thước Hạt (Particle Size)</label>
+                                            <span id="ws-val-size" class="ws-val-pill">2.5px</span>
+                                        </div>
+                                        <input type="range" id="ws-phys-size" class="ws-physics-range" min="0.5" max="8.0" step="0.2" value="2.5">
+                                        <div class="ws-range-marks">
+                                            <span>0.5px (Mịn)</span>
+                                            <span>2.5px</span>
+                                            <span>8.0px (Lớn)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Slider 5: Neon Glow Intensity -->
+                                    <div class="ws-physics-slider-row">
+                                        <div class="ws-slider-head">
+                                            <label for="ws-phys-glow">✨ Độ Phát Sáng Neon (Glow Blur)</label>
+                                            <span id="ws-val-glow" class="ws-val-pill">8px</span>
+                                        </div>
+                                        <input type="range" id="ws-phys-glow" class="ws-physics-range" min="0" max="20" step="1" value="8">
+                                        <div class="ws-range-marks">
+                                            <span>0px (Tắt Glow)</span>
+                                            <span>8px</span>
+                                            <span>20px (Rực sáng)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Slider 6: Atmosphere Opacity -->
+                                    <div class="ws-physics-slider-row">
+                                        <div class="ws-slider-head">
+                                            <label for="ws-phys-opacity">🌌 Độ Mờ Khí Quyển (Atmosphere Opacity)</label>
+                                            <span id="ws-val-opacity" class="ws-val-pill">100%</span>
+                                        </div>
+                                        <input type="range" id="ws-phys-opacity" class="ws-physics-range" min="10" max="100" step="5" value="100">
+                                        <div class="ws-range-marks">
+                                            <span>10% (Siêu mờ)</span>
+                                            <span>50%</span>
+                                            <span>100% (Đậm nét)</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Switches Section -->
+                                    <div class="ws-physics-switches">
+                                        <div class="ws-switch-item">
+                                            <div class="ws-switch-info">
+                                                <span class="ws-switch-title">⛈️ Sấm Chớp Nền (Ambient Flash)</span>
+                                                <span class="ws-switch-desc">Tạo tia chớp sáng nền ngẫu nhiên sống động</span>
+                                            </div>
+                                            <label class="cyber-switch">
+                                                <input type="checkbox" id="ws-toggle-lightning" checked>
+                                                <span class="cyber-slider"></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="ws-switch-item">
+                                            <div class="ws-switch-info">
+                                                <span class="ws-switch-title">🍃 Gió Cuộn Ngẫu Nhiên (Turbulence Gusts)</span>
+                                                <span class="ws-switch-desc">Hạt dao động chao nghiêng tự nhiên theo luồng khí</span>
+                                            </div>
+                                            <label class="cyber-switch">
+                                                <input type="checkbox" id="ws-toggle-turbulence-gusts" checked>
+                                                <span class="cyber-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 3. Filter & Category Bar for 16 Presets Showcase -->
                     <div class="ws-filter-bar dashboard-panel">
                         <div class="ws-filter-group" id="ws-category-filters">
-                            <span class="filter-label">PHÂN LOẠI:</span>
+                            <span class="filter-label">DANH MỤC PRESETS (16):</span>
                             <button class="ws-cat-btn active" data-cat="all">Tất Cả (16)</button>
                             <button class="ws-cat-btn" data-cat="rain">🌧️ Mưa & Bão (3)</button>
                             <button class="ws-cat-btn" data-cat="snow">❄️ Tuyết & Băng (3)</button>
@@ -5238,46 +5472,9 @@
                         </div>
                     </div>
 
-                    <!-- 3. Showcase Grid (16 Interactive Visual Cards) -->
+                    <!-- 4. Showcase Grid (16 Interactive Visual Cards) -->
                     <div class="ws-showcase-grid" id="ws-cards-grid">
                         <!-- Populated dynamically via JS with interactive Mini Canvas Previews -->
-                    </div>
-
-                    <!-- 4. Zen Focus Ambient Stage -->
-                    <div class="ws-zen-stage dashboard-panel" id="ws-zen-stage-panel">
-                        <div class="zen-stage-header">
-                            <div class="zen-title-group">
-                                <span class="zen-icon">🧘</span>
-                                <div>
-                                    <h3>Zen Focus Ambient Stage</h3>
-                                    <span class="zen-sub">Góc tĩnh tâm & tập trung làm việc với hiệu ứng thời tiết toàn cảnh kết hợp đồng hồ số Neon</span>
-                                </div>
-                            </div>
-                            <div class="zen-controls">
-                                <button id="btn-zen-clock-format" class="control-btn" title="Chuyển định dạng 24h / 12h">
-                                    <span id="zen-clock-format-text">12H / 24H</span>
-                                </button>
-                                <button id="btn-zen-fullscreen" class="control-btn zen-fs-btn" title="Bật chế độ Screensaver toàn màn hình (Phím Esc để thoát)">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                                    </svg>
-                                    <span>⛶ Toàn Màn Hình</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="zen-stage-viewport" id="zen-stage-viewport">
-                            <canvas id="zen-stage-canvas" class="zen-stage-canvas"></canvas>
-                            <div class="zen-clock-overlay">
-                                <div class="zen-clock-location" id="zen-clock-location">TOKYO, JAPAN • CYBERPUNK RAIN</div>
-                                <div class="zen-digital-time" id="zen-digital-time">12:00:00</div>
-                                <div class="zen-digital-date" id="zen-digital-date">Thứ Hai, 1 Tháng 9, 2026</div>
-                                <div class="zen-quote-pill" id="zen-quote-pill">
-                                    <span id="zen-quote-icon">✨</span>
-                                    <span id="zen-quote-text">Stay focused, code with passion, and build the future.</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </section>
             </main>

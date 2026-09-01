@@ -16609,14 +16609,12 @@ select option {
     background: #ffffff;
 }
 
-}
-
 [data-theme="light"] .sandbox-iframe-container[data-bg-mode="checkered"] {
     background: repeating-conic-gradient(#cbd5e1 0% 25%, #f1f5f9 0% 50%) 50% / 20px 20px;
 }
 
 /* ==========================================================================
-   TAB 13: ATMOSPHERE & WEATHER STUDIO STYLES (16 GLOBAL PRESETS)
+   TAB 13: ATMOSPHERE & WEATHER STUDIO (DUAL-LAYER FX BLENDING & LIVE PHYSICS)
    ========================================================================== */
 
 /* 1. Hero Banner */
@@ -16624,24 +16622,24 @@ select option {
     position: relative;
     padding: 24px 28px;
     border-radius: var(--radius-lg);
-    background: var(--banner-gradient, linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(6, 78, 119, 0.35), rgba(2, 6, 23, 0.85)));
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    background: var(--banner-gradient, linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(6, 78, 119, 0.4), rgba(2, 6, 23, 0.92)));
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: var(--shadow-card), 0 0 24px var(--sidebar-glow, rgba(0, 242, 254, 0.08));
+    box-shadow: var(--shadow-card), 0 0 28px var(--sidebar-glow, rgba(0, 242, 254, 0.1));
     overflow: hidden;
-    transition: background 1.5s ease, border-color 1.5s ease, box-shadow 1.5s ease;
+    transition: background 1.2s ease, border-color 1.2s ease, box-shadow 1.2s ease;
 }
 
 .ws-hero-glow {
     position: absolute;
     top: -50%;
     right: -20%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, var(--theme-accent-glow, rgba(188, 248, 70, 0.18)) 0%, transparent 70%);
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, var(--theme-accent-glow, rgba(188, 248, 70, 0.22)) 0%, transparent 70%);
     pointer-events: none;
-    transition: background 1.5s ease;
+    transition: background 1.2s ease;
 }
 
 .ws-hero-content {
@@ -16658,7 +16656,7 @@ select option {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-width: 650px;
+    max-width: 680px;
 }
 
 .ws-hero-badge {
@@ -16667,7 +16665,7 @@ select option {
     gap: 6px;
     padding: 3px 10px;
     background: rgba(188, 248, 70, 0.12);
-    border: 1px solid rgba(188, 248, 70, 0.3);
+    border: 1px solid rgba(188, 248, 70, 0.35);
     border-radius: 9999px;
     font-size: 0.72rem;
     font-weight: 800;
@@ -16710,28 +16708,38 @@ select option {
     flex-wrap: wrap;
 }
 
-.ws-active-pill {
+.ws-active-pill,
+.ws-layer2-pill {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 6px 14px;
-    background: rgba(15, 23, 42, 0.65);
+    background: rgba(15, 23, 42, 0.72);
     border: 1px solid var(--theme-accent, #bcf846);
     border-radius: 9999px;
     box-shadow: 0 0 14px var(--theme-accent-glow, rgba(188, 248, 70, 0.25));
     font-size: 0.82rem;
 }
 
-.ws-active-pill .active-icon {
+.ws-layer2-pill {
+    border-color: #c084fc;
+    box-shadow: 0 0 14px rgba(192, 132, 252, 0.25);
+}
+
+.ws-active-pill .active-icon,
+.ws-layer2-pill .active-icon {
     font-size: 1.1rem;
 }
 
-.ws-active-pill .active-label {
+.ws-active-pill .active-label,
+.ws-layer2-pill .active-label {
     color: #94a3b8;
-    font-size: 0.76rem;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
-.ws-active-pill .active-name {
+.ws-active-pill .active-name,
+.ws-layer2-pill .layer2-name {
     color: #ffffff;
     font-weight: 700;
 }
@@ -16765,12 +16773,573 @@ select option {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.ws-zen-quick-btn:hover {
-    box-shadow: 0 0 16px var(--theme-accent-glow);
+.btn-surprise-mix {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: 1px solid #fbbf24;
+    color: #ffffff;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+}
+
+.btn-surprise-mix:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    box-shadow: 0 0 24px rgba(245, 158, 11, 0.55);
     transform: translateY(-2px);
 }
 
-/* 2. Filter & Search Bar */
+.btn-apply-global:hover {
+    border-color: var(--accent-lime);
+    box-shadow: 0 0 16px var(--theme-accent-glow);
+    color: var(--accent-lime);
+    transform: translateY(-2px);
+}
+
+/* 2. Dual Studio Workspace Layout (65% / 35%) */
+.ws-studio-workspace {
+    display: grid;
+    grid-template-columns: 65fr 35fr;
+    gap: 20px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+@media (max-width: 1200px) {
+    .ws-studio-workspace {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* LEFT COLUMN: Viewport & Blend Dock */
+.ws-viewport-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ws-viewport-card {
+    position: relative;
+    padding: 18px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Floating Blend Selector Bar */
+.ws-floating-blend-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(10, 15, 29, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ws-blend-select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 160px;
+}
+
+.ws-blend-tag {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+
+.ws-blend-tag.l1-tag {
+    color: var(--accent-lime);
+}
+
+.ws-blend-tag.l2-tag {
+    color: #c084fc;
+}
+
+.ws-blend-tag.ratio-tag {
+    color: #38bdf8;
+}
+
+.ws-blend-select {
+    padding: 6px 10px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: #f8fafc;
+    font-size: 0.8rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ws-blend-select:focus {
+    border-color: var(--accent-lime);
+    box-shadow: 0 0 10px var(--theme-accent-glow);
+}
+
+.ws-blend-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    margin-top: 14px;
+}
+
+.ws-blend-icon {
+    font-size: 1.3rem;
+    color: #f8fafc;
+    animation: rotateBlend 6s linear infinite;
+}
+
+@keyframes rotateBlend {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.ws-blend-ratio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ws-ratio-chips {
+    display: flex;
+    gap: 4px;
+}
+
+.ws-ratio-chip {
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 0.74rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ws-ratio-chip:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.ws-ratio-chip.active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+}
+
+/* Smoked Glass Viewport Canvas Container */
+.ws-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.8) 0%, rgba(2, 6, 23, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.9), 0 12px 36px rgba(0, 0, 0, 0.6);
+}
+
+.ws-viewport-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* HUD Overlay on Canvas */
+.ws-canvas-hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 20px;
+    pointer-events: auto;
+    z-index: 5;
+}
+
+.ws-hud-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ws-hud-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(10, 15, 29, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #f8fafc;
+    backdrop-filter: blur(8px);
+}
+
+.ws-hud-stats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ws-hud-badge {
+    padding: 4px 10px;
+    background: rgba(10, 15, 29, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: var(--accent-lime);
+    backdrop-filter: blur(8px);
+}
+
+/* HUD Zen Clock */
+.ws-hud-zen-clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    margin: auto 0;
+    user-select: none;
+}
+
+.ws-hud-zen-clock .zen-digital-time {
+    font-family: var(--font-mono);
+    font-size: 3.8rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 2px;
+    line-height: 1;
+    text-shadow: 0 0 32px var(--theme-accent-glow, rgba(188, 248, 70, 0.4)), 0 4px 12px rgba(0, 0, 0, 0.95);
+}
+
+.ws-hud-zen-clock .zen-digital-date {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+}
+
+.ws-hud-zen-clock .zen-clock-location {
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--theme-accent, #bcf846);
+    text-shadow: 0 0 10px var(--theme-accent-glow);
+}
+
+.ws-hud-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ws-hud-quote {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(10, 15, 29, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    backdrop-filter: blur(8px);
+    max-width: 480px;
+}
+
+.ws-hud-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.ws-hud-btn {
+    padding: 6px 12px;
+    background: rgba(10, 15, 29, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    color: #f8fafc;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+}
+
+.ws-hud-btn:hover {
+    background: rgba(188, 248, 70, 0.2);
+    border-color: var(--accent-lime);
+    color: var(--accent-lime);
+    box-shadow: 0 0 12px var(--theme-accent-glow);
+}
+
+/* Viewport Footer Shortcuts */
+.ws-viewport-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(10, 15, 29, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ws-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ws-preset-quick-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.ws-quick-blend-presets {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.ws-quick-chip {
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ws-quick-chip:hover {
+    background: rgba(188, 248, 70, 0.14);
+    border-color: var(--accent-lime);
+    color: var(--accent-lime);
+}
+
+/* RIGHT COLUMN: Particle Physics Console */
+.ws-physics-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.ws-physics-card {
+    padding: 20px 22px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    border: 1px solid var(--accent-lime);
+    box-shadow: 0 0 24px -4px var(--theme-accent-glow, rgba(188, 248, 70, 0.25)), var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.ws-physics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ws-physics-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ws-physics-icon {
+    font-size: 1.4rem;
+}
+
+.ws-physics-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+.ws-physics-sub {
+    font-size: 0.74rem;
+    color: var(--accent-lime);
+    font-weight: 600;
+}
+
+.ws-reset-physics-btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.ws-reset-physics-btn:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.ws-physics-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ws-physics-slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ws-slider-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ws-slider-head label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #f8fafc;
+}
+
+.ws-val-pill {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(188, 248, 70, 0.14);
+    border: 1px solid rgba(188, 248, 70, 0.35);
+    color: var(--accent-lime);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 800;
+}
+
+.ws-physics-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.12);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.ws-physics-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-lime);
+    box-shadow: 0 0 10px var(--accent-lime);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.ws-physics-range::-webkit-slider-thumb:hover {
+    transform: scale(1.25);
+}
+
+.ws-range-marks {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.ws-physics-switches {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ws-switch-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+}
+
+.ws-switch-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ws-switch-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.ws-switch-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* Fullscreen Viewport Mode */
+.ws-canvas-wrapper.ws-fullscreen-viewport {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    border-radius: 0;
+    margin: 0;
+}
+
+.ws-canvas-wrapper.ws-fullscreen-viewport .ws-hud-zen-clock .zen-digital-time {
+    font-size: 6.8rem;
+}
+
+/* 3. Filter & Category Bar for 16 Presets Showcase */
 .ws-filter-bar {
     display: flex;
     align-items: center;
@@ -16778,11 +17347,12 @@ select option {
     padding: 12px 18px;
     border-radius: var(--radius-lg);
     background: var(--bg-card);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
     border: 1px solid rgba(255, 255, 255, 0.12);
     flex-wrap: wrap;
     gap: 14px;
+    margin-top: 14px;
 }
 
 .ws-filter-group {
@@ -16860,12 +17430,13 @@ select option {
     color: #64748b;
 }
 
-/* 3. Showcase Grid (16 Cards) */
+/* 4. Showcase Grid (16 Cards) */
 .ws-showcase-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 18px;
     width: 100%;
+    margin-top: 14px;
 }
 
 @media (max-width: 1400px) {
@@ -16890,8 +17461,8 @@ select option {
 .ws-card {
     position: relative;
     background: var(--bg-card);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
@@ -17048,269 +17619,6 @@ select option {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.25);
     color: #ffffff;
-}
-
-/* 4. Zen Focus Ambient Stage */
-.ws-zen-stage {
-    position: relative;
-    border-radius: var(--radius-lg);
-    background: var(--bg-card);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: var(--shadow-card);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 8px;
-    transition: all 0.3s ease;
-}
-
-.zen-stage-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.zen-title-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.zen-icon {
-    font-size: 1.5rem;
-}
-
-.zen-title-group h3 {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
-}
-
-.zen-sub {
-    font-size: 0.78rem;
-    color: #94a3b8;
-}
-
-.zen-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.zen-fs-btn {
-    background: rgba(188, 248, 70, 0.12);
-    border-color: rgba(188, 248, 70, 0.3);
-    color: var(--accent-lime);
-    font-weight: 700;
-}
-
-.zen-fs-btn:hover {
-    box-shadow: 0 0 16px var(--theme-accent-glow);
-    background: rgba(188, 248, 70, 0.22);
-}
-
-.zen-stage-viewport {
-    position: relative;
-    width: 100%;
-    height: 380px;
-    border-radius: 16px;
-    overflow: hidden;
-    background: rgba(3, 7, 18, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.zen-stage-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.zen-clock-overlay {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
-    padding: 20px;
-}
-
-.zen-clock-location {
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    color: var(--theme-accent, #bcf846);
-    text-shadow: 0 0 12px var(--theme-accent-glow, rgba(188, 248, 70, 0.35));
-    text-transform: uppercase;
-}
-
-.zen-digital-time {
-    font-family: var(--font-mono);
-    font-size: 4.2rem;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: 3px;
-    line-height: 1;
-    text-shadow: 0 0 35px var(--theme-accent-glow, rgba(188, 248, 70, 0.45)), 0 4px 12px rgba(0, 0, 0, 0.95);
-    user-select: none;
-}
-
-.zen-digital-date {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #cbd5e1;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-}
-
-.zen-quote-pill {
-    margin-top: 8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 22px;
-    background: rgba(15, 23, 42, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 9999px;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--theme-accent, #bcf846);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    max-width: 680px;
-}
-
-/* Fullscreen Zen Mode */
-.ws-zen-stage.fullscreen-zen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 99999;
-    border-radius: 0;
-    margin: 0;
-    padding: 30px;
-    background: #020617;
-}
-
-.ws-zen-stage.fullscreen-zen .zen-stage-viewport {
-    height: calc(100vh - 100px);
-}
-
-.ws-zen-stage.fullscreen-zen .zen-digital-time {
-    font-size: 6.5rem;
-}
-
-/* 5. Customizer Modal Styles */
-.ws-customizer-card {
-    max-width: 540px;
-    width: 90%;
-}
-
-.ws-customizer-body {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.ws-slider-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.ws-slider-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.84rem;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.ws-val-badge {
-    padding: 2px 8px;
-    border-radius: 6px;
-    background: rgba(188, 248, 70, 0.15);
-    border: 1px solid rgba(188, 248, 70, 0.35);
-    color: var(--accent-lime);
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    font-weight: 800;
-}
-
-.ws-range-input {
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.12);
-    outline: none;
-    cursor: pointer;
-    -webkit-appearance: none;
-}
-
-.ws-range-input::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--accent-lime);
-    box-shadow: 0 0 10px var(--accent-lime);
-    cursor: pointer;
-    transition: transform 0.15s ease;
-}
-
-.ws-range-input::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-}
-
-.ws-slider-desc {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-}
-
-.ws-toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-md);
-}
-
-.ws-toggle-info {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.ws-toggle-info .toggle-title {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.ws-toggle-info .toggle-desc {
-    font-size: 0.72rem;
-    color: var(--text-muted);
 }
 
 
