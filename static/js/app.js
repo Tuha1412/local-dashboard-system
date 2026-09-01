@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navItemWallpaper: document.getElementById('nav-item-wallpaper'),
         navItemLab: document.getElementById('nav-item-lab'),
         navItemVocab: document.getElementById('nav-item-vocab'),
+        navItemWeatherStudio: document.getElementById('nav-item-weather-studio'),
         sidebarNotifBadge: document.getElementById('sidebar-notif-badge'),
         sidebarOsText: document.getElementById('sidebar-os-text'),
         sidebarUptime: document.getElementById('sidebar-uptime'),
@@ -223,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         viewWallpaperStudio: document.getElementById('view-wallpaper-studio'),
         viewSnippetLab: document.getElementById('view-snippet-lab'),
         viewVocabBooster: document.getElementById('view-vocab-booster'),
+        viewWeatherStudio: document.getElementById('tab-weather-studio') || document.getElementById('view-weather-studio'),
 
         // Tab 4: App Analytics Elements
         appKpiTodayNet: document.getElementById('app-kpi-today-net'),
@@ -1628,11 +1630,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setConnectionStatus(status) {
+        if (!elements.wsStatus) {
+            elements.wsStatus = document.getElementById('ws-status');
+        }
+        if (!elements.wsStatus) return;
         elements.wsStatus.className = `status-indicator status-${status}`;
         if (status === 'connected') {
             elements.wsStatus.innerHTML = '<span class="status-dot"></span><span class="status-text">Connected (1s)</span>';
         } else if (status === 'connecting') {
-            elements.wsStatus.innerHTML = '<span class="status-dot"></span><span class="status-text">Reconnecting...</span>';
+            elements.wsStatus.innerHTML = '<span class="status-dot"></span><span class="status-text">Connecting...</span>';
         } else {
             elements.wsStatus.innerHTML = '<span class="status-dot"></span><span class="status-text">Disconnected</span>';
         }
@@ -3565,12 +3571,13 @@ document.addEventListener('DOMContentLoaded', () => {
             wallpaper: 'tab_wallpaper',
             lab: 'tab_lab',
             vocab: 'tab_vocab',
+            weather_studio: 'tab_weather_studio',
         };
 
         // If target tab is disabled in Module Control Center, fallback to first enabled tab
         const reqFeat = tabKeyMap[targetTab];
         if (window.featureManager && window.featureManager.config && reqFeat && window.featureManager.config[reqFeat] === false) {
-            const tabsOrder = ['overview', 'disk', 'apps', 'power', 'downloads', 'radar', 'alerts', 'notifications', 'focus', 'lab', 'wallpaper', 'vocab'];
+            const tabsOrder = ['overview', 'disk', 'apps', 'power', 'downloads', 'radar', 'alerts', 'notifications', 'focus', 'lab', 'wallpaper', 'vocab', 'weather_studio'];
             const fallbackTab = tabsOrder.find(t => window.featureManager.config[tabKeyMap[t]]) || 'overview';
             if (fallbackTab === targetTab) return;
             showActionToast(`⚠️ Tab "${targetTab.toUpperCase()}" đang bị tắt trong Module Control Center`);
@@ -3594,6 +3601,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.navItemWallpaper) elements.navItemWallpaper.classList.toggle('active', targetTab === 'wallpaper');
         if (elements.navItemLab) elements.navItemLab.classList.toggle('active', targetTab === 'lab');
         if (elements.navItemVocab) elements.navItemVocab.classList.toggle('active', targetTab === 'vocab');
+        if (elements.navItemWeatherStudio) elements.navItemWeatherStudio.classList.toggle('active', targetTab === 'weather_studio');
 
         // 2. Switch Tab Views
         if (elements.viewOverview) elements.viewOverview.classList.toggle('hidden', targetTab !== 'overview');
@@ -3608,6 +3616,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.viewWallpaperStudio) elements.viewWallpaperStudio.classList.toggle('hidden', targetTab !== 'wallpaper');
         if (elements.viewSnippetLab) elements.viewSnippetLab.classList.toggle('hidden', targetTab !== 'lab');
         if (elements.viewVocabBooster) elements.viewVocabBooster.classList.toggle('hidden', targetTab !== 'vocab');
+        const vWS = elements.viewWeatherStudio || document.getElementById('tab-weather-studio') || document.getElementById('view-weather-studio');
+        if (vWS) vWS.classList.toggle('hidden', targetTab !== 'weather_studio');
 
         // 3. Update Header Breadcrumb Title & Trigger Sub-tab managers
         if (targetTab === 'overview') {
@@ -3653,28 +3663,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
         } else if (targetTab === 'alerts') {
-            elements.headerViewTitle.textContent = 'Alerts & Webhook Notifications';
+            elements.headerViewTitle.textContent = 'Resource Threshold Alerting & Webhooks';
             fetchAlertConfig();
             if (typeof focusDeckManager !== 'undefined') focusDeckManager.onTabDeactivated();
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
         } else if (targetTab === 'focus') {
-            elements.headerViewTitle.textContent = 'Cyber Matrix & Focus Deck';
+            elements.headerViewTitle.textContent = 'Cyber Matrix & Hyper Focus Deck';
             if (typeof focusDeckManager !== 'undefined') focusDeckManager.onTabActivated();
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
         } else if (targetTab === 'radar') {
-            elements.headerViewTitle.textContent = 'Network & LAN Radar HUD';
+            elements.headerViewTitle.textContent = 'Network Radar & LAN Scanner';
             if (typeof focusDeckManager !== 'undefined') focusDeckManager.onTabDeactivated();
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabActivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
         } else if (targetTab === 'power') {
-            elements.headerViewTitle.textContent = 'Power & Carbon Cost Estimator';
+            elements.headerViewTitle.textContent = 'Power Consumption & Carbon Cost Estimator';
             if (typeof focusDeckManager !== 'undefined') focusDeckManager.onTabDeactivated();
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabActivated();
         } else if (targetTab === 'wallpaper') {
-            elements.headerViewTitle.textContent = 'Dynamic Wallpaper Studio';
+            elements.headerViewTitle.textContent = 'Dynamic Wallpaper Studio (4K UHD)';
             if (typeof focusDeckManager !== 'undefined') focusDeckManager.onTabDeactivated();
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
@@ -3691,8 +3701,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
             if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
             if (typeof vocabManager !== 'undefined') vocabManager.onTabActivated();
+        } else if (targetTab === 'weather_studio') {
+            elements.headerViewTitle.textContent = 'Atmosphere & Weather Studio (16 Presets)';
+            if (typeof focusDeckManager !== 'undefined') focusDeckManager.onTabDeactivated();
+            if (typeof networkRadarManager !== 'undefined') networkRadarManager.onTabDeactivated();
+            if (typeof powerEstimatorManager !== 'undefined') powerEstimatorManager.onTabDeactivated();
+            if (typeof weatherStudioManager !== 'undefined') weatherStudioManager.onTabActivated();
         }
     }
+
+    window.switchTab = switchTab;
 
     function setupEvents() {
         // Sidebar Navigation Clicks
@@ -3708,6 +3726,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.navItemWallpaper) elements.navItemWallpaper.addEventListener('click', () => switchTab('wallpaper'));
         if (elements.navItemLab) elements.navItemLab.addEventListener('click', () => switchTab('lab'));
         if (elements.navItemVocab) elements.navItemVocab.addEventListener('click', () => switchTab('vocab'));
+        
+        const navWeatherStudio = elements.navItemWeatherStudio || document.getElementById('nav-item-weather-studio');
+        if (navWeatherStudio) {
+            navWeatherStudio.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab('weather_studio');
+            });
+        }
 
         // Tab 6: Alerts & Webhooks Event Listeners
         if (elements.subnavAlertSettings) {
@@ -7849,7 +7875,7 @@ document.addEventListener('DOMContentLoaded', () => {
         init() {
             this.cacheDOM();
             this.bindEvents();
-            this.initCanvas();
+            // Ambient Canvas is dynamically powered by weatherThemeEngine (Atmospheric Skin Engine)
             this.fetchWeather(false);
 
             // Auto-refresh weather every 15 minutes (900,000 ms)
@@ -9335,6 +9361,880 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // =========================================================================
+    // LIVE HTML & CSS PLAYGROUND / SANDBOX ENGINE (TAB 11 SUB-MODULE)
+    // =========================================================================
+    const snippetSandboxManager = {
+        state: {
+            activeSubtab: 'manager', // 'manager' or 'sandbox'
+            isAutoLive: true,
+            bgMode: 'dark',
+            viewportWidth: '100%',
+            isFullscreen: false,
+            lastRenderTime: 0,
+        },
+        dom: {},
+        debounceTimer: null,
+
+        templates: {
+            btn_neon: {
+                name: 'Neon Glass Button & Hover Glow',
+                html: `<div class="demo-container">
+  <button class="neon-glass-btn" onclick="alert('⚡ Cyber Protocol Initiated!')">
+    <span class="btn-icon">⚡</span>
+    <span class="btn-text">Execute Cyber Protocol</span>
+    <span class="btn-glow-bar"></span>
+  </button>
+  <p class="demo-sub">Hover or click to witness neon particle refraction</p>
+</div>`,
+                css: `/* Embedded Fonts: Plus Jakarta Sans */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #f8fafc;
+  overflow: hidden;
+}
+
+.demo-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.neon-glass-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 36px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #090d16;
+  background: linear-gradient(135deg, #bcf846 0%, #00f2fe 100%);
+  border: 1px solid #bcf846;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 0 24px rgba(188, 248, 70, 0.4), 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.neon-glass-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 40px rgba(188, 248, 70, 0.7), 0 14px 40px rgba(0, 0, 0, 0.6);
+  border-color: #ffffff;
+}
+
+.neon-glass-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-icon {
+  font-size: 1.25rem;
+}
+
+.btn-glow-bar {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.neon-glass-btn:hover .btn-glow-bar {
+  opacity: 1;
+}
+
+.demo-sub {
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}`
+            },
+
+            cyber_rain: {
+                name: 'Cyberpunk Rain / Slanted Particle Animation',
+                html: `<div class="rain-scene">
+  <div class="cyber-card">
+    <div class="badge-row">
+      <span class="live-led"></span>
+      <span class="badge-text">SHINJUKU SECTOR 04</span>
+    </div>
+    <h2>TOKYO CYBERPUNK</h2>
+    <p>Atmospheric slanted rain physics simulated using pure CSS keyframes & linear gradients.</p>
+    <div class="stats-row">
+      <div class="stat-pill">🌧️ Rainfall: 42mm/h</div>
+      <div class="stat-pill">⚡ Matrix: 99.8%</div>
+    </div>
+  </div>
+
+  <!-- Rain Streaks -->
+  <div class="rain-streak r1"></div>
+  <div class="rain-streak r2"></div>
+  <div class="rain-streak r3"></div>
+  <div class="rain-streak r4"></div>
+  <div class="rain-streak r5"></div>
+  <div class="rain-streak r6"></div>
+  <div class="rain-streak r7"></div>
+  <div class="rain-streak r8"></div>
+</div>`,
+                css: `* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #030712;
+  color: #f8fafc;
+  overflow: hidden;
+}
+
+.rain-scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 30%, rgba(6, 78, 119, 0.35) 0%, #030712 80%);
+}
+
+.cyber-card {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  max-width: 440px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(188, 248, 70, 0.35);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 0 35px rgba(0, 242, 254, 0.15), 0 20px 50px rgba(0, 0, 0, 0.7);
+  transition: transform 0.3s ease;
+}
+
+.cyber-card:hover {
+  transform: translateY(-4px);
+  border-color: #bcf846;
+}
+
+.badge-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(188, 248, 70, 0.12);
+  border: 1px solid rgba(188, 248, 70, 0.3);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #bcf846;
+  margin-bottom: 14px;
+}
+
+.live-led {
+  width: 7px;
+  height: 7px;
+  background: #bcf846;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #bcf846;
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.stats-row {
+  display: flex;
+  gap: 10px;
+}
+
+.stat-pill {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #00f2fe;
+  text-align: center;
+}
+
+/* Rain Streaks */
+.rain-streak {
+  position: absolute;
+  top: -120px;
+  width: 2px;
+  height: 90px;
+  background: linear-gradient(180deg, transparent, rgba(0, 242, 254, 0.8), #bcf846);
+  opacity: 0.7;
+  transform: rotate(18deg);
+  animation: fall 1.2s linear infinite;
+}
+
+.r1 { left: 15%; animation-duration: 0.9s; animation-delay: 0.1s; }
+.r2 { left: 30%; animation-duration: 1.4s; animation-delay: 0.3s; }
+.r3 { left: 48%; animation-duration: 1.1s; animation-delay: 0s; }
+.r4 { left: 65%; animation-duration: 1.3s; animation-delay: 0.5s; }
+.r5 { left: 82%; animation-duration: 0.8s; animation-delay: 0.2s; }
+.r6 { left: 22%; animation-duration: 1.5s; animation-delay: 0.7s; }
+.r7 { left: 75%; animation-duration: 1.0s; animation-delay: 0.4s; }
+.r8 { left: 92%; animation-duration: 1.2s; animation-delay: 0.6s; }
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(18deg); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: translateY(110vh) rotate(18deg); opacity: 0; }
+}`
+            },
+
+            aurora_wave: {
+                name: 'Aurora Gradient Wave Box',
+                html: `<div class="aurora-container">
+  <div class="aurora-glow-box">
+    <div class="aurora-bg-mesh"></div>
+    <div class="aurora-content">
+      <span class="aurora-badge">🌌 TROMSØ ARCTIC RADAR</span>
+      <h3>Northern Lights Spectral Engine</h3>
+      <p>Multi-layered organic sine wave visualizer blending emerald aurora (#00ff87) with ice cyan (#60efff).</p>
+      <div class="aurora-meter">
+        <div class="meter-bar"><div class="meter-fill"></div></div>
+        <span class="meter-label">Spectral Flux: 8.7 GHz Active</span>
+      </div>
+    </div>
+  </div>
+</div>`,
+                css: `* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #020617;
+  color: #f8fafc;
+  overflow: hidden;
+}
+
+.aurora-container {
+  padding: 30px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.aurora-glow-box {
+  position: relative;
+  border-radius: 24px;
+  padding: 36px 30px;
+  overflow: hidden;
+  background: rgba(10, 15, 29, 0.8);
+  border: 1px solid rgba(0, 255, 135, 0.3);
+  box-shadow: 0 0 40px rgba(0, 255, 135, 0.2), 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.aurora-bg-mesh {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(0, 255, 135, 0.35) 0%, transparent 40%),
+              radial-gradient(circle at 70% 60%, rgba(96, 239, 255, 0.35) 0%, transparent 45%),
+              radial-gradient(circle at 50% 80%, rgba(168, 85, 247, 0.25) 0%, transparent 50%);
+  filter: blur(40px);
+  animation: auroraSpin 10s ease-in-out infinite alternate;
+}
+
+@keyframes auroraSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(15deg) scale(1.1); }
+  100% { transform: rotate(-10deg) scale(1.05); }
+}
+
+.aurora-content {
+  position: relative;
+  z-index: 5;
+}
+
+.aurora-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #00ff87;
+  background: rgba(0, 255, 135, 0.12);
+  border: 1px solid rgba(0, 255, 135, 0.3);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  margin-bottom: 14px;
+}
+
+h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+p {
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 22px;
+}
+
+.aurora-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meter-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.meter-fill {
+  width: 82%;
+  height: 100%;
+  background: linear-gradient(90deg, #00ff87, #60efff);
+  border-radius: 20px;
+  box-shadow: 0 0 12px #00ff87;
+}
+
+.meter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #60efff;
+}`
+            },
+
+            glass_card: {
+                name: 'Frosted Glass Metric Card',
+                html: `<div class="card-showcase">
+  <div class="frosted-metric-card">
+    <div class="card-top-glow"></div>
+    <div class="card-header">
+      <div class="icon-wrap">⚡</div>
+      <div class="title-group">
+        <span class="card-category">CLUSTER PERFORMANCE</span>
+        <h4>NODE-ALPHA ENGINE</h4>
+      </div>
+      <span class="status-pill">99.9% HEALTHY</span>
+    </div>
+    
+    <div class="metric-val-row">
+      <span class="metric-number">1,482</span>
+      <span class="metric-unit">ops/sec</span>
+    </div>
+
+    <div class="sparkline-bar">
+      <div class="bar-fill" style="width: 78%;"></div>
+    </div>
+
+    <div class="card-footer">
+      <span>CPU: 24.2%</span>
+      <span>RAM: 5.4 GB</span>
+      <span>Temp: 48°C</span>
+    </div>
+  </div>
+</div>`,
+                css: `* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #090d16;
+  color: #f8fafc;
+  overflow: hidden;
+}
+
+.card-showcase {
+  padding: 30px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.frosted-metric-card {
+  position: relative;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.frosted-metric-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(188, 248, 70, 0.45);
+  box-shadow: 0 0 25px rgba(188, 248, 70, 0.2), 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+
+.card-top-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #bcf846, #00f2fe);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.icon-wrap {
+  width: 38px;
+  height: 38px;
+  background: rgba(188, 248, 70, 0.12);
+  color: #bcf846;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.title-group {
+  flex: 1;
+}
+
+.card-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.status-pill {
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: rgba(188, 248, 70, 0.15);
+  color: #bcf846;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  border: 1px solid rgba(188, 248, 70, 0.3);
+}
+
+.metric-val-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.metric-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.03em;
+}
+
+.metric-unit {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.sparkline-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #bcf846, #00f2fe);
+  border-radius: 10px;
+  box-shadow: 0 0 10px #bcf846;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}`
+            }
+        },
+
+        init() {
+            this.cacheDOM();
+            this.bindEvents();
+            this.loadInitialTemplate('btn_neon');
+            window.snippetSandboxManager = this;
+        },
+
+        cacheDOM() {
+            this.dom = {
+                subtabManagerBtn: document.getElementById('snippet-subtab-manager'),
+                subtabSandboxBtn: document.getElementById('snippet-subtab-sandbox'),
+                panelManager: document.getElementById('snippet-panel-manager'),
+                panelSandbox: document.getElementById('snippet-panel-sandbox'),
+
+                // Controls
+                templateSelect: document.getElementById('sandbox-template-select'),
+                toggleLive: document.getElementById('sandbox-toggle-live'),
+                btnRun: document.getElementById('sandbox-btn-run'),
+                btnClear: document.getElementById('sandbox-btn-clear'),
+                btnSave: document.getElementById('sandbox-btn-save'),
+
+                // Editors
+                htmlCode: document.getElementById('sandbox-html-code'),
+                cssCode: document.getElementById('sandbox-css-code'),
+                btnCopyHtml: document.getElementById('sandbox-btn-copy-html'),
+                btnCopyCss: document.getElementById('sandbox-btn-copy-css'),
+
+                // Preview
+                previewColumn: document.querySelector('.sandbox-preview-column'),
+                iframeWrapper: document.getElementById('sandbox-iframe-wrapper'),
+                previewIframe: document.getElementById('live-sandbox-preview'),
+                renderStatus: document.getElementById('sandbox-render-status'),
+                renderTime: document.getElementById('sandbox-render-time'),
+                bgSwitcher: document.getElementById('sandbox-bg-switcher'),
+                viewportSwitcher: document.getElementById('sandbox-viewport-switcher'),
+                btnFullscreen: document.getElementById('sandbox-btn-fullscreen'),
+            };
+        },
+
+        bindEvents() {
+            // Sub-tab toggling
+            if (this.dom.subtabManagerBtn && this.dom.subtabSandboxBtn) {
+                this.dom.subtabManagerBtn.addEventListener('click', () => this.switchSubtab('manager'));
+                this.dom.subtabSandboxBtn.addEventListener('click', () => this.switchSubtab('sandbox'));
+            }
+
+            // Template Selector
+            if (this.dom.templateSelect) {
+                this.dom.templateSelect.addEventListener('change', (e) => {
+                    this.loadInitialTemplate(e.target.value);
+                });
+            }
+
+            // Live inputs with debounce
+            if (this.dom.htmlCode) {
+                this.dom.htmlCode.addEventListener('input', () => this.handleCodeInput());
+                this.dom.htmlCode.addEventListener('keydown', (e) => this.handleEditorKeydown(e, this.dom.htmlCode));
+            }
+            if (this.dom.cssCode) {
+                this.dom.cssCode.addEventListener('input', () => this.handleCodeInput());
+                this.dom.cssCode.addEventListener('keydown', (e) => this.handleEditorKeydown(e, this.dom.cssCode));
+            }
+
+            // Run button
+            if (this.dom.btnRun) {
+                this.dom.btnRun.addEventListener('click', () => this.renderLivePreview(true));
+            }
+
+            // Clear button
+            if (this.dom.btnClear) {
+                this.dom.btnClear.addEventListener('click', () => this.clearCode());
+            }
+
+            // Save to snippets button
+            if (this.dom.btnSave) {
+                this.dom.btnSave.addEventListener('click', () => this.saveToSnippets());
+            }
+
+            // Copy buttons
+            if (this.dom.btnCopyHtml) {
+                this.dom.btnCopyHtml.addEventListener('click', () => {
+                    if (this.dom.htmlCode) {
+                        navigator.clipboard.writeText(this.dom.htmlCode.value);
+                        showActionToast('📋 Đã sao chép mã HTML!');
+                    }
+                });
+            }
+            if (this.dom.btnCopyCss) {
+                this.dom.btnCopyCss.addEventListener('click', () => {
+                    if (this.dom.cssCode) {
+                        navigator.clipboard.writeText(this.dom.cssCode.value);
+                        showActionToast('📋 Đã sao chép mã CSS!');
+                    }
+                });
+            }
+
+            // Background Mode Switcher
+            if (this.dom.bgSwitcher) {
+                const btns = this.dom.bgSwitcher.querySelectorAll('.bg-switch-btn');
+                btns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        btns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const mode = btn.getAttribute('data-bg');
+                        this.setBgMode(mode);
+                    });
+                });
+            }
+
+            // Viewport Switcher
+            if (this.dom.viewportSwitcher) {
+                const btns = this.dom.viewportSwitcher.querySelectorAll('.viewport-btn');
+                btns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        btns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        const width = btn.getAttribute('data-width');
+                        this.setViewportWidth(width);
+                    });
+                });
+            }
+
+            // Fullscreen Toggle
+            if (this.dom.btnFullscreen) {
+                this.dom.btnFullscreen.addEventListener('click', () => this.toggleFullscreen());
+            }
+
+            // Escape to exit fullscreen
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.state.isFullscreen) {
+                    this.toggleFullscreen();
+                }
+            });
+        },
+
+        switchSubtab(subtab) {
+            this.state.activeSubtab = subtab;
+            if (subtab === 'manager') {
+                if (this.dom.subtabManagerBtn) this.dom.subtabManagerBtn.classList.add('active');
+                if (this.dom.subtabSandboxBtn) this.dom.subtabSandboxBtn.classList.remove('active');
+                if (this.dom.panelManager) this.dom.panelManager.classList.remove('hidden');
+                if (this.dom.panelSandbox) this.dom.panelSandbox.classList.add('hidden');
+            } else {
+                if (this.dom.subtabManagerBtn) this.dom.subtabManagerBtn.classList.remove('active');
+                if (this.dom.subtabSandboxBtn) this.dom.subtabSandboxBtn.classList.add('active');
+                if (this.dom.panelManager) this.dom.panelManager.classList.add('hidden');
+                if (this.dom.panelSandbox) this.dom.panelSandbox.classList.remove('hidden');
+                this.renderLivePreview();
+            }
+        },
+
+        loadInitialTemplate(key) {
+            const tmpl = this.templates[key];
+            if (!tmpl) return;
+
+            if (this.dom.htmlCode) this.dom.htmlCode.value = tmpl.html;
+            if (this.dom.cssCode) this.dom.cssCode.value = tmpl.css;
+            this.renderLivePreview(true);
+        },
+
+        handleCodeInput() {
+            const isAuto = this.dom.toggleLive ? this.dom.toggleLive.checked : true;
+            if (!isAuto) return;
+
+            if (this.debounceTimer) clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => {
+                this.renderLivePreview();
+            }, 250);
+        },
+
+        handleEditorKeydown(e, textarea) {
+            // Tab key support in textarea
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                textarea.value = textarea.value.substring(0, start) + '  ' + textarea.value.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start + 2;
+                this.handleCodeInput();
+            } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                this.renderLivePreview(true);
+            }
+        },
+
+        renderLivePreview(showToast = false) {
+            if (!this.dom.previewIframe) return;
+
+            const t0 = performance.now();
+            const html = this.dom.htmlCode ? this.dom.htmlCode.value : '';
+            const css = this.dom.cssCode ? this.dom.cssCode.value : '';
+
+            const docContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    ${css}
+  </style>
+</head>
+<body>
+  ${html}
+</body>
+</html>`;
+
+            try {
+                this.dom.previewIframe.srcdoc = docContent;
+                const t1 = performance.now();
+                const diff = (t1 - t0).toFixed(1);
+                this.state.lastRenderTime = diff;
+
+                if (this.dom.renderStatus) {
+                    this.dom.renderStatus.textContent = '⚡ Rendered';
+                    this.dom.renderStatus.style.color = 'var(--theme-accent, #bcf846)';
+                }
+                if (this.dom.renderTime) {
+                    this.dom.renderTime.textContent = `Render time: ${diff}ms`;
+                }
+
+                if (showToast) {
+                    showActionToast(`✨ Live Preview refreshed (${diff}ms)`);
+                }
+            } catch (err) {
+                console.error('Sandbox Render Error:', err);
+                if (this.dom.renderStatus) {
+                    this.dom.renderStatus.textContent = '⚠️ Error';
+                    this.dom.renderStatus.style.color = '#f87171';
+                }
+            }
+        },
+
+        setBgMode(mode) {
+            this.state.bgMode = mode;
+            if (this.dom.iframeWrapper) {
+                this.dom.iframeWrapper.setAttribute('data-bg-mode', mode);
+            }
+        },
+
+        setViewportWidth(width) {
+            this.state.viewportWidth = width;
+            if (this.dom.previewIframe) {
+                this.dom.previewIframe.style.width = width;
+            }
+        },
+
+        toggleFullscreen() {
+            this.state.isFullscreen = !this.state.isFullscreen;
+            if (this.dom.previewColumn) {
+                this.dom.previewColumn.classList.toggle('fullscreen-preview', this.state.isFullscreen);
+            }
+            if (this.dom.btnFullscreen) {
+                this.dom.btnFullscreen.innerHTML = this.state.isFullscreen
+                    ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>`
+                    : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>`;
+            }
+        },
+
+        clearCode() {
+            if (confirm('Bạn có chắc muốn làm sạch toàn bộ khung soạn thảo HTML & CSS?')) {
+                if (this.dom.htmlCode) this.dom.htmlCode.value = '';
+                if (this.dom.cssCode) this.dom.cssCode.value = '';
+                this.renderLivePreview();
+                showActionToast('🧹 Đã xóa trắng code!');
+            }
+        },
+
+        saveToSnippets() {
+            const html = this.dom.htmlCode ? this.dom.htmlCode.value : '';
+            const css = this.dom.cssCode ? this.dom.cssCode.value : '';
+
+            if (!html.trim() && !css.trim()) {
+                showActionToast('⚠️ Khung code đang trống!');
+                return;
+            }
+
+            const tmplKey = this.dom.templateSelect ? this.dom.templateSelect.value : 'btn_neon';
+            const defaultName = (this.templates[tmplKey] && this.templates[tmplKey].name) ? this.templates[tmplKey].name : 'Custom HTML/CSS Sandbox UI';
+            const title = prompt('Nhập tiêu đề Snippet để lưu vào kho:', defaultName);
+            if (!title) return;
+
+            const fullContent = `/* ========================================================
+   HTML STRUCTURE
+   ======================================================== */
+${html}
+
+/* ========================================================
+   CSS STYLES
+   ======================================================== */
+${css}`;
+
+            // Save via snippetLabManager
+            if (window.snippetLabManager) {
+                const newSnippet = {
+                    id: 'snip_' + Date.now(),
+                    title: title.trim(),
+                    category: 'other',
+                    tags: ['html', 'css', 'sandbox', 'ui'],
+                    description: 'Interactive HTML/CSS Component created in Live Sandbox Playground',
+                    content: fullContent,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
+
+                window.snippetLabManager.state.snippets.unshift(newSnippet);
+                window.snippetLabManager.renderSnippetsList();
+                window.snippetLabManager.updateCategoryCounts();
+                window.snippetLabManager.updateTagsCloud();
+                showActionToast('💾 Đã lưu thành công vào Kho Snippets!');
+            }
+        }
+    };
+
+    // =========================================================================
     // MODULE CONTROL CENTER (FEATURE TOGGLE DECK & LIFECYCLE CONTROLLER)
     // =========================================================================
     const DEFAULT_FEATURES = {
@@ -9350,6 +10250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tab_lab: true,
         tab_wallpaper: true,
         tab_vocab: true,
+        tab_weather_studio: true,
         ai_jarvis_voice: true,
         ai_gemini_chat: true,
         widget_sidebar_actions: true,
@@ -9364,7 +10265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const FEATURE_CATEGORIES = {
         system: ['tab_overview', 'tab_disk', 'tab_apps', 'tab_power', 'tab_downloads'],
         network: ['tab_radar', 'tab_alerts', 'tab_notifications'],
-        productivity: ['tab_focus', 'tab_lab', 'tab_wallpaper', 'tab_vocab'],
+        productivity: ['tab_focus', 'tab_lab', 'tab_wallpaper', 'tab_vocab', 'tab_weather_studio'],
         widgets: [
             'ai_jarvis_voice',
             'ai_gemini_chat',
@@ -9632,6 +10533,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tab_lab: false,
                     tab_wallpaper: false,
                     tab_vocab: false,
+                    tab_weather_studio: false,
                     ai_jarvis_voice: false,
                     ai_gemini_chat: false,
                     widget_sidebar_actions: false,
@@ -9656,6 +10558,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tab_lab: true,
                     tab_wallpaper: true,
                     tab_vocab: true,
+                    tab_weather_studio: true,
                     ai_jarvis_voice: true,
                     ai_gemini_chat: true,
                     widget_sidebar_actions: true,
@@ -10007,6 +10910,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (elements.navItemWallpaper) elements.navItemWallpaper.classList.toggle('hidden', this.config.tab_wallpaper === false);
             if (elements.navItemLab) elements.navItemLab.classList.toggle('hidden', this.config.tab_lab === false);
             if (elements.navItemVocab) elements.navItemVocab.classList.toggle('hidden', this.config.tab_vocab === false);
+            const navWS = elements.navItemWeatherStudio || document.getElementById('nav-item-weather-studio');
+            if (navWS) navWS.classList.toggle('hidden', this.config.tab_weather_studio === false);
 
             // 1.1 Auto-hide section groups if all tabs within them are disabled
             ['nav-group-system', 'nav-group-network', 'nav-group-tools'].forEach(groupId => {
@@ -10046,11 +10951,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 wallpaper: 'tab_wallpaper',
                 lab: 'tab_lab',
                 vocab: 'tab_vocab',
+                weather_studio: 'tab_weather_studio',
             };
 
             const currentTabKey = tabKeyMap[state.activeTab];
             if (currentTabKey && this.config[currentTabKey] === false) {
-                const tabsOrder = ['overview', 'disk', 'apps', 'power', 'downloads', 'radar', 'alerts', 'notifications', 'focus', 'lab', 'wallpaper', 'vocab'];
+                const tabsOrder = ['overview', 'disk', 'apps', 'power', 'downloads', 'radar', 'alerts', 'notifications', 'focus', 'lab', 'wallpaper', 'vocab', 'weather_studio'];
                 const fallbackTab = tabsOrder.find(t => this.config[tabKeyMap[t]] !== false) || 'overview';
                 switchTab(fallbackTab);
             }
@@ -10070,6 +10976,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tab_lab: 'Prompt & Snippet Lab',
                 tab_wallpaper: 'Wallpaper Studio',
                 tab_vocab: 'Daily Vocab Booster',
+                tab_weather_studio: 'Atmosphere & Weather Studio (16 FX)',
                 ai_jarvis_voice: 'Jarvis Voice AI Copilot',
                 ai_gemini_chat: 'Google Gemini AI Copilot',
                 widget_sidebar_actions: 'Sidebar Quick Actions',
@@ -12222,6 +13129,1830 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.diskBloatManager = diskBloatManager;
 
+    // =========================================================================
+    // GLOBAL WEATHER ATMOSPHERIC THEMES & DYNAMIC SKIN ENGINE (16 PRESETS)
+    // =========================================================================
+    const weatherThemeEngine = {
+        presets: {
+            tokyo_rain: {
+                key: 'tokyo_rain',
+                name: 'Tokyo Cyberpunk Rain',
+                shortName: 'Tokyo Cyber Rain',
+                location: 'Tokyo, Japan',
+                category: 'rain',
+                icon: '🌧️',
+                accent: '#bcf846',
+                secondary: '#00f2fe',
+                accentGlow: 'rgba(188, 248, 70, 0.35)',
+                sidebarGlow: 'rgba(0, 242, 254, 0.15)',
+                cardGlow: 'rgba(188, 248, 70, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(6, 78, 119, 0.45), rgba(2, 6, 23, 0.95))',
+                type: 'rain',
+                desc: 'Hạt mưa rơi chéo phát quang Neon Cyan & Lime rực rỡ'
+            },
+            tromso_aurora: {
+                key: 'tromso_aurora',
+                name: 'Tromsø Aurora Borealis',
+                shortName: 'Tromsø Aurora',
+                location: 'Tromsø, Norway',
+                category: 'aurora',
+                icon: '🌌',
+                accent: '#00ff87',
+                secondary: '#60efff',
+                accentGlow: 'rgba(0, 255, 135, 0.35)',
+                sidebarGlow: 'rgba(0, 255, 135, 0.18)',
+                cardGlow: 'rgba(0, 255, 135, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(10, 25, 30, 0.95), rgba(0, 180, 130, 0.3), rgba(15, 23, 42, 0.95))',
+                type: 'aurora',
+                desc: 'Sóng cực quang xanh ngọc và băng lam uốn lượn đa tầng'
+            },
+            reykjavik_blizzard: {
+                key: 'reykjavik_blizzard',
+                name: 'Reykjavik Nordic Blizzard',
+                shortName: 'Reykjavik Blizzard',
+                location: 'Reykjavik, Iceland',
+                category: 'snow',
+                icon: '❄️',
+                accent: '#80deea',
+                secondary: '#ffffff',
+                accentGlow: 'rgba(128, 222, 234, 0.35)',
+                sidebarGlow: 'rgba(128, 222, 234, 0.15)',
+                cardGlow: 'rgba(128, 222, 234, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(148, 163, 184, 0.28), rgba(2, 6, 23, 0.95))',
+                type: 'snow',
+                desc: 'Bông tuyết kích thước ngẫu nhiên bay lượn kèm hiệu ứng gió xoáy'
+            },
+            sahara_sandstorm: {
+                key: 'sahara_sandstorm',
+                name: 'Sahara Dust & Golden Sunset',
+                shortName: 'Sahara Dust',
+                location: 'Sahara Desert',
+                category: 'nature',
+                icon: '🌅',
+                accent: '#ffd700',
+                secondary: '#ff7e5f',
+                accentGlow: 'rgba(255, 215, 0, 0.35)',
+                sidebarGlow: 'rgba(255, 126, 95, 0.18)',
+                cardGlow: 'rgba(255, 215, 0, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(28, 15, 10, 0.95), rgba(180, 83, 9, 0.35), rgba(15, 23, 42, 0.95))',
+                type: 'golden_dust',
+                desc: 'Hạt bụi vàng hổ phách lơ lửng bốc lên từ hoàng hôn ấm áp'
+            },
+            kyoto_sakura: {
+                key: 'kyoto_sakura',
+                name: 'Kyoto Cherry Blossom Mist',
+                shortName: 'Kyoto Sakura',
+                location: 'Kyoto, Japan',
+                category: 'nature',
+                icon: '🌸',
+                accent: '#ffb7b2',
+                secondary: '#ff758c',
+                accentGlow: 'rgba(255, 183, 178, 0.35)',
+                sidebarGlow: 'rgba(255, 117, 140, 0.18)',
+                cardGlow: 'rgba(255, 183, 178, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(26, 15, 24, 0.95), rgba(162, 28, 97, 0.3), rgba(15, 23, 42, 0.95))',
+                type: 'sakura',
+                desc: 'Cánh hoa hồng phấn lượn sóng xoay nhẹ trong sương mờ'
+            },
+            saigon_thunder: {
+                key: 'saigon_thunder',
+                name: 'Saigon Tropical Thunderstorm',
+                shortName: 'Saigon Storm',
+                location: 'Ho Chi Minh City, VN',
+                category: 'rain',
+                icon: '⚡',
+                accent: '#38bdf8',
+                secondary: '#e0f2fe',
+                accentGlow: 'rgba(56, 189, 248, 0.35)',
+                sidebarGlow: 'rgba(56, 189, 248, 0.18)',
+                cardGlow: 'rgba(56, 189, 248, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(10, 18, 32, 0.95), rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.95))',
+                type: 'thunder',
+                desc: 'Mưa rào nhiệt đới lớn kèm chớp sáng nền sấm sét'
+            },
+            london_fog: {
+                key: 'london_fog',
+                name: 'London Thames Evening Fog',
+                shortName: 'London Fog',
+                location: 'London, UK',
+                category: 'fog',
+                icon: '🌫️',
+                accent: '#cbd5e1',
+                secondary: '#94a3b8',
+                accentGlow: 'rgba(203, 213, 225, 0.30)',
+                sidebarGlow: 'rgba(148, 163, 184, 0.15)',
+                cardGlow: 'rgba(203, 213, 225, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(51, 65, 85, 0.45), rgba(15, 23, 42, 0.95))',
+                type: 'fog',
+                desc: 'Khối sương mờ xám trôi êm ả ngang dòng sông Thames'
+            },
+            atacama_stars: {
+                key: 'atacama_stars',
+                name: 'Atacama Milky Way & Galaxy',
+                shortName: 'Atacama Stars',
+                location: 'Atacama, Chile',
+                category: 'aurora',
+                icon: '✨',
+                accent: '#a855f7',
+                secondary: '#38bdf8',
+                accentGlow: 'rgba(168, 85, 247, 0.35)',
+                sidebarGlow: 'rgba(168, 85, 247, 0.18)',
+                cardGlow: 'rgba(168, 85, 247, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(10, 6, 24, 0.95), rgba(76, 29, 149, 0.35), rgba(15, 23, 42, 0.95))',
+                type: 'stars',
+                desc: 'Bầu trời ngàn sao lấp lánh và vệt sao băng bay lướt'
+            },
+            volcanic_ember: {
+                key: 'volcanic_ember',
+                name: 'Iceland Volcanic Spark & Ember',
+                shortName: 'Volcanic Ember',
+                location: 'Eyjafjallajökull, Iceland',
+                category: 'nature',
+                icon: '🔥',
+                accent: '#ff4500',
+                secondary: '#ff8c00',
+                accentGlow: 'rgba(255, 69, 0, 0.35)',
+                sidebarGlow: 'rgba(255, 69, 0, 0.18)',
+                cardGlow: 'rgba(255, 69, 0, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(26, 8, 4, 0.95), rgba(153, 27, 27, 0.4), rgba(15, 23, 42, 0.95))',
+                type: 'embers',
+                desc: 'Đốm tàn tro và tia lửa cam đỏ bay bốc lên rực sáng'
+            },
+            maui_sunlight: {
+                key: 'maui_sunlight',
+                name: 'Maui Golden Sun Rays',
+                shortName: 'Maui Sunbeams',
+                location: 'Maui, Hawaii',
+                category: 'nature',
+                icon: '☀️',
+                accent: '#fbbf24',
+                secondary: '#f59e0b',
+                accentGlow: 'rgba(251, 191, 36, 0.35)',
+                sidebarGlow: 'rgba(251, 191, 36, 0.18)',
+                cardGlow: 'rgba(251, 191, 36, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(26, 20, 10, 0.95), rgba(180, 83, 9, 0.35), rgba(15, 23, 42, 0.95))',
+                type: 'sunbeams',
+                desc: 'Chùm tia nắng mặt trời tỏa góc rực rỡ và bụi nắng ấm'
+            },
+            swiss_snow: {
+                key: 'swiss_snow',
+                name: 'Swiss Alps Silent Snow',
+                shortName: 'Swiss Snow',
+                location: 'Zermatt, Switzerland',
+                category: 'snow',
+                icon: '🏔️',
+                accent: '#e0f2fe',
+                secondary: '#7dd3fc',
+                accentGlow: 'rgba(224, 242, 254, 0.35)',
+                sidebarGlow: 'rgba(125, 211, 252, 0.18)',
+                cardGlow: 'rgba(224, 242, 254, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(12, 22, 36, 0.95), rgba(30, 58, 138, 0.3), rgba(15, 23, 42, 0.95))',
+                type: 'gentle_snow',
+                desc: 'Tuyết mịn rơi chậm êm đềm thẳng đứng dãy Alps'
+            },
+            amazon_drizzle: {
+                key: 'amazon_drizzle',
+                name: 'Amazon Tropical Rain Drizzle',
+                shortName: 'Amazon Drizzle',
+                location: 'Amazon Rainforest, Brazil',
+                category: 'rain',
+                icon: '🌿',
+                accent: '#10b981',
+                secondary: '#06b6d4',
+                accentGlow: 'rgba(16, 185, 129, 0.35)',
+                sidebarGlow: 'rgba(6, 182, 212, 0.18)',
+                cardGlow: 'rgba(16, 185, 129, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(6, 26, 20, 0.95), rgba(4, 120, 87, 0.35), rgba(15, 23, 42, 0.95))',
+                type: 'drizzle',
+                desc: 'Mưa phùn li ti mờ ảo xanh nhiệt đới rừng nguyên sinh'
+            },
+            antarctica_freeze: {
+                key: 'antarctica_freeze',
+                name: 'Antarctica Deep Freeze',
+                shortName: 'Antarctica Freeze',
+                location: 'Amundsen Coast, Antarctica',
+                category: 'snow',
+                icon: '🧊',
+                accent: '#e0f7fa',
+                secondary: '#0284c7',
+                accentGlow: 'rgba(224, 247, 250, 0.35)',
+                sidebarGlow: 'rgba(2, 132, 199, 0.18)',
+                cardGlow: 'rgba(224, 247, 250, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(8, 20, 36, 0.95), rgba(3, 105, 161, 0.35), rgba(15, 23, 42, 0.95))',
+                type: 'freeze',
+                desc: 'Sương băng giá lạnh trắng bạc lững lờ cực nam'
+            },
+            dubai_sunset: {
+                key: 'dubai_sunset',
+                name: 'Dubai Crimson Sunset Dust',
+                shortName: 'Dubai Sunset',
+                location: 'Dubai, UAE',
+                category: 'nature',
+                icon: '🌆',
+                accent: '#ec4899',
+                secondary: '#f59e0b',
+                accentGlow: 'rgba(236, 72, 153, 0.35)',
+                sidebarGlow: 'rgba(245, 158, 11, 0.18)',
+                cardGlow: 'rgba(236, 72, 153, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(30, 10, 24, 0.95), rgba(190, 24, 93, 0.35), rgba(15, 23, 42, 0.95))',
+                type: 'dubai_dust',
+                desc: 'Bầu trời gradient tím cam huyền ảo và hạt cát lấp lánh'
+            },
+            himalaya_wind: {
+                key: 'himalaya_wind',
+                name: 'Himalayan Alpine Wind Mist',
+                shortName: 'Himalaya Wind',
+                location: 'Mount Everest, Himalayas',
+                category: 'fog',
+                icon: '💨',
+                accent: '#93c5fd',
+                secondary: '#ffffff',
+                accentGlow: 'rgba(147, 197, 253, 0.35)',
+                sidebarGlow: 'rgba(147, 197, 253, 0.18)',
+                cardGlow: 'rgba(147, 197, 253, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(59, 130, 246, 0.3), rgba(15, 23, 42, 0.95))',
+                type: 'wind',
+                desc: 'Vệt gió trắng cuộn ngang tốc độ cao trên đỉnh tuyết'
+            },
+            halong_emerald: {
+                key: 'halong_emerald',
+                name: 'Ha Long Bay Emerald Mist',
+                shortName: 'Ha Long Emerald',
+                location: 'Ha Long Bay, VN',
+                category: 'fog',
+                icon: '⛵',
+                accent: '#34d399',
+                secondary: '#2dd4bf',
+                accentGlow: 'rgba(52, 211, 153, 0.35)',
+                sidebarGlow: 'rgba(45, 212, 191, 0.18)',
+                cardGlow: 'rgba(52, 211, 153, 0.25)',
+                bannerGradient: 'linear-gradient(135deg, rgba(6, 24, 24, 0.95), rgba(13, 148, 136, 0.35), rgba(15, 23, 42, 0.95))',
+                type: 'emerald_mist',
+                desc: 'Sương ngọc lục bảo mờ dịu mắt thư giãn vịnh di sản'
+            }
+        },
+
+        // Legacy aliases
+        aliasMap: {
+            sahara_sunset: 'sahara_sandstorm',
+            nordic_blizzard: 'reykjavik_blizzard',
+            kyoto_mist: 'london_fog'
+        },
+
+        currentThemeKey: 'tokyo_rain',
+        mode: 'auto', // 'auto' or 'manual'
+        autoTimer: null,
+        animFrameId: null,
+        canvas: null,
+        ctx: null,
+        width: 0,
+        height: 0,
+        particles: [],
+        ambientParticles: [],
+        auroraPhase: 0,
+        lightning: 0,
+        shootingStar: null,
+        isRendering: false,
+        dom: {},
+
+        userConfig: {
+            density: 1.0,
+            speed: 1.0,
+            opacity: 1.0,
+            turbulence: true
+        },
+
+        init() {
+            this.loadUserConfig();
+            this.cacheDom();
+            this.bindEvents();
+            this.initCanvas();
+
+            const savedMode = localStorage.getItem('weather_theme_mode') || 'auto';
+            let savedTheme = localStorage.getItem('weather_theme_key');
+            if (savedTheme && this.aliasMap[savedTheme]) {
+                savedTheme = this.aliasMap[savedTheme];
+            }
+
+            this.mode = savedMode;
+            if (this.dom.toggleAuto) {
+                this.dom.toggleAuto.checked = this.mode === 'auto';
+            }
+
+            if (this.mode === 'auto') {
+                if (savedTheme && this.presets[savedTheme]) {
+                    this.applyTheme(savedTheme, false, false);
+                } else {
+                    const keys = Object.keys(this.presets);
+                    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                    this.applyTheme(randomKey, false, false);
+                }
+                this.startAutoRotation();
+            } else {
+                const targetKey = (savedTheme && this.presets[savedTheme]) ? savedTheme : 'tokyo_rain';
+                this.applyTheme(targetKey, true, false);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    this.stopAnimation();
+                } else {
+                    this.startAnimation();
+                }
+            });
+
+            window.weatherThemeEngine = this;
+        },
+
+        loadUserConfig() {
+            try {
+                const d = parseFloat(localStorage.getItem('weather_density'));
+                const s = parseFloat(localStorage.getItem('weather_speed'));
+                const o = parseFloat(localStorage.getItem('weather_opacity'));
+                const t = localStorage.getItem('weather_turbulence');
+
+                if (!isNaN(d)) this.userConfig.density = Math.max(0.3, Math.min(2.0, d));
+                if (!isNaN(s)) this.userConfig.speed = Math.max(0.4, Math.min(2.5, s));
+                if (!isNaN(o)) this.userConfig.opacity = Math.max(0.3, Math.min(1.5, o));
+                if (t !== null) this.userConfig.turbulence = t !== 'false';
+            } catch (e) {
+                console.warn('[WeatherEngine] Load config error:', e);
+            }
+        },
+
+        saveUserConfig(config) {
+            this.userConfig = Object.assign(this.userConfig, config);
+            localStorage.setItem('weather_density', this.userConfig.density);
+            localStorage.setItem('weather_speed', this.userConfig.speed);
+            localStorage.setItem('weather_opacity', this.userConfig.opacity);
+            localStorage.setItem('weather_turbulence', this.userConfig.turbulence);
+
+            const currentType = this.presets[this.currentThemeKey]?.type || 'rain';
+            this.resetParticles(currentType);
+        },
+
+        cacheDom() {
+            this.dom = {
+                wrapper: document.getElementById('theme-engine-flyout-wrapper'),
+                btnTrigger: document.getElementById('btn-header-theme-engine'),
+                btnRollQuick: document.getElementById('btn-theme-roll-quick'),
+                headerIcon: document.getElementById('header-theme-icon'),
+                headerName: document.getElementById('header-theme-name'),
+                headerMode: document.getElementById('header-theme-mode'),
+                flyoutCard: document.getElementById('theme-engine-flyout-card'),
+                btnClose: document.getElementById('btn-close-theme-flyout'),
+                toggleAuto: document.getElementById('toggle-theme-auto-rotate'),
+                presetsContainer: document.getElementById('theme-presets-container'),
+                presetCards: document.querySelectorAll('.theme-preset-card'),
+                canvas: document.getElementById('header-weather-canvas'),
+                ambientCanvas: document.getElementById('ambient-weather-canvas')
+            };
+        },
+
+        bindEvents() {
+            if (this.dom.btnTrigger) {
+                this.dom.btnTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleFlyout();
+                });
+            }
+
+            if (this.dom.btnRollQuick) {
+                this.dom.btnRollQuick.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.rollRandomTheme();
+                });
+            }
+
+            if (this.dom.btnClose) {
+                this.dom.btnClose.addEventListener('click', () => this.closeFlyout());
+            }
+
+            if (this.dom.toggleAuto) {
+                this.dom.toggleAuto.addEventListener('change', (e) => {
+                    this.setAutoRotate(e.target.checked);
+                });
+            }
+
+            if (this.dom.presetsContainer) {
+                this.dom.presetsContainer.addEventListener('click', (e) => {
+                    const card = e.target.closest('.theme-preset-card');
+                    if (card) {
+                        const key = card.getAttribute('data-theme-key');
+                        if (key && (this.presets[key] || this.aliasMap[key])) {
+                            this.applyTheme(key, true, true);
+                            if (this.dom.toggleAuto) {
+                                this.dom.toggleAuto.checked = false;
+                                this.setAutoRotate(false);
+                            }
+                        }
+                    }
+                });
+            }
+
+            document.addEventListener('click', (e) => {
+                if (this.dom.flyoutCard && !this.dom.flyoutCard.classList.contains('hidden')) {
+                    if (this.dom.wrapper && !this.dom.wrapper.contains(e.target)) {
+                        this.closeFlyout();
+                    }
+                }
+            });
+        },
+
+        toggleFlyout() {
+            if (!this.dom.flyoutCard) return;
+            const isHidden = this.dom.flyoutCard.classList.contains('hidden');
+            if (isHidden) {
+                if (window.weatherManager && typeof window.weatherManager.closeFlyout === 'function') {
+                    window.weatherManager.closeFlyout();
+                }
+                const aiFlyout = document.getElementById('ai-copilot-flyout');
+                if (aiFlyout) aiFlyout.classList.add('hidden');
+
+                this.dom.flyoutCard.classList.remove('hidden');
+            } else {
+                this.dom.flyoutCard.classList.add('hidden');
+            }
+        },
+
+        closeFlyout() {
+            if (this.dom.flyoutCard) {
+                this.dom.flyoutCard.classList.add('hidden');
+            }
+        },
+
+        setAutoRotate(enabled) {
+            this.mode = enabled ? 'auto' : 'manual';
+            localStorage.setItem('weather_theme_mode', this.mode);
+
+            if (this.dom.headerMode) {
+                if (enabled) {
+                    this.dom.headerMode.textContent = '🔄 Auto 30m';
+                    this.dom.headerMode.className = 'theme-mode-pill auto';
+                } else {
+                    this.dom.headerMode.textContent = '🔒 Locked';
+                    this.dom.headerMode.className = 'theme-mode-pill locked';
+                }
+            }
+
+            if (enabled) {
+                this.startAutoRotation();
+                showActionToast('🔄 Đã kích hoạt tự động đổi chủ đề thời tiết mỗi 30 phút');
+            } else {
+                this.stopAutoRotation();
+                showActionToast(`🔒 Đã khóa chủ đề thời tiết: ${this.presets[this.currentThemeKey]?.name || 'Theme'}`);
+            }
+
+            if (window.weatherStudioManager) {
+                window.weatherStudioManager.syncStatus();
+            }
+        },
+
+        startAutoRotation() {
+            this.stopAutoRotation();
+            this.autoTimer = setInterval(() => {
+                if (this.mode === 'auto') {
+                    this.rollRandomTheme(false);
+                }
+            }, 1800000); // 30 mins
+        },
+
+        stopAutoRotation() {
+            if (this.autoTimer) {
+                clearInterval(this.autoTimer);
+                this.autoTimer = null;
+            }
+        },
+
+        rollRandomTheme(showToast = true) {
+            const keys = Object.keys(this.presets).filter(k => k !== this.currentThemeKey);
+            const nextKey = keys[Math.floor(Math.random() * keys.length)] || 'tokyo_rain';
+            this.applyTheme(nextKey, this.mode === 'manual', showToast);
+        },
+
+        applyTheme(key, isManual = false, notify = true) {
+            if (this.aliasMap[key]) {
+                key = this.aliasMap[key];
+            }
+            const preset = this.presets[key];
+            if (!preset) return;
+
+            this.currentThemeKey = key;
+            localStorage.setItem('weather_theme_key', key);
+
+            // Apply CSS Variables on Document Root
+            const root = document.documentElement;
+            root.style.setProperty('--theme-accent', preset.accent);
+            root.style.setProperty('--theme-secondary', preset.secondary);
+            root.style.setProperty('--theme-accent-glow', preset.accentGlow);
+            root.style.setProperty('--sidebar-glow', preset.sidebarGlow);
+            root.style.setProperty('--card-glow-ambient', preset.cardGlow);
+            root.style.setProperty('--banner-gradient', preset.bannerGradient);
+            root.style.setProperty('--accent-lime', preset.accent);
+            root.style.setProperty('--accent-lime-hover', preset.accent);
+            root.style.setProperty('--accent-lime-dark', preset.accent);
+            root.style.setProperty('--accent-lime-glow', preset.accentGlow);
+            root.style.setProperty('--border-highlight', preset.accentGlow);
+            root.style.setProperty('--shadow-glow', `0 0 24px ${preset.accentGlow}`);
+            root.style.setProperty('--grad-lime', `linear-gradient(135deg, ${preset.accent} 0%, ${preset.secondary} 100%)`);
+            root.style.setProperty('--grad-cpu', `linear-gradient(135deg, ${preset.accent} 0%, ${preset.secondary} 100%)`);
+
+            // Update UI Header Widget
+            if (this.dom.headerIcon) this.dom.headerIcon.textContent = preset.icon;
+            if (this.dom.headerName) this.dom.headerName.textContent = preset.shortName;
+            if (this.dom.headerMode) {
+                if (this.mode === 'auto') {
+                    this.dom.headerMode.textContent = '🔄 Auto 30m';
+                    this.dom.headerMode.className = 'theme-mode-pill auto';
+                } else {
+                    this.dom.headerMode.textContent = '🔒 Locked';
+                    this.dom.headerMode.className = 'theme-mode-pill locked';
+                }
+            }
+
+            // Update Preset flyout list active states
+            if (this.dom.presetsContainer) {
+                const cards = this.dom.presetsContainer.querySelectorAll('.theme-preset-card');
+                cards.forEach(c => {
+                    let cKey = c.getAttribute('data-theme-key');
+                    if (this.aliasMap[cKey]) cKey = this.aliasMap[cKey];
+                    const isActive = cKey === key;
+                    c.classList.toggle('active', isActive);
+                    const tag = c.querySelector('.preset-status-tag');
+                    if (tag) {
+                        tag.textContent = isActive ? 'Đang áp dụng' : 'Chọn';
+                    }
+                });
+            }
+
+            // Sync with Tab 13 Weather Studio
+            if (window.weatherStudioManager) {
+                window.weatherStudioManager.syncStatus();
+            }
+
+            // Reset and configure particle system for canvas
+            this.resetParticles(preset.type);
+
+            if (notify) {
+                showActionToast(`${preset.icon} Áp dụng chủ đề: ${preset.name}`);
+            }
+        },
+
+        initCanvas() {
+            this.canvas = this.dom.canvas;
+            if (this.canvas) this.ctx = this.canvas.getContext('2d');
+
+            this.ambientCanvas = this.dom.ambientCanvas;
+            if (this.ambientCanvas) this.ambientCtx = this.ambientCanvas.getContext('2d');
+
+            this.resizeCanvas();
+
+            window.addEventListener('resize', () => {
+                this.resizeCanvas();
+            });
+
+            this.startAnimation();
+        },
+
+        resizeCanvas() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            // 1. Header Bar Canvas
+            if (this.canvas && this.canvas.parentElement) {
+                const rect = this.canvas.parentElement.getBoundingClientRect();
+                this.width = Math.max(rect.width, 300);
+                this.height = Math.max(rect.height, 60);
+                this.canvas.width = this.width * dpr;
+                this.canvas.height = this.height * dpr;
+                if (this.ctx) this.ctx.scale(dpr, dpr);
+            }
+
+            // 2. Fullscreen Ambient Background Canvas (Whole Website Backdrop)
+            if (this.ambientCanvas) {
+                this.ambientWidth = window.innerWidth;
+                this.ambientHeight = window.innerHeight;
+                this.ambientCanvas.width = this.ambientWidth * dpr;
+                this.ambientCanvas.height = this.ambientHeight * dpr;
+                if (this.ambientCtx) this.ambientCtx.scale(dpr, dpr);
+            }
+
+            const currentType = this.presets[this.currentThemeKey]?.type || 'rain';
+            this.resetParticles(currentType);
+        },
+
+        resetParticles(type) {
+            this.particles = [];
+            this.ambientParticles = [];
+            const density = this.userConfig.density || 1.0;
+
+            const w = this.width || 800;
+            const h = this.height || 70;
+            const aw = this.ambientWidth || window.innerWidth;
+            const ah = this.ambientHeight || window.innerHeight;
+
+            const localCount = Math.round(25 * density);
+            const ambientCount = Math.round(75 * density);
+
+            switch (type) {
+                case 'rain':
+                case 'thunder':
+                case 'drizzle': {
+                    const speedMultiplier = type === 'drizzle' ? 0.6 : (type === 'thunder' ? 1.4 : 1.0);
+                    const colorChoices = type === 'drizzle' ? ['#10b981', '#06b6d4'] : (type === 'thunder' ? ['#38bdf8', '#e0f2fe'] : ['#00f2fe', '#bcf846']);
+
+                    for (let i = 0; i < localCount; i++) {
+                        this.particles.push({
+                            x: Math.random() * (w + 100) - 50,
+                            y: Math.random() * h,
+                            length: (Math.random() * 18 + 10) * (type === 'drizzle' ? 0.6 : 1),
+                            speed: (Math.random() * 5 + 6) * speedMultiplier,
+                            opacity: Math.random() * 0.4 + 0.45,
+                            color: colorChoices[Math.floor(Math.random() * colorChoices.length)]
+                        });
+                    }
+                    for (let i = 0; i < ambientCount; i++) {
+                        this.ambientParticles.push({
+                            x: Math.random() * (aw + 200) - 100,
+                            y: Math.random() * ah,
+                            length: (Math.random() * 30 + 16) * (type === 'drizzle' ? 0.6 : 1),
+                            speed: (Math.random() * 7 + 9) * speedMultiplier,
+                            opacity: Math.random() * 0.45 + 0.35,
+                            color: colorChoices[Math.floor(Math.random() * colorChoices.length)]
+                        });
+                    }
+                    break;
+                }
+
+                case 'snow':
+                case 'gentle_snow':
+                case 'freeze': {
+                    const isGentle = type === 'gentle_snow';
+                    const isFreeze = type === 'freeze';
+                    const glowColor = isFreeze ? '#e0f7fa' : '#80deea';
+
+                    for (let i = 0; i < localCount; i++) {
+                        this.particles.push({
+                            x: Math.random() * w,
+                            y: Math.random() * h,
+                            radius: Math.random() * 2.2 + 1.0,
+                            speed: isGentle ? (Math.random() * 0.4 + 0.25) : (Math.random() * 0.8 + 0.35),
+                            swaySpeed: Math.random() * 0.02 + 0.01,
+                            swayAngle: Math.random() * Math.PI * 2,
+                            opacity: Math.random() * 0.4 + 0.55,
+                            glowColor
+                        });
+                    }
+                    for (let i = 0; i < ambientCount; i++) {
+                        this.ambientParticles.push({
+                            x: Math.random() * aw,
+                            y: Math.random() * ah,
+                            radius: (Math.random() * 3.2 + 1.2) * (isFreeze ? 0.8 : 1),
+                            speed: isGentle ? (Math.random() * 0.5 + 0.3) : (Math.random() * 1.1 + 0.4),
+                            swaySpeed: Math.random() * 0.02 + 0.01,
+                            swayAngle: Math.random() * Math.PI * 2,
+                            opacity: Math.random() * 0.45 + 0.45,
+                            glowColor
+                        });
+                    }
+                    break;
+                }
+
+                case 'golden_dust':
+                case 'embers':
+                case 'dubai_dust':
+                case 'sunbeams': {
+                    const colors = type === 'embers' ? ['#ff4500', '#ff8c00', '#ff2200'] : (type === 'dubai_dust' ? ['#ec4899', '#f59e0b', '#ffd700'] : (type === 'sunbeams' ? ['#fbbf24', '#f59e0b'] : ['#ffd700', '#ff7e5f']));
+                    for (let i = 0; i < localCount; i++) {
+                        this.particles.push({
+                            x: Math.random() * w,
+                            y: Math.random() * h,
+                            radius: Math.random() * 2.4 + 1.2,
+                            vy: -(Math.random() * 0.5 + 0.2),
+                            vx: (Math.random() - 0.5) * 0.35,
+                            alpha: Math.random() * 0.45 + 0.5,
+                            color: colors[Math.floor(Math.random() * colors.length)]
+                        });
+                    }
+                    for (let i = 0; i < ambientCount; i++) {
+                        this.ambientParticles.push({
+                            x: Math.random() * aw,
+                            y: Math.random() * ah,
+                            radius: Math.random() * 3.2 + 1.4,
+                            vy: -(Math.random() * 0.6 + 0.25),
+                            vx: (Math.random() - 0.5) * 0.45,
+                            alpha: Math.random() * 0.5 + 0.4,
+                            color: colors[Math.floor(Math.random() * colors.length)]
+                        });
+                    }
+                    break;
+                }
+
+                case 'sakura': {
+                    for (let i = 0; i < localCount; i++) {
+                        this.particles.push({
+                            x: Math.random() * (w + 60) - 30,
+                            y: Math.random() * h,
+                            size: Math.random() * 5 + 4,
+                            speedY: Math.random() * 0.8 + 0.5,
+                            speedX: Math.random() * 0.6 + 0.3,
+                            angle: Math.random() * Math.PI * 2,
+                            angularSpeed: Math.random() * 0.03 - 0.015,
+                            opacity: Math.random() * 0.4 + 0.55
+                        });
+                    }
+                    for (let i = 0; i < ambientCount; i++) {
+                        this.ambientParticles.push({
+                            x: Math.random() * (aw + 100) - 50,
+                            y: Math.random() * ah,
+                            size: Math.random() * 7 + 5,
+                            speedY: Math.random() * 1.1 + 0.6,
+                            speedX: Math.random() * 0.8 + 0.4,
+                            angle: Math.random() * Math.PI * 2,
+                            angularSpeed: Math.random() * 0.04 - 0.02,
+                            opacity: Math.random() * 0.45 + 0.5
+                        });
+                    }
+                    break;
+                }
+
+                case 'stars': {
+                    for (let i = 0; i < localCount; i++) {
+                        this.particles.push({
+                            x: Math.random() * w,
+                            y: Math.random() * h,
+                            radius: Math.random() * 1.6 + 0.8,
+                            alpha: Math.random() * 0.6 + 0.3,
+                            twinkleSpeed: Math.random() * 0.04 + 0.02,
+                            phase: Math.random() * Math.PI * 2
+                        });
+                    }
+                    for (let i = 0; i < ambientCount * 1.5; i++) {
+                        this.ambientParticles.push({
+                            x: Math.random() * aw,
+                            y: Math.random() * ah,
+                            radius: Math.random() * 2.2 + 0.8,
+                            alpha: Math.random() * 0.6 + 0.35,
+                            twinkleSpeed: Math.random() * 0.03 + 0.015,
+                            phase: Math.random() * Math.PI * 2
+                        });
+                    }
+                    break;
+                }
+
+                case 'fog':
+                case 'emerald_mist':
+                case 'wind': {
+                    const mistColor = type === 'emerald_mist' ? '52, 211, 153' : (type === 'wind' ? '200, 225, 255' : '203, 213, 225');
+                    const count = Math.max(6, Math.round(10 * density));
+                    const ambCount = Math.max(10, Math.round(18 * density));
+
+                    for (let i = 0; i < count; i++) {
+                        this.particles.push({
+                            x: Math.random() * w,
+                            y: Math.random() * h,
+                            radius: Math.random() * 60 + 35,
+                            speed: (Math.random() * 0.3 + 0.1) * (type === 'wind' ? 2.5 : 1),
+                            alpha: Math.random() * 0.16 + 0.12,
+                            mistColor
+                        });
+                    }
+                    for (let i = 0; i < ambCount; i++) {
+                        this.ambientParticles.push({
+                            x: Math.random() * aw,
+                            y: Math.random() * ah,
+                            radius: Math.random() * 240 + 120,
+                            speed: (Math.random() * 0.4 + 0.15) * (type === 'wind' ? 3.0 : 1),
+                            alpha: Math.random() * 0.15 + 0.08,
+                            mistColor
+                        });
+                    }
+                    break;
+                }
+
+                default:
+                    this.auroraPhase = 0;
+            }
+        },
+
+        startAnimation() {
+            if (this.isRendering) return;
+            this.isRendering = true;
+
+            const render = () => {
+                if (!this.isRendering) return;
+                this.drawFrame();
+                this.animFrameId = requestAnimationFrame(render);
+            };
+
+            this.animFrameId = requestAnimationFrame(render);
+        },
+
+        stopAnimation() {
+            this.isRendering = false;
+            if (this.animFrameId) {
+                cancelAnimationFrame(this.animFrameId);
+                this.animFrameId = null;
+            }
+        },
+
+        drawFrame() {
+            const preset = this.presets[this.currentThemeKey];
+            const type = preset ? preset.type : 'rain';
+            const speedMul = this.userConfig.speed || 1.0;
+            const opMul = this.userConfig.opacity || 1.0;
+            const turb = this.userConfig.turbulence !== false;
+
+            this.auroraPhase += 0.015 * speedMul;
+
+            // 1. Render Local Header Bar Canvas
+            if (this.ctx && this.canvas) {
+                const w = this.width;
+                const h = this.height;
+                this.ctx.clearRect(0, 0, w, h);
+
+                if (type === 'rain' || type === 'thunder' || type === 'drizzle') {
+                    this.particles.forEach(p => {
+                        this.ctx.beginPath();
+                        this.ctx.strokeStyle = p.color;
+                        this.ctx.globalAlpha = Math.min(1.0, p.opacity * opMul);
+                        this.ctx.lineWidth = type === 'drizzle' ? 1.0 : 1.5;
+                        this.ctx.shadowColor = p.color;
+                        this.ctx.shadowBlur = 6;
+                        this.ctx.moveTo(p.x, p.y);
+                        this.ctx.lineTo(p.x - p.length * 0.3, p.y + p.length);
+                        this.ctx.stroke();
+                        this.ctx.shadowBlur = 0;
+
+                        p.y += p.speed * speedMul;
+                        p.x -= p.speed * 0.3 * speedMul;
+
+                        if (p.y > h + 20 || p.x < -30) {
+                            p.y = -20;
+                            p.x = Math.random() * (w + 100) - 20;
+                        }
+                    });
+                } else if (type === 'aurora') {
+                    const grad = this.ctx.createLinearGradient(0, 0, w, 0);
+                    grad.addColorStop(0, 'rgba(0, 255, 135, 0.0)');
+                    grad.addColorStop(0.3, `rgba(0, 255, 135, ${0.35 * opMul})`);
+                    grad.addColorStop(0.7, `rgba(96, 239, 255, ${0.42 * opMul})`);
+                    grad.addColorStop(1, 'rgba(0, 255, 135, 0.0)');
+
+                    this.ctx.fillStyle = grad;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, h);
+                    for (let x = 0; x <= w; x += 20) {
+                        const y = h * 0.38 + Math.sin(x * 0.008 + this.auroraPhase) * 18 + Math.cos(x * 0.012 - this.auroraPhase * 0.8) * 10;
+                        this.ctx.lineTo(x, y);
+                    }
+                    this.ctx.lineTo(w, h);
+                    this.ctx.closePath();
+                    this.ctx.fill();
+                } else if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
+                    this.particles.forEach(p => {
+                        p.swayAngle += p.swaySpeed * speedMul;
+                        p.x += (turb ? Math.sin(p.swayAngle) * 0.5 : 0.1);
+                        p.y += p.speed * speedMul;
+
+                        this.ctx.beginPath();
+                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ctx.fillStyle = '#ffffff';
+                        this.ctx.globalAlpha = Math.min(1.0, p.opacity * opMul);
+                        this.ctx.shadowColor = p.glowColor || '#80deea';
+                        this.ctx.shadowBlur = 8;
+                        this.ctx.fill();
+                        this.ctx.shadowBlur = 0;
+
+                        if (p.y > h + 10) {
+                            p.y = -10;
+                            p.x = Math.random() * w;
+                        }
+                    });
+                } else if (type === 'golden_dust' || type === 'embers' || type === 'dubai_dust' || type === 'sunbeams') {
+                    this.particles.forEach(p => {
+                        this.ctx.beginPath();
+                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ctx.fillStyle = p.color;
+                        this.ctx.globalAlpha = Math.min(1.0, p.alpha * opMul);
+                        this.ctx.shadowColor = p.color;
+                        this.ctx.shadowBlur = 12;
+                        this.ctx.fill();
+                        this.ctx.shadowBlur = 0;
+
+                        p.y += p.vy * speedMul;
+                        p.x += p.vx * speedMul;
+
+                        if (p.y < -10) {
+                            p.y = h + 10;
+                            p.x = Math.random() * w;
+                        }
+                        if (p.x < 0) p.x = w;
+                        if (p.x > w) p.x = 0;
+                    });
+                } else if (type === 'sakura') {
+                    this.particles.forEach(p => {
+                        p.angle += p.angularSpeed * speedMul;
+                        p.x += (p.speedX + (turb ? Math.sin(p.angle) * 0.4 : 0)) * speedMul;
+                        p.y += p.speedY * speedMul;
+
+                        this.ctx.save();
+                        this.ctx.translate(p.x, p.y);
+                        this.ctx.rotate(p.angle);
+                        this.ctx.beginPath();
+                        this.ctx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+                        this.ctx.fillStyle = '#ffb7b2';
+                        this.ctx.globalAlpha = Math.min(1.0, p.opacity * opMul);
+                        this.ctx.shadowColor = '#ff758c';
+                        this.ctx.shadowBlur = 6;
+                        this.ctx.fill();
+                        this.ctx.restore();
+
+                        if (p.y > h + 10 || p.x > w + 20) {
+                            p.y = -10;
+                            p.x = Math.random() * (w + 40) - 20;
+                        }
+                    });
+                } else if (type === 'stars') {
+                    this.particles.forEach(p => {
+                        p.phase += p.twinkleSpeed * speedMul;
+                        const alpha = Math.max(0.1, Math.min(0.95, p.alpha + Math.sin(p.phase) * 0.35)) * opMul;
+
+                        this.ctx.beginPath();
+                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ctx.fillStyle = '#ffffff';
+                        this.ctx.globalAlpha = Math.min(1.0, alpha);
+                        this.ctx.shadowColor = '#a855f7';
+                        this.ctx.shadowBlur = 6;
+                        this.ctx.fill();
+                        this.ctx.shadowBlur = 0;
+                    });
+                } else if (type === 'fog' || type === 'emerald_mist' || type === 'wind') {
+                    this.particles.forEach(p => {
+                        p.x += p.speed * speedMul;
+                        if (p.x - p.radius > w) {
+                            p.x = -p.radius;
+                            p.y = Math.random() * h;
+                        }
+
+                        const grad = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+                        grad.addColorStop(0, `rgba(${p.mistColor || '203, 213, 225'}, ${p.alpha * opMul})`);
+                        grad.addColorStop(1, `rgba(${p.mistColor || '203, 213, 225'}, 0)`);
+
+                        this.ctx.fillStyle = grad;
+                        this.ctx.beginPath();
+                        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    });
+                }
+                this.ctx.globalAlpha = 1.0;
+            }
+
+            // 2. Render Fullscreen Global Ambient Background Canvas
+            if (this.ambientCtx && this.ambientCanvas) {
+                const aw = this.ambientWidth;
+                const ah = this.ambientHeight;
+                this.ambientCtx.clearRect(0, 0, aw, ah);
+
+                if (type === 'thunder') {
+                    if (Math.random() < 0.006) {
+                        this.lightning = 0.35 * opMul;
+                    }
+                    if (this.lightning > 0) {
+                        this.ambientCtx.fillStyle = `rgba(224, 242, 254, ${this.lightning})`;
+                        this.ambientCtx.fillRect(0, 0, aw, ah);
+                        this.lightning = Math.max(0, this.lightning - 0.03);
+                    }
+                }
+
+                if (type === 'rain' || type === 'thunder' || type === 'drizzle') {
+                    this.ambientParticles.forEach(p => {
+                        this.ambientCtx.beginPath();
+                        this.ambientCtx.strokeStyle = p.color;
+                        this.ambientCtx.globalAlpha = Math.min(1.0, p.opacity * opMul);
+                        this.ambientCtx.lineWidth = type === 'drizzle' ? 1.0 : 1.5;
+                        this.ambientCtx.shadowColor = p.color;
+                        this.ambientCtx.shadowBlur = 8;
+                        this.ambientCtx.moveTo(p.x, p.y);
+                        this.ambientCtx.lineTo(p.x - p.length * 0.35, p.y + p.length);
+                        this.ambientCtx.stroke();
+                        this.ambientCtx.shadowBlur = 0;
+
+                        p.y += p.speed * speedMul;
+                        p.x -= p.speed * 0.35 * speedMul;
+
+                        if (p.y > ah + 40 || p.x < -60) {
+                            p.y = -40;
+                            p.x = Math.random() * (aw + 200) - 60;
+                        }
+                    });
+                } else if (type === 'aurora') {
+                    const grad = this.ambientCtx.createLinearGradient(0, 0, aw, 0);
+                    grad.addColorStop(0, 'rgba(0, 255, 135, 0.0)');
+                    grad.addColorStop(0.25, `rgba(0, 255, 135, ${0.30 * opMul})`);
+                    grad.addColorStop(0.5, `rgba(96, 239, 255, ${0.36 * opMul})`);
+                    grad.addColorStop(0.75, `rgba(0, 255, 135, ${0.28 * opMul})`);
+                    grad.addColorStop(1, 'rgba(0, 255, 135, 0.0)');
+
+                    this.ambientCtx.fillStyle = grad;
+                    this.ambientCtx.beginPath();
+                    this.ambientCtx.moveTo(0, ah * 0.65);
+                    for (let x = 0; x <= aw; x += 30) {
+                        const y = ah * 0.28 + Math.sin(x * 0.003 + this.auroraPhase) * 45 + Math.cos(x * 0.005 - this.auroraPhase * 0.7) * 30;
+                        this.ambientCtx.lineTo(x, y);
+                    }
+                    this.ambientCtx.lineTo(aw, ah * 0.65);
+                    this.ambientCtx.closePath();
+                    this.ambientCtx.fill();
+
+                    // Second layer
+                    this.ambientCtx.fillStyle = `rgba(96, 239, 255, ${0.18 * opMul})`;
+                    this.ambientCtx.beginPath();
+                    this.ambientCtx.moveTo(0, ah * 0.55);
+                    for (let x = 0; x <= aw; x += 40) {
+                        const y = ah * 0.2 + Math.cos(x * 0.004 - this.auroraPhase * 1.1) * 35;
+                        this.ambientCtx.lineTo(x, y);
+                    }
+                    this.ambientCtx.lineTo(aw, ah * 0.55);
+                    this.ambientCtx.closePath();
+                    this.ambientCtx.fill();
+                } else if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
+                    this.ambientParticles.forEach(p => {
+                        p.swayAngle += p.swaySpeed * speedMul;
+                        p.x += (turb ? Math.sin(p.swayAngle) * 0.7 : 0.2);
+                        p.y += p.speed * speedMul;
+
+                        this.ambientCtx.beginPath();
+                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ambientCtx.fillStyle = '#ffffff';
+                        this.ambientCtx.globalAlpha = Math.min(1.0, p.opacity * opMul);
+                        this.ambientCtx.shadowColor = p.glowColor || '#80deea';
+                        this.ambientCtx.shadowBlur = 10;
+                        this.ambientCtx.fill();
+                        this.ambientCtx.shadowBlur = 0;
+
+                        if (p.y > ah + 20) {
+                            p.y = -20;
+                            p.x = Math.random() * aw;
+                        }
+                        if (p.x < -20) p.x = aw + 10;
+                        if (p.x > aw + 20) p.x = -10;
+                    });
+                } else if (type === 'golden_dust' || type === 'embers' || type === 'dubai_dust' || type === 'sunbeams') {
+                    this.ambientParticles.forEach(p => {
+                        this.ambientCtx.beginPath();
+                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ambientCtx.fillStyle = p.color;
+                        this.ambientCtx.globalAlpha = Math.min(1.0, p.alpha * opMul);
+                        this.ambientCtx.shadowColor = p.color;
+                        this.ambientCtx.shadowBlur = 14;
+                        this.ambientCtx.fill();
+                        this.ambientCtx.shadowBlur = 0;
+
+                        p.y += p.vy * speedMul;
+                        p.x += p.vx * speedMul;
+
+                        if (p.y < -20) {
+                            p.y = ah + 20;
+                            p.x = Math.random() * aw;
+                        }
+                        if (p.x < 0) p.x = aw;
+                        if (p.x > aw) p.x = 0;
+                    });
+                } else if (type === 'sakura') {
+                    this.ambientParticles.forEach(p => {
+                        p.angle += p.angularSpeed * speedMul;
+                        p.x += (p.speedX + (turb ? Math.sin(p.angle) * 0.5 : 0)) * speedMul;
+                        p.y += p.speedY * speedMul;
+
+                        this.ambientCtx.save();
+                        this.ambientCtx.translate(p.x, p.y);
+                        this.ambientCtx.rotate(p.angle);
+                        this.ambientCtx.beginPath();
+                        this.ambientCtx.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+                        this.ambientCtx.fillStyle = '#ffb7b2';
+                        this.ambientCtx.globalAlpha = Math.min(1.0, p.opacity * opMul);
+                        this.ambientCtx.shadowColor = '#ff758c';
+                        this.ambientCtx.shadowBlur = 8;
+                        this.ambientCtx.fill();
+                        this.ambientCtx.restore();
+
+                        if (p.y > ah + 20 || p.x > aw + 30) {
+                            p.y = -20;
+                            p.x = Math.random() * (aw + 60) - 30;
+                        }
+                    });
+                } else if (type === 'stars') {
+                    this.ambientParticles.forEach(p => {
+                        p.phase += p.twinkleSpeed * speedMul;
+                        const alpha = Math.max(0.1, Math.min(0.95, p.alpha + Math.sin(p.phase) * 0.35)) * opMul;
+
+                        this.ambientCtx.beginPath();
+                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ambientCtx.fillStyle = '#ffffff';
+                        this.ambientCtx.globalAlpha = Math.min(1.0, alpha);
+                        this.ambientCtx.shadowColor = '#a855f7';
+                        this.ambientCtx.shadowBlur = 8;
+                        this.ambientCtx.fill();
+                        this.ambientCtx.shadowBlur = 0;
+                    });
+
+                    // Occasional shooting star
+                    if (!this.shootingStar && Math.random() < 0.008) {
+                        this.shootingStar = {
+                            x: Math.random() * (aw * 0.8),
+                            y: Math.random() * (ah * 0.4),
+                            len: Math.random() * 80 + 50,
+                            speed: Math.random() * 12 + 15,
+                            alpha: 1.0
+                        };
+                    }
+                    if (this.shootingStar) {
+                        const s = this.shootingStar;
+                        this.ambientCtx.beginPath();
+                        this.ambientCtx.strokeStyle = '#ffffff';
+                        this.ambientCtx.lineWidth = 2.0;
+                        this.ambientCtx.globalAlpha = s.alpha * opMul;
+                        this.ambientCtx.shadowColor = '#38bdf8';
+                        this.ambientCtx.shadowBlur = 12;
+                        this.ambientCtx.moveTo(s.x, s.y);
+                        this.ambientCtx.lineTo(s.x - s.len * 0.7, s.y + s.len * 0.7);
+                        this.ambientCtx.stroke();
+                        this.ambientCtx.shadowBlur = 0;
+
+                        s.x += s.speed * speedMul;
+                        s.y += s.speed * speedMul;
+                        s.alpha -= 0.02 * speedMul;
+
+                        if (s.alpha <= 0 || s.x > aw || s.y > ah) {
+                            this.shootingStar = null;
+                        }
+                    }
+                } else if (type === 'fog' || type === 'emerald_mist' || type === 'wind') {
+                    this.ambientParticles.forEach(p => {
+                        p.x += p.speed * speedMul;
+                        if (p.x - p.radius > aw) {
+                            p.x = -p.radius;
+                            p.y = Math.random() * ah;
+                        }
+
+                        const grad = this.ambientCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+                        grad.addColorStop(0, `rgba(${p.mistColor || '203, 213, 225'}, ${p.alpha * opMul})`);
+                        grad.addColorStop(1, `rgba(${p.mistColor || '203, 213, 225'}, 0)`);
+
+                        this.ambientCtx.fillStyle = grad;
+                        this.ambientCtx.beginPath();
+                        this.ambientCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        this.ambientCtx.fill();
+                    });
+                }
+                this.ambientCtx.globalAlpha = 1.0;
+            }
+        }
+    };
+
+    window.weatherThemeEngine = weatherThemeEngine;
+
+    // =========================================================================
+    // TAB 13: ATMOSPHERE & WEATHER STUDIO MANAGER
+    // =========================================================================
+    const weatherStudioManager = {
+        state: {
+            activeCategory: 'all',
+            searchQuery: '',
+            is24Hour: true,
+            clockTimer: null,
+            zenCanvas: null,
+            zenCtx: null,
+            zenWidth: 0,
+            zenHeight: 0,
+            zenParticles: [],
+            miniCanvases: [],
+            isZenFullscreen: false
+        },
+
+        quotes: [
+            'Stay focused, code with passion, and build the future.',
+            'Simplicity is the soul of efficiency.',
+            'Continuous effort — not strength or intelligence — is the key to unlocking potential.',
+            'Make it work, make it right, make it fast.',
+            'Code is like humor. When you have to explain it, it’s bad.',
+            'Calm mind brings inner strength and self-confidence.'
+        ],
+
+        init() {
+            this.cacheDom();
+            this.bindEvents();
+            this.renderCards();
+            this.startClock();
+            this.initZenCanvas();
+        },
+
+        cacheDom() {
+            this.dom = {
+                activeIcon: document.getElementById('ws-active-icon'),
+                activeName: document.getElementById('ws-active-name'),
+                modeText: document.getElementById('ws-mode-text'),
+                btnRollRandom: document.getElementById('btn-ws-roll-random'),
+                btnOpenCustomizer: document.getElementById('btn-ws-open-customizer'),
+                btnZenScreensaver: document.getElementById('btn-ws-zen-screensaver'),
+                categoryFilters: document.getElementById('ws-category-filters'),
+                searchInput: document.getElementById('ws-search-input'),
+                cardsGrid: document.getElementById('ws-cards-grid'),
+                zenStagePanel: document.getElementById('ws-zen-stage-panel'),
+                zenCanvas: document.getElementById('zen-stage-canvas'),
+                zenDigitalTime: document.getElementById('zen-digital-time'),
+                zenDigitalDate: document.getElementById('zen-digital-date'),
+                zenClockLocation: document.getElementById('zen-clock-location'),
+                zenQuoteText: document.getElementById('zen-quote-text'),
+                btnClockFormat: document.getElementById('btn-zen-clock-format'),
+                btnZenFullscreen: document.getElementById('btn-zen-fullscreen'),
+                customizerModal: document.getElementById('ws-customizer-modal'),
+                btnCloseCustomizer: document.getElementById('btn-close-ws-customizer'),
+                sliderDensity: document.getElementById('ws-slider-density'),
+                sliderSpeed: document.getElementById('ws-slider-speed'),
+                sliderOpacity: document.getElementById('ws-slider-opacity'),
+                toggleTurbulence: document.getElementById('ws-toggle-turbulence'),
+                valDensity: document.getElementById('ws-density-val'),
+                valSpeed: document.getElementById('ws-speed-val'),
+                valOpacity: document.getElementById('ws-opacity-val'),
+                btnResetCustomizer: document.getElementById('btn-ws-reset-customizer'),
+                btnSaveCustomizer: document.getElementById('btn-ws-save-customizer')
+            };
+        },
+
+        bindEvents() {
+            if (this.dom.btnRollRandom) {
+                this.dom.btnRollRandom.addEventListener('click', () => {
+                    weatherThemeEngine.rollRandomTheme();
+                    this.syncStatus();
+                });
+            }
+
+            if (this.dom.btnOpenCustomizer) {
+                this.dom.btnOpenCustomizer.addEventListener('click', () => {
+                    this.openCustomizer();
+                });
+            }
+
+            if (this.dom.btnZenScreensaver) {
+                this.dom.btnZenScreensaver.addEventListener('click', () => {
+                    this.toggleZenFullscreen();
+                });
+            }
+
+            if (this.dom.categoryFilters) {
+                this.dom.categoryFilters.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.ws-cat-btn');
+                    if (btn) {
+                        this.dom.categoryFilters.querySelectorAll('.ws-cat-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.state.activeCategory = btn.getAttribute('data-cat') || 'all';
+                        this.renderCards();
+                    }
+                });
+            }
+
+            if (this.dom.searchInput) {
+                this.dom.searchInput.addEventListener('input', (e) => {
+                    this.state.searchQuery = (e.target.value || '').trim().toLowerCase();
+                    this.renderCards();
+                });
+            }
+
+            if (this.dom.btnClockFormat) {
+                this.dom.btnClockFormat.addEventListener('click', () => {
+                    this.state.is24Hour = !this.state.is24Hour;
+                    this.updateClock();
+                });
+            }
+
+            if (this.dom.btnZenFullscreen) {
+                this.dom.btnZenFullscreen.addEventListener('click', () => {
+                    this.toggleZenFullscreen();
+                });
+            }
+
+            // Customizer modal events
+            if (this.dom.btnCloseCustomizer) {
+                this.dom.btnCloseCustomizer.addEventListener('click', () => {
+                    this.closeCustomizer();
+                });
+            }
+
+            if (this.dom.customizerModal) {
+                this.dom.customizerModal.addEventListener('click', (e) => {
+                    if (e.target === this.dom.customizerModal) this.closeCustomizer();
+                });
+            }
+
+            if (this.dom.sliderDensity) {
+                this.dom.sliderDensity.addEventListener('input', (e) => {
+                    if (this.dom.valDensity) this.dom.valDensity.textContent = `${e.target.value}%`;
+                });
+            }
+
+            if (this.dom.sliderSpeed) {
+                this.dom.sliderSpeed.addEventListener('input', (e) => {
+                    if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${parseFloat(e.target.value).toFixed(1)}x`;
+                });
+            }
+
+            if (this.dom.sliderOpacity) {
+                this.dom.sliderOpacity.addEventListener('input', (e) => {
+                    if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${e.target.value}%`;
+                });
+            }
+
+            if (this.dom.btnResetCustomizer) {
+                this.dom.btnResetCustomizer.addEventListener('click', () => {
+                    this.dom.sliderDensity.value = 100;
+                    this.dom.sliderSpeed.value = 1.0;
+                    this.dom.sliderOpacity.value = 100;
+                    this.dom.toggleTurbulence.checked = true;
+                    if (this.dom.valDensity) this.dom.valDensity.textContent = '100%';
+                    if (this.dom.valSpeed) this.dom.valSpeed.textContent = '1.0x';
+                    if (this.dom.valOpacity) this.dom.valOpacity.textContent = '100%';
+                });
+            }
+
+            if (this.dom.btnSaveCustomizer) {
+                this.dom.btnSaveCustomizer.addEventListener('click', () => {
+                    const density = parseFloat(this.dom.sliderDensity.value) / 100;
+                    const speed = parseFloat(this.dom.sliderSpeed.value);
+                    const opacity = parseFloat(this.dom.sliderOpacity.value) / 100;
+                    const turbulence = this.dom.toggleTurbulence.checked;
+
+                    weatherThemeEngine.saveUserConfig({ density, speed, opacity, turbulence });
+                    this.closeCustomizer();
+                    showActionToast('✅ Đã lưu cấu hình hạt khí tượng!');
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (this.state.isZenFullscreen) {
+                        this.toggleZenFullscreen(false);
+                    }
+                    if (this.dom.customizerModal && !this.dom.customizerModal.classList.contains('hidden')) {
+                        this.closeCustomizer();
+                    }
+                }
+            });
+        },
+
+        renderCards() {
+            if (!this.dom.cardsGrid) return;
+            const presets = Object.values(weatherThemeEngine.presets);
+            const activeKey = weatherThemeEngine.currentThemeKey;
+            const cat = this.state.activeCategory;
+            const q = this.state.searchQuery;
+
+            const filtered = presets.filter(p => {
+                if (cat !== 'all' && p.category !== cat) return false;
+                if (q) {
+                    const matchName = p.name.toLowerCase().includes(q);
+                    const matchLoc = p.location.toLowerCase().includes(q);
+                    const matchDesc = p.desc.toLowerCase().includes(q);
+                    return matchName || matchLoc || matchDesc;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                this.dom.cardsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-muted);">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">🔍</div>
+                        <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff;">Không tìm thấy hiệu ứng thời tiết phù hợp</div>
+                        <div style="font-size: 0.8rem; margin-top: 4px;">Hãy thử tìm kiếm với từ khóa khác như "Tokyo", "Mưa", "Bắc Cực", "Sa mạc"...</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(p => {
+                const isActive = p.key === activeKey;
+                const catLabel = p.category === 'rain' ? '🌧️ MƯA' : (p.category === 'snow' ? '❄️ TUYẾT' : (p.category === 'aurora' ? '🌌 CỰC QUANG' : (p.category === 'nature' ? '🌸 THIÊN NHIÊN' : '🌫️ SƯƠNG MÙ')));
+
+                html += `
+                    <div class="ws-card ${isActive ? 'active-theme' : ''}" data-key="${p.key}" style="--card-accent:${p.accent}; --card-glow:${p.accentGlow};">
+                        <div class="ws-mini-canvas-wrap">
+                            <canvas class="ws-mini-canvas" data-type="${p.type}" data-accent="${p.accent}" data-secondary="${p.secondary}"></canvas>
+                            ${isActive ? '<span class="ws-card-active-tag">ĐANG ÁP DỤNG</span>' : ''}
+                            <span class="ws-card-cat-badge">${catLabel}</span>
+                        </div>
+                        <div class="ws-card-info">
+                            <div class="ws-card-header-row">
+                                <div class="ws-card-title">
+                                    <span class="ws-accent-dot" style="background:${p.accent};"></span>
+                                    <span>${p.shortName}</span>
+                                </div>
+                                <span style="font-size:1.1rem;">${p.icon}</span>
+                            </div>
+                            <div class="ws-card-location">📍 ${p.location}</div>
+                            <div class="ws-card-desc">${p.desc}</div>
+                        </div>
+                        <div class="ws-card-footer">
+                            <button class="ws-apply-theme-btn btn-apply-theme" data-key="${p.key}">
+                                <span>${isActive ? '🌟 Đang Kích Hoạt' : 'Áp Dụng Làm Theme'}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            this.dom.cardsGrid.innerHTML = html;
+
+            // Bind Card clicks
+            this.dom.cardsGrid.querySelectorAll('.ws-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const key = card.getAttribute('data-key');
+                    if (key) {
+                        weatherThemeEngine.applyTheme(key, true, true);
+                        this.renderCards();
+                    }
+                });
+            });
+
+            this.initMiniCanvases();
+        },
+
+        initMiniCanvases() {
+            this.state.miniCanvases = [];
+            const canvasEls = this.dom.cardsGrid.querySelectorAll('.ws-mini-canvas');
+            canvasEls.forEach(canvas => {
+                const type = canvas.getAttribute('data-type');
+                const accent = canvas.getAttribute('data-accent');
+                const secondary = canvas.getAttribute('data-secondary');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 260;
+                canvas.height = 125;
+
+                const particles = [];
+                for (let i = 0; i < 14; i++) {
+                    particles.push({
+                        x: Math.random() * 260,
+                        y: Math.random() * 125,
+                        length: Math.random() * 12 + 6,
+                        speed: Math.random() * 3 + 2.5,
+                        radius: Math.random() * 2 + 1,
+                        opacity: Math.random() * 0.5 + 0.4,
+                        color: Math.random() > 0.4 ? accent : secondary
+                    });
+                }
+
+                this.state.miniCanvases.push({ canvas, ctx, type, accent, secondary, particles, phase: 0 });
+            });
+
+            this.startAnimationLoop();
+        },
+
+        startAnimationLoop() {
+            if (this.state.isAnimRunning) return;
+            this.state.isAnimRunning = true;
+
+            const loop = () => {
+                if (!this.state.isAnimRunning) return;
+
+                // 1. Animate Zen Focus Canvas if active
+                if (this.state.zenCtx && this.state.zenCanvas && state.activeTab === 'weather_studio') {
+                    const zctx = this.state.zenCtx;
+                    const zw = this.state.zenWidth || 600;
+                    const zh = this.state.zenHeight || 380;
+                    zctx.clearRect(0, 0, zw, zh);
+
+                    const activePreset = weatherThemeEngine.presets[weatherThemeEngine.currentThemeKey];
+                    const activeType = activePreset ? activePreset.type : 'rain';
+
+                    if (activeType === 'aurora') {
+                        this.state.zenPhase = (this.state.zenPhase || 0) + 0.015;
+                        const grad = zctx.createLinearGradient(0, 0, zw, 0);
+                        grad.addColorStop(0, 'rgba(0, 255, 135, 0.0)');
+                        grad.addColorStop(0.3, 'rgba(0, 255, 135, 0.35)');
+                        grad.addColorStop(0.7, 'rgba(96, 239, 255, 0.42)');
+                        grad.addColorStop(1, 'rgba(0, 255, 135, 0.0)');
+
+                        zctx.fillStyle = grad;
+                        zctx.beginPath();
+                        zctx.moveTo(0, zh * 0.7);
+                        for (let x = 0; x <= zw; x += 30) {
+                            const y = zh * 0.32 + Math.sin(x * 0.005 + this.state.zenPhase) * 35 + Math.cos(x * 0.008 - this.state.zenPhase * 0.8) * 20;
+                            zctx.lineTo(x, y);
+                        }
+                        zctx.lineTo(zw, zh * 0.7);
+                        zctx.closePath();
+                        zctx.fill();
+                    } else {
+                        this.state.zenParticles.forEach(p => {
+                            if (activeType === 'snow' || activeType === 'gentle_snow' || activeType === 'freeze') {
+                                p.x += Math.sin(p.y * 0.05) * 0.4;
+                                p.y += p.speed * 0.6;
+                                zctx.beginPath();
+                                zctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                                zctx.fillStyle = '#ffffff';
+                                zctx.globalAlpha = p.opacity;
+                                zctx.shadowColor = '#80deea';
+                                zctx.shadowBlur = 8;
+                                zctx.fill();
+                                zctx.shadowBlur = 0;
+                            } else if (activeType === 'golden_dust' || activeType === 'embers' || activeType === 'dubai_dust' || activeType === 'sunbeams') {
+                                p.y -= p.speed * 0.4;
+                                p.x += (Math.sin(p.y * 0.03) - 0.5) * 0.5;
+                                zctx.beginPath();
+                                zctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                                zctx.fillStyle = activePreset.accent;
+                                zctx.globalAlpha = p.opacity;
+                                zctx.shadowColor = activePreset.accent;
+                                zctx.shadowBlur = 10;
+                                zctx.fill();
+                                zctx.shadowBlur = 0;
+                            } else if (activeType === 'sakura') {
+                                p.y += p.speed * 0.6;
+                                p.x += Math.sin(p.y * 0.04) * 0.8;
+                                zctx.beginPath();
+                                zctx.ellipse(p.x, p.y, p.radius * 2.2, p.radius * 1.2, p.y * 0.05, 0, Math.PI * 2);
+                                zctx.fillStyle = '#ffb7b2';
+                                zctx.globalAlpha = p.opacity;
+                                zctx.shadowColor = '#ff758c';
+                                zctx.shadowBlur = 6;
+                                zctx.fill();
+                                zctx.shadowBlur = 0;
+                            } else if (activeType === 'stars') {
+                                zctx.beginPath();
+                                zctx.arc(p.x, p.y, p.radius * 0.8, 0, Math.PI * 2);
+                                zctx.fillStyle = '#ffffff';
+                                zctx.globalAlpha = p.opacity * (0.5 + 0.5 * Math.sin(Date.now() * 0.003 + p.x));
+                                zctx.shadowColor = '#a855f7';
+                                zctx.shadowBlur = 6;
+                                zctx.fill();
+                                zctx.shadowBlur = 0;
+                            } else {
+                                zctx.beginPath();
+                                zctx.strokeStyle = activePreset.accent;
+                                zctx.globalAlpha = p.opacity;
+                                zctx.lineWidth = 1.4;
+                                zctx.shadowColor = activePreset.accent;
+                                zctx.shadowBlur = 6;
+                                zctx.moveTo(p.x, p.y);
+                                zctx.lineTo(p.x - p.length * 0.35, p.y + p.length);
+                                zctx.stroke();
+                                zctx.shadowBlur = 0;
+
+                                p.y += p.speed * 1.2;
+                                p.x -= p.speed * 0.35;
+                            }
+
+                            if (p.y > zh + 20 || p.x < -30) {
+                                p.y = -20;
+                                p.x = Math.random() * (zw + 60) - 30;
+                            }
+                            if (p.y < -20) {
+                                p.y = zh + 20;
+                                p.x = Math.random() * zw;
+                            }
+                        });
+                        zctx.globalAlpha = 1.0;
+                    }
+                }
+
+                // 2. Animate 16 Mini Preview Canvases when on Tab 13
+                if (state.activeTab === 'weather_studio' && this.state.miniCanvases.length > 0) {
+                    this.state.miniCanvases.forEach(item => {
+                        const { ctx, type, accent, secondary, particles } = item;
+                        ctx.clearRect(0, 0, 260, 125);
+
+                        if (type === 'aurora') {
+                            item.phase = (item.phase || 0) + 0.03;
+                            const grad = ctx.createLinearGradient(0, 0, 260, 0);
+                            grad.addColorStop(0, 'rgba(0, 255, 135, 0)');
+                            grad.addColorStop(0.5, 'rgba(0, 255, 135, 0.45)');
+                            grad.addColorStop(1, 'rgba(96, 239, 255, 0)');
+                            ctx.fillStyle = grad;
+                            ctx.beginPath();
+                            ctx.moveTo(0, 125);
+                            for (let x = 0; x <= 260; x += 20) {
+                                const y = 50 + Math.sin(x * 0.02 + item.phase) * 15;
+                                ctx.lineTo(x, y);
+                            }
+                            ctx.lineTo(260, 125);
+                            ctx.closePath();
+                            ctx.fill();
+                        } else {
+                            particles.forEach(p => {
+                                if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
+                                    p.y += p.speed * 0.5;
+                                    p.x += Math.sin(p.y * 0.1) * 0.4;
+                                    ctx.beginPath();
+                                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                                    ctx.fillStyle = '#ffffff';
+                                    ctx.globalAlpha = p.opacity;
+                                    ctx.fill();
+                                } else if (type === 'golden_dust' || type === 'embers' || type === 'dubai_dust' || type === 'sunbeams') {
+                                    p.y -= p.speed * 0.4;
+                                    ctx.beginPath();
+                                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                                    ctx.fillStyle = accent;
+                                    ctx.globalAlpha = p.opacity;
+                                    ctx.fill();
+                                } else if (type === 'sakura') {
+                                    p.y += p.speed * 0.5;
+                                    p.x += Math.sin(p.y * 0.08) * 0.6;
+                                    ctx.beginPath();
+                                    ctx.ellipse(p.x, p.y, p.radius * 2, p.radius, p.y * 0.1, 0, Math.PI * 2);
+                                    ctx.fillStyle = '#ffb7b2';
+                                    ctx.globalAlpha = p.opacity;
+                                    ctx.fill();
+                                } else if (type === 'stars') {
+                                    ctx.beginPath();
+                                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                                    ctx.fillStyle = '#ffffff';
+                                    ctx.globalAlpha = p.opacity;
+                                    ctx.fill();
+                                } else if (type === 'fog' || type === 'emerald_mist' || type === 'wind') {
+                                    p.x += p.speed * 0.4;
+                                    const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 25);
+                                    grad.addColorStop(0, `rgba(203, 213, 225, 0.25)`);
+                                    grad.addColorStop(1, 'rgba(203, 213, 225, 0)');
+                                    ctx.fillStyle = grad;
+                                    ctx.beginPath();
+                                    ctx.arc(p.x, p.y, 25, 0, Math.PI * 2);
+                                    ctx.fill();
+                                } else {
+                                    // Rain
+                                    ctx.beginPath();
+                                    ctx.strokeStyle = p.color;
+                                    ctx.globalAlpha = p.opacity;
+                                    ctx.lineWidth = 1.2;
+                                    ctx.moveTo(p.x, p.y);
+                                    ctx.lineTo(p.x - p.length * 0.3, p.y + p.length);
+                                    ctx.stroke();
+                                    p.y += p.speed;
+                                    p.x -= p.speed * 0.3;
+                                }
+
+                                if (p.y > 135 || p.x < -20) {
+                                    p.y = -10;
+                                    p.x = Math.random() * 280 - 10;
+                                }
+                                if (p.y < -10) {
+                                    p.y = 135;
+                                    p.x = Math.random() * 260;
+                                }
+                            });
+                            ctx.globalAlpha = 1.0;
+                        }
+                    });
+                }
+
+                this.state.animFrameId = requestAnimationFrame(loop);
+            };
+
+            this.state.animFrameId = requestAnimationFrame(loop);
+        },
+
+        startClock() {
+            this.updateClock();
+            if (this.state.clockTimer) clearInterval(this.state.clockTimer);
+            this.state.clockTimer = setInterval(() => {
+                this.updateClock();
+            }, 1000);
+        },
+
+        updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let ampm = '';
+
+            if (!this.state.is24Hour) {
+                ampm = hours >= 12 ? ' PM' : ' AM';
+                hours = hours % 12 || 12;
+            }
+
+            const strHours = String(hours).padStart(2, '0');
+            const strMinutes = String(now.getMinutes()).padStart(2, '0');
+            const strSeconds = String(now.getSeconds()).padStart(2, '0');
+
+            if (this.dom.zenDigitalTime) {
+                this.dom.zenDigitalTime.textContent = `${strHours}:${strMinutes}:${strSeconds}${ampm}`;
+            }
+
+            if (this.dom.zenDigitalDate) {
+                const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+                const dayName = days[now.getDay()];
+                const dateStr = `${dayName}, ${now.getDate()} Tháng ${now.getMonth() + 1}, ${now.getFullYear()}`;
+                this.dom.zenDigitalDate.textContent = dateStr;
+            }
+        },
+
+        initZenCanvas() {
+            if (!this.dom.zenCanvas) return;
+            this.state.zenCanvas = this.dom.zenCanvas;
+            this.state.zenCtx = this.dom.zenCanvas.getContext('2d');
+            this.resizeZenCanvas();
+
+            window.addEventListener('resize', () => {
+                this.resizeZenCanvas();
+            });
+
+            this.syncStatus();
+        },
+
+        resizeZenCanvas() {
+            if (!this.state.zenCanvas || !this.state.zenCanvas.parentElement) return;
+            const rect = this.state.zenCanvas.parentElement.getBoundingClientRect();
+            this.state.zenWidth = rect.width;
+            this.state.zenHeight = rect.height;
+            this.state.zenCanvas.width = rect.width;
+            this.state.zenCanvas.height = rect.height;
+
+            this.state.zenParticles = [];
+            for (let i = 0; i < 45; i++) {
+                this.state.zenParticles.push({
+                    x: Math.random() * rect.width,
+                    y: Math.random() * rect.height,
+                    length: Math.random() * 22 + 10,
+                    speed: Math.random() * 5 + 4,
+                    radius: Math.random() * 2.5 + 1.2,
+                    opacity: Math.random() * 0.5 + 0.4
+                });
+            }
+        },
+
+        syncStatus() {
+            const key = weatherThemeEngine.currentThemeKey;
+            const preset = weatherThemeEngine.presets[key];
+            if (!preset) return;
+
+            if (this.dom.activeIcon) this.dom.activeIcon.textContent = preset.icon;
+            if (this.dom.activeName) this.dom.activeName.textContent = preset.name;
+            if (this.dom.zenClockLocation) {
+                this.dom.zenClockLocation.textContent = `${preset.location.toUpperCase()} • ${preset.name.toUpperCase()}`;
+            }
+
+            if (this.dom.modeText) {
+                this.dom.modeText.textContent = weatherThemeEngine.mode === 'auto' ? '🔄 Tự xoay vòng 30m' : '🔒 Đã khóa cố định';
+            }
+
+            // Pick random quote occasionally
+            if (this.dom.zenQuoteText && Math.random() < 0.3) {
+                const q = this.quotes[Math.floor(Math.random() * this.quotes.length)];
+                this.dom.zenQuoteText.textContent = q;
+            }
+
+            // Sync visual cards active state
+            if (this.dom.cardsGrid) {
+                this.dom.cardsGrid.querySelectorAll('.ws-card').forEach(card => {
+                    const cKey = card.getAttribute('data-key');
+                    const isActive = cKey === key;
+                    card.classList.toggle('active-theme', isActive);
+                    const btn = card.querySelector('.ws-apply-theme-btn');
+                    if (btn) {
+                        btn.innerHTML = `<span>${isActive ? '🌟 Đang Kích Hoạt' : 'Áp Dụng Làm Theme'}</span>`;
+                    }
+                });
+            }
+        },
+
+        toggleZenFullscreen(forceState) {
+            this.state.isZenFullscreen = forceState !== undefined ? forceState : !this.state.isZenFullscreen;
+            if (this.dom.zenStagePanel) {
+                this.dom.zenStagePanel.classList.toggle('fullscreen-zen', this.state.isZenFullscreen);
+                setTimeout(() => this.resizeZenCanvas(), 50);
+            }
+            if (this.state.isZenFullscreen) {
+                showActionToast('🧘 Zen Focus Screensaver đã kích hoạt! Nhấn ESC để thoát.');
+            }
+        },
+
+        openCustomizer() {
+            if (!this.dom.customizerModal) return;
+            const c = weatherThemeEngine.userConfig;
+            if (this.dom.sliderDensity) this.dom.sliderDensity.value = Math.round((c.density || 1.0) * 100);
+            if (this.dom.sliderSpeed) this.dom.sliderSpeed.value = c.speed || 1.0;
+            if (this.dom.sliderOpacity) this.dom.sliderOpacity.value = Math.round((c.opacity || 1.0) * 100);
+            if (this.dom.toggleTurbulence) this.dom.toggleTurbulence.checked = c.turbulence !== false;
+
+            if (this.dom.valDensity) this.dom.valDensity.textContent = `${this.dom.sliderDensity.value}%`;
+            if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${parseFloat(this.dom.sliderSpeed.value).toFixed(1)}x`;
+            if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${this.dom.sliderOpacity.value}%`;
+
+            this.dom.customizerModal.classList.remove('hidden');
+        },
+
+        closeCustomizer() {
+            if (this.dom.customizerModal) {
+                this.dom.customizerModal.classList.add('hidden');
+            }
+        },
+
+        onTabActivated() {
+            this.syncStatus();
+            this.resizeZenCanvas();
+        }
+    };
+
+    window.weatherStudioManager = weatherStudioManager;
+
     function renderMarkdownSimple(md) {
         if (!md) return '';
         return md
@@ -12232,37 +14963,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // Initialization
+    // Resilient Initialization Pipeline
     // =========================================================================
     window.scrollTo(0, 0);
-    initTheme();               // Initialize Dark / Light theme from localStorage
-    initMetricsChart();
-    initDiskCharts();
-    initAppCharts();
-    focusDeckManager.init();    // Initialize Tab 7 Cyber Focus Deck Module
-    jarvisVoiceManager.init();   // Initialize Jarvis Voice AI Assistant
-    networkRadarManager.init();  // Initialize Tab 8 Network & LAN Radar Module
-    powerEstimatorManager.init();// Initialize Tab 9 Power & Carbon Cost Estimator Module
-    cyberPetManager.init();      // Initialize Cyber Tamagotchi Virtual Desktop Pet
-    wallpaperManager.init();     // Initialize Tab 10 Dynamic Wallpaper Studio Module
-    snippetLabManager.init();    // Initialize Tab 11 AI Prompt & Code Snippet Laboratory Module
-    mediaViewerManager.init();   // Initialize In-Browser Media & Document Viewer Module
-    weatherManager.init();       // Initialize Weather & Dynamic Atmospheric Mood
-    vocabManager.init();         // Initialize Tab 12 Daily English & Vocab Booster Module
-    diskBloatManager.init();     // Initialize Disk Delta & Bloat Tracker Module
-    featureManager.init();       // Initialize Module Control Center (Feature Toggle Deck)
-    setupEvents();
-    updateChartsTheme(state.currentTheme === 'light'); // Apply theme styling to charts
-    fetchMetricsSnapshot();    // Initial telemetry snapshot
-    fetchNotifications(false); // Initial dual-source notification check
-    fetchAppSummaryKPIs();     // Initial App Analytics summary KPIs
-    connectWebSocket();        // Real-time continuous stream (1s loop with live Action Center sync)
 
-    // Periodic event logs poll every 30 seconds
+    const safeInit = (name, fn) => {
+        try {
+            fn();
+        } catch (e) {
+            console.error(`[Dashboard Init Error in ${name}]:`, e);
+        }
+    };
+
+    // 1. Core Visuals & System Theme
+    safeInit('initTheme', () => initTheme());
+    safeInit('weatherThemeEngine', () => weatherThemeEngine.init());
+    safeInit('initMetricsChart', () => initMetricsChart());
+    safeInit('initDiskCharts', () => initDiskCharts());
+    safeInit('initAppCharts', () => initAppCharts());
+    safeInit('updateChartsTheme', () => updateChartsTheme(state.currentTheme === 'light'));
+
+    // 2. Immediate Network & Metrics Connection
+    safeInit('fetchMetricsSnapshot', () => fetchMetricsSnapshot());
+    safeInit('connectWebSocket', () => connectWebSocket());
+    safeInit('fetchNotifications', () => fetchNotifications(false));
+    safeInit('fetchAppSummaryKPIs', () => fetchAppSummaryKPIs());
+
+    // 3. Modules & Specialized Studios
+    safeInit('focusDeckManager', () => focusDeckManager.init());
+    safeInit('jarvisVoiceManager', () => jarvisVoiceManager.init());
+    safeInit('networkRadarManager', () => networkRadarManager.init());
+    safeInit('powerEstimatorManager', () => powerEstimatorManager.init());
+    safeInit('cyberPetManager', () => cyberPetManager.init());
+    safeInit('wallpaperManager', () => wallpaperManager.init());
+    safeInit('snippetLabManager', () => snippetLabManager.init());
+    safeInit('snippetSandboxManager', () => snippetSandboxManager.init());
+    safeInit('mediaViewerManager', () => mediaViewerManager.init());
+    safeInit('weatherManager', () => weatherManager.init());
+    safeInit('vocabManager', () => vocabManager.init());
+    safeInit('weatherStudioManager', () => weatherStudioManager.init());
+    safeInit('diskBloatManager', () => diskBloatManager.init());
+    safeInit('featureManager', () => featureManager.init());
+    safeInit('setupEvents', () => setupEvents());
+
+    // 4. Periodic background check
     state.notifPollTimer = setInterval(() => {
-        fetchNotifications(false);
+        try { fetchNotifications(false); } catch (e) {}
     }, 30000);
 });
+
 
 
 

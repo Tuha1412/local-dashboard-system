@@ -239,6 +239,22 @@
                         <span class="badge-new"
                             style="background: rgba(188, 248, 70, 0.18); border-color: rgba(188, 248, 70, 0.4); color: var(--accent-lime);">50+ ⚡</span>
                     </button>
+
+                    <button id="nav-item-weather-studio" class="sidebar-nav-item"
+                        onclick="if (window.switchTab) window.switchTab('weather_studio');"
+                        title="Atmosphere & Weather Studio (16 Hiệu ứng thời tiết toàn cầu sống động)">
+                        <span class="nav-icon" style="color:var(--accent-lime);">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+                                <line x1="13" y1="19" x2="13" y2="23"></line>
+                                <line x1="9" y1="21" x2="9" y2="23"></line>
+                                <line x1="17" y1="21" x2="17" y2="23"></line>
+                            </svg>
+                        </span>
+                        <span class="nav-label">Weather Studio</span>
+                        <span class="badge-new"
+                            style="background: rgba(188, 248, 70, 0.18); border-color: rgba(188, 248, 70, 0.4); color: var(--accent-lime);">16 FX</span>
+                    </button>
                 </div>
             </nav>
 
@@ -523,8 +539,10 @@
              MAIN CONTENT WRAPPER
              ================================================================ -->
         <div class="main-wrapper">
-            <!-- Top Header Bar -->
+            <!-- Top Header Bar with Dynamic Atmospheric Weather Canvas -->
             <header class="app-header">
+                <canvas id="header-weather-canvas" class="header-weather-canvas"></canvas>
+
                 <div class="header-left">
                     <div class="header-title-container">
                         <div class="header-breadcrumb-tag">
@@ -536,6 +554,119 @@
                 </div>
 
                 <div class="header-right">
+                    <!-- Global Weather Atmospheric Themes & Dynamic Skin Engine Widget -->
+                    <div class="header-flyout-wrapper" id="theme-engine-flyout-wrapper">
+                        <div class="theme-engine-header-group">
+                            <button id="btn-header-theme-engine" class="control-btn header-theme-btn"
+                                title="Global Weather Atmospheric Themes & Dynamic Skin Engine (Nhấp để chọn Theme)">
+                                <span id="header-theme-icon" class="theme-header-icon">🌦️</span>
+                                <span id="header-theme-name" class="theme-name-badge">Tokyo Rain</span>
+                                <span id="header-theme-mode" class="theme-mode-pill auto">🔄 Auto 30m</span>
+                            </button>
+                            <button id="btn-theme-roll-quick" class="control-btn theme-roll-btn" title="Đổi ngẫu nhiên chủ đề thời tiết ngay (Roll Weather Theme)">
+                                <span>🎲</span>
+                            </button>
+                        </div>
+
+                        <!-- Atmospheric Theme Selector Flyout Card -->
+                        <div id="theme-engine-flyout-card" class="header-flyout-card theme-flyout-card hidden">
+                            <div class="flyout-header theme-card-header">
+                                <div class="flyout-title-group">
+                                    <span class="weather-icon-large">🌍</span>
+                                    <div>
+                                        <h3>Atmospheric Skin Engine</h3>
+                                        <span class="theme-flyout-sub">5 Chủ đề thời tiết thế giới sống động</span>
+                                    </div>
+                                </div>
+                                <button id="btn-close-theme-flyout" class="modal-close-btn"
+                                    style="width:26px;height:26px;font-size:0.8rem;" title="Đóng">✕</button>
+                            </div>
+
+                            <!-- Auto Rotation Mode Toggle -->
+                            <div class="theme-auto-rotation-row">
+                                <div class="ambient-toggle-info">
+                                    <span class="ambient-icon">🔄</span>
+                                    <div class="ambient-text-wrap">
+                                        <span class="ambient-label">Tự động đổi ngẫu nhiên</span>
+                                        <span class="ambient-hint">Tự chuyển sang thời tiết mới mỗi 30 phút</span>
+                                    </div>
+                                </div>
+                                <label class="cyber-switch">
+                                    <input type="checkbox" id="toggle-theme-auto-rotate" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+
+                            <!-- Preset List -->
+                            <div class="theme-presets-list" id="theme-presets-container">
+                                <!-- Tokyo Cyberpunk Rain -->
+                                <div class="theme-preset-card active" data-theme-key="tokyo_rain">
+                                    <div class="preset-preview-gradient" style="background: linear-gradient(135deg, #0f172a, #064e77, #00f2fe);"></div>
+                                    <div class="preset-info">
+                                        <div class="preset-title-row">
+                                            <span class="preset-name">🌧️ Tokyo Cyberpunk Rain</span>
+                                            <span class="preset-accent-dot" style="background: #bcf846; box-shadow: 0 0 8px #bcf846;"></span>
+                                        </div>
+                                        <span class="preset-desc">Neon Lime & Electric Cyan • Mưa rơi Cyberpunk</span>
+                                    </div>
+                                    <span class="preset-status-tag">Đang áp dụng</span>
+                                </div>
+
+                                <!-- Tromsø Aurora Borealis -->
+                                <div class="theme-preset-card" data-theme-key="tromso_aurora">
+                                    <div class="preset-preview-gradient" style="background: linear-gradient(135deg, #0a191e, #00b482, #60efff);"></div>
+                                    <div class="preset-info">
+                                        <div class="preset-title-row">
+                                            <span class="preset-name">🌌 Tromsø Aurora Borealis</span>
+                                            <span class="preset-accent-dot" style="background: #00ff87; box-shadow: 0 0 8px #00ff87;"></span>
+                                        </div>
+                                        <span class="preset-desc">Aurora Neon & Ice Cyan • Cực quang Bắc Cực</span>
+                                    </div>
+                                    <span class="preset-status-tag">Chọn</span>
+                                </div>
+
+                                <!-- Sahara Golden Sunset -->
+                                <div class="theme-preset-card" data-theme-key="sahara_sunset">
+                                    <div class="preset-preview-gradient" style="background: linear-gradient(135deg, #1c0f0a, #b45309, #ff7e5f);"></div>
+                                    <div class="preset-info">
+                                        <div class="preset-title-row">
+                                            <span class="preset-name">🌅 Sahara Golden Sunset</span>
+                                            <span class="preset-accent-dot" style="background: #ffd700; box-shadow: 0 0 8px #ffd700;"></span>
+                                        </div>
+                                        <span class="preset-desc">Gold Flare & Amber Glow • Hoàng hôn sa mạc</span>
+                                    </div>
+                                    <span class="preset-status-tag">Chọn</span>
+                                </div>
+
+                                <!-- Reykjavik Nordic Blizzard -->
+                                <div class="theme-preset-card" data-theme-key="nordic_blizzard">
+                                    <div class="preset-preview-gradient" style="background: linear-gradient(135deg, #0f172a, #94a3b8, #80deea);"></div>
+                                    <div class="preset-info">
+                                        <div class="preset-title-row">
+                                            <span class="preset-name">❄️ Reykjavik Nordic Blizzard</span>
+                                            <span class="preset-accent-dot" style="background: #80deea; box-shadow: 0 0 8px #80deea;"></span>
+                                        </div>
+                                        <span class="preset-desc">Frost Ice & Pure Frost • Băng giá Bắc Âu</span>
+                                    </div>
+                                    <span class="preset-status-tag">Chọn</span>
+                                </div>
+
+                                <!-- Kyoto Misty Morning -->
+                                <div class="theme-preset-card" data-theme-key="kyoto_mist">
+                                    <div class="preset-preview-gradient" style="background: linear-gradient(135deg, #0f172a, #334155, #cbd5e1);"></div>
+                                    <div class="preset-info">
+                                        <div class="preset-title-row">
+                                            <span class="preset-name">🌫️ Kyoto Misty Morning</span>
+                                            <span class="preset-accent-dot" style="background: #bcf846; box-shadow: 0 0 8px #bcf846;"></span>
+                                        </div>
+                                        <span class="preset-desc">Lime Accent & Misty Slate • Sương mù Cố Đô</span>
+                                    </div>
+                                    <span class="preset-status-tag">Chọn</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Weather & Dynamic Mood Header Widget -->
                     <div class="header-flyout-wrapper" id="weather-flyout-wrapper">
                         <button id="btn-header-weather" class="control-btn header-weather-btn"
@@ -4050,6 +4181,30 @@
                     </div>
                 </div>
 
+                <!-- Sub-Tab Mode Switcher for Tab 11 -->
+                <div class="snippet-lab-subtab-bar">
+                    <div class="snippet-subtab-group">
+                        <button id="snippet-subtab-manager" class="snippet-subtab-btn active" type="button">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M10 2v7.31L4.62 18.27A2 2 0 0 0 6.34 21h11.32a2 2 0 0 0 1.72-2.73L14 9.31V2"></path>
+                                <line x1="8" y1="2" x2="16" y2="2"></line>
+                                <line x1="9" y1="12" x2="15" y2="12"></line>
+                            </svg>
+                            <span>🧪 AI Prompt & Snippets</span>
+                        </button>
+                        <button id="snippet-subtab-sandbox" class="snippet-subtab-btn" type="button">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <span>🎨 Live HTML/CSS Sandbox</span>
+                            <span class="sandbox-subtab-badge">Live</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUB-VIEW A: SNIPPET & PROMPT MANAGER -->
+                <div id="snippet-panel-manager" class="snippet-subview-panel">
                 <!-- Main 2-Column Work Area -->
                 <div class="snippet-lab-layout-grid">
                     <!-- =========================================================
@@ -4387,6 +4542,139 @@
                             </div>
                         </div>
                     </section>
+                </div>
+                </div> <!-- End #snippet-panel-manager -->
+
+                <!-- =========================================================
+                     SUB-VIEW B: LIVE HTML & CSS PLAYGROUND / SANDBOX
+                     ========================================================= -->
+                <div id="snippet-panel-sandbox" class="snippet-subview-panel hidden">
+                    <!-- Sandbox Control Bar -->
+                    <div class="sandbox-control-bar dashboard-panel">
+                        <div class="sandbox-control-left">
+                            <div class="sandbox-badge-pill">
+                                <span class="bloat-pulse-dot"></span>
+                                <span class="sandbox-badge-title">Interactive Engine:</span>
+                                <span class="sandbox-badge-status">Sandboxed Client-Side Live Rendering</span>
+                            </div>
+
+                            <!-- Templates Dropdown Selector -->
+                            <div class="sandbox-template-picker">
+                                <label for="sandbox-template-select" class="sandbox-picker-label">📋 Mẫu Khởi Đầu:</label>
+                                <select id="sandbox-template-select" class="sandbox-select-input">
+                                    <option value="btn_neon">1. Neon Glass Button & Hover Glow</option>
+                                    <option value="cyber_rain">2. Cyberpunk Rain / Slanted Particle Animation</option>
+                                    <option value="aurora_wave">3. Aurora Gradient Wave Box</option>
+                                    <option value="glass_card">4. Frosted Glass Metric Card</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="sandbox-control-right">
+                            <!-- Live Auto Toggle -->
+                            <label class="sandbox-auto-toggle-label" title="Tự động cập nhật bản xem trước khi gõ">
+                                <input type="checkbox" id="sandbox-toggle-live" checked>
+                                <span class="sandbox-toggle-slider"></span>
+                                <span class="sandbox-toggle-text">⚡ Live Preview</span>
+                            </label>
+                            <button id="sandbox-btn-run" class="sandbox-action-btn btn-run" type="button" title="Chạy / Làm mới bản xem trước (Ctrl + Enter)">
+                                <span>🔄 Run Preview</span>
+                            </button>
+                            <button id="sandbox-btn-clear" class="sandbox-action-btn btn-clear" type="button" title="Làm sạch toàn bộ code">
+                                <span>🧹 Clear</span>
+                            </button>
+                            <button id="sandbox-btn-save" class="sandbox-action-btn btn-save" type="button" title="Lưu nhanh mã này vào Thư viện Snippet">
+                                <span>💾 Save to Snippets</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2-Column Split Screen: Left = Editors (HTML + CSS), Right = Live Preview -->
+                    <div class="sandbox-split-layout">
+                        <!-- Left: Code Panes -->
+                        <div class="sandbox-editor-column">
+                            <!-- HTML Pane -->
+                            <div class="sandbox-code-box html-box dashboard-panel">
+                                <div class="sandbox-box-header">
+                                    <div class="sandbox-box-title">
+                                        <span class="lang-icon html-tag">&lt;/&gt;</span>
+                                        <span class="box-title-text">HTML (Body Structure)</span>
+                                    </div>
+                                    <div class="sandbox-box-actions">
+                                        <button id="sandbox-btn-copy-html" class="sandbox-mini-btn" type="button" title="Sao chép mã HTML">📋 Copy</button>
+                                    </div>
+                                </div>
+                                <div class="sandbox-editor-wrap">
+                                    <textarea id="sandbox-html-code" class="sandbox-code-textarea mono-text" spellcheck="false" placeholder="Nhập mã HTML vào đây..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- CSS Pane -->
+                            <div class="sandbox-code-box css-box dashboard-panel">
+                                <div class="sandbox-box-header">
+                                    <div class="sandbox-box-title">
+                                        <span class="lang-icon css-tag">{ # }</span>
+                                        <span class="box-title-text">CSS (Styles & Animations)</span>
+                                    </div>
+                                    <div class="sandbox-box-actions">
+                                        <button id="sandbox-btn-copy-css" class="sandbox-mini-btn" type="button" title="Sao chép mã CSS">📋 Copy</button>
+                                    </div>
+                                </div>
+                                <div class="sandbox-editor-wrap">
+                                    <textarea id="sandbox-css-code" class="sandbox-code-textarea mono-text" spellcheck="false" placeholder="Nhập mã CSS vào đây..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Interactive Live Preview Frame -->
+                        <div class="sandbox-preview-column dashboard-panel">
+                            <!-- Preview Top Control Bar -->
+                            <div class="sandbox-preview-toolbar">
+                                <div class="preview-toolbar-left">
+                                    <span class="preview-live-dot"></span>
+                                    <span class="preview-title">Live Preview Frame</span>
+                                    <span id="sandbox-render-status" class="preview-status-pill">✨ Ready</span>
+                                </div>
+
+                                <div class="preview-toolbar-right">
+                                    <!-- Background Switcher -->
+                                    <div class="preview-bg-switcher" id="sandbox-bg-switcher">
+                                        <button class="bg-switch-btn active" data-bg="dark" type="button" title="Nền Tối Dark Void">⬛</button>
+                                        <button class="bg-switch-btn" data-bg="light" type="button" title="Nền Sáng Pure White">⬜</button>
+                                        <button class="bg-switch-btn" data-bg="checkered" type="button" title="Nền Trong Suốt Checkered">🔳</button>
+                                    </div>
+
+                                    <!-- Viewport Sizer -->
+                                    <div class="preview-viewport-switcher" id="sandbox-viewport-switcher">
+                                        <button class="viewport-btn active" data-width="100%" type="button" title="Desktop (100%)">💻 100%</button>
+                                        <button class="viewport-btn" data-width="768px" type="button" title="Tablet (768px)">📱 Tablet</button>
+                                        <button class="viewport-btn" data-width="375px" type="button" title="Mobile (375px)">📲 Mobile</button>
+                                    </div>
+
+                                    <!-- Fullscreen Toggle -->
+                                    <button id="sandbox-btn-fullscreen" class="preview-tool-btn" type="button" title="Phóng to toàn màn hình">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                                            <polyline points="15 3 21 3 21 9"></polyline>
+                                            <polyline points="9 21 3 21 3 15"></polyline>
+                                            <line x1="21" y1="3" x2="14" y2="10"></line>
+                                            <line x1="3" y1="21" x2="10" y2="14"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Iframe Container Frame -->
+                            <div class="sandbox-iframe-container" id="sandbox-iframe-wrapper" data-bg-mode="dark">
+                                <iframe id="live-sandbox-preview" sandbox="allow-scripts" class="sandbox-iframe" title="Live HTML CSS Preview"></iframe>
+                            </div>
+
+                            <!-- Preview Footer Info -->
+                            <div class="sandbox-preview-footer">
+                                <span class="preview-footer-note">🔒 Sandbox Iframe Isolate • Fonts: Plus Jakarta Sans, JetBrains Mono</span>
+                                <span id="sandbox-render-time" class="mono-text text-muted" style="font-size:0.75rem;">Render time: 0ms</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </main>
 
@@ -4884,6 +5172,111 @@
                                     <!-- Populated dynamically via JS -->
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================================================================
+                     TAB 13: ATMOSPHERE & WEATHER STUDIO (16 GLOBAL PRESETS)
+                     ================================================================ -->
+                <section id="tab-weather-studio" class="tab-view hidden" aria-labelledby="nav-item-weather-studio">
+                    <!-- 1. Atmospheric Studio Hero & Control Bar -->
+                    <div class="weather-studio-hero dashboard-panel">
+                        <div class="ws-hero-glow"></div>
+                        <div class="ws-hero-content">
+                            <div class="ws-hero-left">
+                                <div class="ws-hero-badge">
+                                    <span class="pulse-dot-lime"></span>
+                                    <span>GLOBAL ATMOSPHERIC STUDIO</span>
+                                </div>
+                                <h2 class="ws-hero-title">16 Không Gian Thời Tiết Toàn Cầu</h2>
+                                <p class="ws-hero-desc">
+                                    Phòng trưng bày, tùy chỉnh và kích hoạt hơn 15 hiện tượng khí tượng sống động trên khắp thế giới thành Theme nền cho toàn bộ Dashboard.
+                                </p>
+                                <div class="ws-current-status-row">
+                                    <div class="ws-active-pill" id="ws-active-theme-pill">
+                                        <span class="active-icon" id="ws-active-icon">🌧️</span>
+                                        <span class="active-label">Đang áp dụng:</span>
+                                        <strong id="ws-active-name" class="active-name">Tokyo Cyberpunk Rain</strong>
+                                    </div>
+                                    <div class="ws-mode-pill" id="ws-active-mode-pill">
+                                        <span id="ws-mode-text">🔄 Tự xoay vòng 30m</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ws-hero-right">
+                                <button id="btn-ws-roll-random" class="btn-primary ws-action-btn" title="Đổi ngẫu nhiên 1 trong 16 chủ đề ngay lập tức">
+                                    <span>🎲 Đổi Ngẫu Nhiên</span>
+                                </button>
+                                <button id="btn-ws-open-customizer" class="control-btn ws-action-btn" title="Tinh chỉnh số lượng hạt, tốc độ gió và độ trong suốt">
+                                    <span>⚙️ Tinh Chỉnh Hạt</span>
+                                </button>
+                                <button id="btn-ws-zen-screensaver" class="control-btn ws-action-btn ws-zen-quick-btn" title="Mở chế độ Zen Focus Screensaver toàn màn hình">
+                                    <span>🧘 Zen Focus Clock</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Filter & Category Bar -->
+                    <div class="ws-filter-bar dashboard-panel">
+                        <div class="ws-filter-group" id="ws-category-filters">
+                            <span class="filter-label">PHÂN LOẠI:</span>
+                            <button class="ws-cat-btn active" data-cat="all">Tất Cả (16)</button>
+                            <button class="ws-cat-btn" data-cat="rain">🌧️ Mưa & Bão (3)</button>
+                            <button class="ws-cat-btn" data-cat="snow">❄️ Tuyết & Băng (3)</button>
+                            <button class="ws-cat-btn" data-cat="aurora">🌌 Cực Quang & Sao (2)</button>
+                            <button class="ws-cat-btn" data-cat="nature">🌸 Hoa, Nắng & Bụi (5)</button>
+                            <button class="ws-cat-btn" data-cat="fog">🌫️ Sương Mù & Gió (3)</button>
+                        </div>
+                        <div class="ws-search-wrap">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="ws-search-input" placeholder="Tìm kiếm địa danh, hiệu ứng..." autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- 3. Showcase Grid (16 Interactive Visual Cards) -->
+                    <div class="ws-showcase-grid" id="ws-cards-grid">
+                        <!-- Populated dynamically via JS with interactive Mini Canvas Previews -->
+                    </div>
+
+                    <!-- 4. Zen Focus Ambient Stage -->
+                    <div class="ws-zen-stage dashboard-panel" id="ws-zen-stage-panel">
+                        <div class="zen-stage-header">
+                            <div class="zen-title-group">
+                                <span class="zen-icon">🧘</span>
+                                <div>
+                                    <h3>Zen Focus Ambient Stage</h3>
+                                    <span class="zen-sub">Góc tĩnh tâm & tập trung làm việc với hiệu ứng thời tiết toàn cảnh kết hợp đồng hồ số Neon</span>
+                                </div>
+                            </div>
+                            <div class="zen-controls">
+                                <button id="btn-zen-clock-format" class="control-btn" title="Chuyển định dạng 24h / 12h">
+                                    <span id="zen-clock-format-text">12H / 24H</span>
+                                </button>
+                                <button id="btn-zen-fullscreen" class="control-btn zen-fs-btn" title="Bật chế độ Screensaver toàn màn hình (Phím Esc để thoát)">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                    </svg>
+                                    <span>⛶ Toàn Màn Hình</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="zen-stage-viewport" id="zen-stage-viewport">
+                            <canvas id="zen-stage-canvas" class="zen-stage-canvas"></canvas>
+                            <div class="zen-clock-overlay">
+                                <div class="zen-clock-location" id="zen-clock-location">TOKYO, JAPAN • CYBERPUNK RAIN</div>
+                                <div class="zen-digital-time" id="zen-digital-time">12:00:00</div>
+                                <div class="zen-digital-date" id="zen-digital-date">Thứ Hai, 1 Tháng 9, 2026</div>
+                                <div class="zen-quote-pill" id="zen-quote-pill">
+                                    <span id="zen-quote-icon">✨</span>
+                                    <span id="zen-quote-text">Stay focused, code with passion, and build the future.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -5488,7 +5881,7 @@
                             <h4>Không Gian Năng Suất & Sáng Tạo</h4>
                         </div>
                         <div class="mcc-cat-header-right">
-                            <span class="mcc-cat-counter" data-cat="productivity">4/4 Bật</span>
+                            <span class="mcc-cat-counter" data-cat="productivity">5/5 Bật</span>
                             <button class="mcc-cat-toggle-btn" data-cat="productivity" title="Bật hoặc tắt tất cả module trong nhóm này">Tắt Cả Nhóm</button>
                         </div>
                     </div>
@@ -5562,6 +5955,24 @@
                             </div>
                             <label class="cyber-switch">
                                 <input type="checkbox" id="toggle-tab-vocab" data-feature="tab_vocab" checked>
+                                <span class="cyber-slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Toggle: Atmosphere & Weather Studio -->
+                        <div class="feature-toggle-card" data-feature-card="tab_weather_studio" data-cat="productivity">
+                            <div class="toggle-card-info">
+                                <div class="toggle-card-icon" style="color:var(--accent-lime);">🌦️</div>
+                                <div>
+                                    <div class="toggle-card-title-row">
+                                        <span class="toggle-card-title">Atmosphere & Weather Studio</span>
+                                        <span class="toggle-status-chip" data-status-for="tab_weather_studio">BẬT</span>
+                                    </div>
+                                    <div class="toggle-card-desc">16 không gian thời tiết toàn cầu, Zen Focus Screensaver & hạt động</div>
+                                </div>
+                            </div>
+                            <label class="cyber-switch">
+                                <input type="checkbox" id="toggle-tab-weather-studio" data-feature="tab_weather_studio" checked>
                                 <span class="cyber-slider"></span>
                             </label>
                         </div>
@@ -5898,6 +6309,79 @@
                 <div class="mv-footer-right">
                     <span class="mv-hint-text">💡 Phím tắt: <kbd>ESC</kbd> Đóng | <kbd>+</kbd>/<kbd>-</kbd> Zoom | <kbd>R</kbd> Xoay | Cuộn chuột để Phóng to/Thu nhỏ</span>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         ATMOSPHERE & WEATHER STUDIO PARTICLE CUSTOMIZER MODAL
+         ========================================================================= -->
+    <div id="ws-customizer-modal" class="modal-overlay hidden">
+        <div class="modal-card ws-customizer-card">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <span class="stat-icon-wrapper" style="background: rgba(188, 248, 70, 0.15); color: var(--accent-lime); width: 34px; height: 34px;">
+                        ⚙️
+                    </span>
+                    <div>
+                        <h3 style="font-size:1.15rem;margin:0;">Tùy Chỉnh Hạt Khí Tượng & Tốc Độ</h3>
+                        <span class="modal-subtitle">Điều chỉnh mật độ hạt, tốc độ gió và độ trong suốt hiệu ứng thời tiết</span>
+                    </div>
+                </div>
+                <button id="btn-close-ws-customizer" class="modal-close-btn" title="Đóng (Esc)">✕</button>
+            </div>
+
+            <div class="modal-body ws-customizer-body">
+                <!-- Density Slider -->
+                <div class="ws-slider-row">
+                    <div class="ws-slider-header">
+                        <label for="ws-slider-density">Mật Độ & Số Lượng Hạt (Density)</label>
+                        <span id="ws-density-val" class="ws-val-badge">100%</span>
+                    </div>
+                    <input type="range" id="ws-slider-density" class="ws-range-input" min="30" max="200" step="5" value="100">
+                    <span class="ws-slider-desc">Tăng để hạt thời tiết dày đặc hơn, hoặc giảm để siêu nhẹ máy.</span>
+                </div>
+
+                <!-- Speed Slider -->
+                <div class="ws-slider-row">
+                    <div class="ws-slider-header">
+                        <label for="ws-slider-speed">Tốc Độ Chuyển Động (Velocity)</label>
+                        <span id="ws-speed-val" class="ws-val-badge">1.0x</span>
+                    </div>
+                    <input type="range" id="ws-slider-speed" class="ws-range-input" min="0.4" max="2.5" step="0.1" value="1.0">
+                    <span class="ws-slider-desc">Tốc độ rơi của mưa/tuyết, sóng cực quang hoặc làn gió.</span>
+                </div>
+
+                <!-- Opacity Slider -->
+                <div class="ws-slider-row">
+                    <div class="ws-slider-header">
+                        <label for="ws-slider-opacity">Độ Sáng & Trong Suốt (Particle Opacity)</label>
+                        <span id="ws-opacity-val" class="ws-val-badge">100%</span>
+                    </div>
+                    <input type="range" id="ws-slider-opacity" class="ws-range-input" min="30" max="150" step="5" value="100">
+                    <span class="ws-slider-desc">Độ phản quang và phát sáng Neon của hạt trên lớp kính tối.</span>
+                </div>
+
+                <!-- Toggle Options -->
+                <div class="ws-toggle-row">
+                    <div class="ws-toggle-info">
+                        <span class="toggle-title">Gió Xoáy & Dao Động Tự Nhiên (Turbulence)</span>
+                        <span class="toggle-desc">Hạt tuyết và cánh hoa bay lượn ngẫu nhiên chao đảo</span>
+                    </div>
+                    <label class="cyber-switch">
+                        <input type="checkbox" id="ws-toggle-turbulence" checked>
+                        <span class="cyber-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button id="btn-ws-reset-customizer" class="control-btn" style="padding: 7px 16px;">
+                    <span>🔄 Mặc Định</span>
+                </button>
+                <button id="btn-ws-save-customizer" class="btn-primary" style="padding: 7px 24px;">
+                    <span>Áp Dụng Cấu Hình</span>
+                </button>
             </div>
         </div>
     </div>
