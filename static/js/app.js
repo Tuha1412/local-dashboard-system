@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         viewWallpaperStudio: document.getElementById('view-wallpaper-studio'),
         viewSnippetLab: document.getElementById('view-snippet-lab'),
         viewVocabBooster: document.getElementById('view-vocab-booster'),
-        viewWeatherStudio: document.getElementById('tab-weather-studio') || document.getElementById('view-weather-studio'),
+        viewWeatherStudio: document.getElementById('view-weather-studio') || document.getElementById('tab-weather-studio'),
 
         // Tab 4: App Analytics Elements
         appKpiTodayNet: document.getElementById('app-kpi-today-net'),
@@ -3616,7 +3616,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elements.viewWallpaperStudio) elements.viewWallpaperStudio.classList.toggle('hidden', targetTab !== 'wallpaper');
         if (elements.viewSnippetLab) elements.viewSnippetLab.classList.toggle('hidden', targetTab !== 'lab');
         if (elements.viewVocabBooster) elements.viewVocabBooster.classList.toggle('hidden', targetTab !== 'vocab');
-        const vWS = elements.viewWeatherStudio || document.getElementById('tab-weather-studio') || document.getElementById('view-weather-studio');
+        const vWS = document.getElementById('view-weather-studio') || document.getElementById('tab-weather-studio') || elements.viewWeatherStudio;
         if (vWS) vWS.classList.toggle('hidden', targetTab !== 'weather_studio');
 
         // 3. Update Header Breadcrumb Title & Trigger Sub-tab managers
@@ -14794,8 +14794,11 @@ ${css}`;
         },
 
         onTabActivated() {
+            this.cacheDom();
+            this.populateDropdowns();
             this.syncAllUI();
-            this.resizeViewportCanvas();
+            this.renderCards();
+            setTimeout(() => this.resizeViewportCanvas(), 60);
         }
     };
 
