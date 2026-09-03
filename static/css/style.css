@@ -16796,13 +16796,14 @@ select option {
 /* 2. Dual Studio Workspace Layout (65% / 35%) */
 .ws-studio-workspace {
     display: grid;
-    grid-template-columns: 65fr 35fr;
+    grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr);
     gap: 20px;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 14px;
+    align-items: stretch;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 980px) {
     .ws-studio-workspace {
         grid-template-columns: 1fr;
     }
@@ -17103,6 +17104,20 @@ select option {
     box-shadow: 0 0 12px var(--theme-accent-glow);
 }
 
+.ws-hud-btn-physics {
+    background: rgba(0, 242, 254, 0.16);
+    border-color: rgba(0, 242, 254, 0.45);
+    color: #00f2fe;
+    font-weight: 800;
+}
+
+.ws-hud-btn-physics:hover {
+    background: rgba(0, 242, 254, 0.3);
+    border-color: #00f2fe;
+    color: #ffffff;
+    box-shadow: 0 0 16px rgba(0, 242, 254, 0.6);
+}
+
 /* Viewport Footer Shortcuts */
 .ws-viewport-footer {
     display: flex;
@@ -17154,24 +17169,39 @@ select option {
     color: var(--accent-lime);
 }
 
-/* RIGHT COLUMN: Particle Physics Console */
+/* RIGHT COLUMN: 3D Shader & Particle Physics Console */
 .ws-physics-col {
     display: flex;
     flex-direction: column;
+    min-width: 320px;
 }
 
 .ws-physics-card {
-    padding: 20px 22px;
+    padding: 22px 24px;
     border-radius: var(--radius-lg);
-    background: var(--bg-card);
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid var(--accent-lime);
-    box-shadow: 0 0 24px -4px var(--theme-accent-glow, rgba(188, 248, 70, 0.25)), var(--shadow-card);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 15, 30, 0.98) 100%);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(0, 242, 254, 0.45);
+    box-shadow: 0 0 32px -4px rgba(0, 242, 254, 0.22), var(--shadow-card);
     display: flex;
     flex-direction: column;
     gap: 16px;
     height: 100%;
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.ws-physics-card.highlight-pulse {
+    border-color: #00f2fe !important;
+    box-shadow: 0 0 45px rgba(0, 242, 254, 0.65), 0 0 20px #00ff87 !important;
+    animation: physicsPulse 1.2s ease 2;
+}
+
+@keyframes physicsPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
 }
 
 .ws-physics-header {
@@ -17621,12 +17651,434 @@ select option {
     color: #ffffff;
 }
 
+/* ==========================================================================
+   3D CINEMATIC WEATHER ENGINE (THREE.JS & WEBGL GPU SHADERS) STYLES
+   ========================================================================== */
 
+.ws-viewport-webgl-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    z-index: 2;
+}
 
+/* 3D Preset Quick Selector Bar */
+.ws-3d-preset-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(10, 15, 29, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    margin-bottom: 2px;
+}
 
+.ws-3d-preset-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    width: 100%;
+}
 
+.ws-3d-btn {
+    flex: 1;
+    min-width: 160px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: #cbd5e1;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+.ws-3d-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
 
+.ws-3d-btn.active {
+    background: linear-gradient(135deg, rgba(188, 248, 70, 0.2) 0%, rgba(56, 189, 248, 0.2) 100%);
+    border-color: var(--accent-lime);
+    color: #ffffff;
+    box-shadow: 0 0 16px var(--theme-accent-glow, rgba(188, 248, 70, 0.35));
+}
 
+.ws-3d-btn.active[data-preset="tokyo_rain"] {
+    border-color: #00f2fe;
+    box-shadow: 0 0 16px rgba(0, 242, 254, 0.4);
+}
 
+.ws-3d-btn.active[data-preset="tromso_aurora"] {
+    border-color: #00ff87;
+    box-shadow: 0 0 16px rgba(0, 255, 135, 0.4);
+}
 
+.ws-3d-btn.active[data-preset="swiss_snow"] {
+    border-color: #93c5fd;
+    box-shadow: 0 0 16px rgba(147, 197, 253, 0.4);
+}
+
+.ws-3d-btn.active[data-preset="atacama_galaxy"] {
+    border-color: #c084fc;
+    box-shadow: 0 0 16px rgba(192, 132, 252, 0.4);
+}
+
+/* City / Location Pill */
+.ws-city-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px;
+    background: rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 9999px;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+
+.ws-location-select {
+    background: transparent;
+    border: none;
+    color: #f8fafc;
+    font-size: 0.8rem;
+    font-weight: 700;
+    outline: none;
+    cursor: pointer;
+}
+
+.ws-location-select option {
+    background: #0b1120;
+    color: #ffffff;
+}
+
+.ws-card-badge-3d {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 3px 8px;
+    background: linear-gradient(135deg, rgba(0, 242, 254, 0.85) 0%, rgba(168, 85, 247, 0.85) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.04em;
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+    backdrop-filter: blur(6px);
+    z-index: 3;
+}
+
+/* ==========================================================================
+   INTERACTIVE 3D WEATHER DIORAMA STAGE & ZEN FOCUS AMBIENT STAGE STYLES
+   ========================================================================== */
+
+.ws-zen-stage {
+    position: relative;
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zen-stage-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.zen-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.zen-icon {
+    font-size: 1.6rem;
+    padding: 8px;
+    border-radius: 12px;
+    background: rgba(188, 248, 70, 0.12);
+    border: 1px solid rgba(188, 248, 70, 0.3);
+    color: var(--accent-lime);
+    box-shadow: 0 0 16px rgba(188, 248, 70, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zen-title-group h3 {
+    margin: 0;
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+}
+
+.zen-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.zen-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.zen-fs-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.15);
+    border-color: rgba(56, 189, 248, 0.35);
+    color: #38bdf8;
+    transition: all 0.25s ease;
+}
+
+.zen-fs-btn:hover {
+    background: rgba(56, 189, 248, 0.28);
+    border-color: #38bdf8;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Stage Viewport Container */
+.zen-stage-viewport {
+    position: relative;
+    width: 100%;
+    min-height: 520px;
+    height: 560px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 30%, rgba(15, 23, 42, 0.8) 0%, rgba(2, 6, 23, 0.98) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.8), 0 20px 48px rgba(0, 0, 0, 0.65);
+    cursor: default;
+    user-select: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zen-stage-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 1;
+}
+
+/* Floating Frosted Glass HUD Overlay (Top-Left) */
+.zen-clock-overlay {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 18px;
+    background: rgba(10, 15, 29, 0.65);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 242, 254, 0.08);
+    pointer-events: none;
+    max-width: 380px;
+    transition: all 0.3s ease;
+}
+
+.zen-clock-location {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--accent-lime);
+    text-shadow: 0 0 12px var(--theme-accent-glow, rgba(188, 248, 70, 0.45));
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.zen-digital-time {
+    font-family: var(--font-mono, monospace);
+    font-size: 2.3rem;
+    font-weight: 900;
+    line-height: 1.05;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 4px 10px rgba(0, 0, 0, 0.9);
+    letter-spacing: 0.04em;
+}
+
+.zen-digital-date {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.zen-quote-pill {
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-style: italic;
+    max-width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Floating Glassmorphism Scenery Action Cluster */
+.ws-scenery-action-cluster {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(10, 15, 29, 0.82);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 9999px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65), 0 0 20px rgba(0, 242, 254, 0.14);
+}
+
+.ws-scenery-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.ws-scenery-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.ws-scenery-btn.active {
+    background: rgba(0, 242, 254, 0.2);
+    border-color: #00f2fe;
+    color: #00f2fe;
+    box-shadow: 0 0 16px rgba(0, 242, 254, 0.4);
+}
+
+.ws-tempest-btn {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(239, 68, 68, 0.3) 100%);
+    border-color: rgba(251, 191, 36, 0.5);
+    color: #fef08a;
+}
+
+.ws-tempest-btn:hover {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.5) 0%, rgba(239, 68, 68, 0.5) 100%);
+    border-color: #fbbf24;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+    color: #ffffff;
+}
+
+.ws-tempest-btn.tempest-active {
+    animation: tempestPulse 0.6s infinite alternate;
+    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    color: #ffffff;
+}
+
+@keyframes tempestPulse {
+    from {
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+        transform: scale(1);
+    }
+    to {
+        box-shadow: 0 0 28px rgba(239, 68, 68, 0.9), 0 0 40px #fbbf24;
+        transform: scale(1.05);
+    }
+}
+
+/* Fullscreen Diorama Screensaver */
+.ws-zen-stage.fullscreen-zen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    background: #020617;
+    border: none;
+}
+
+.ws-zen-stage.fullscreen-zen .zen-stage-header {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    z-index: 20;
+    background: rgba(10, 15, 29, 0.7);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+}
+
+.ws-zen-stage.fullscreen-zen .zen-title-group {
+    display: none;
+}
+
+.ws-zen-stage.fullscreen-zen .zen-stage-viewport {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+}
+
+.ws-zen-stage.fullscreen-zen .zen-digital-time {
+    font-size: 6.5rem;
+}
