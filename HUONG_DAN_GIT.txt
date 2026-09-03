@@ -1,0 +1,79 @@
+================================================================================
+                    HƯỚNG DẪN CÁC LỆNH GIT THÔNG DỤNG & DỄ HIỂU
+================================================================================
+
+1. QUY TRÌNH ĐẨY CODE LÊN GITHUB (3 BƯỚC CƠ BẢN)
+--------------------------------------------------------------------------------
+Mỗi khi sửa đổi code xong và muốn lưu lên GitHub, chạy 3 lệnh sau:
+
+  git add .
+  git commit -m "Ghi chú nội dung bạn vừa thay đổi vào đây"
+  git push origin main
+
+  * Giải thích:
+    - git add .        : Gom tất cả các file đã tạo mới hoặc chỉnh sửa.
+    - git commit -m "": Tạo điểm lưu (checkpoint) kèm tin nhắn mô tả.
+    - git push origin main : Đẩy các commit lên nhánh 'main' trên GitHub.
+
+
+2. KIỂM TRA TRẠNG THÁI & LỊCH SỬ
+--------------------------------------------------------------------------------
+- Xem file nào đang bị sửa, file nào chưa được lưu:
+  git status
+
+- Xem tóm tắt 5 lần commit gần nhất (gọn gàng trên 1 dòng):
+  git log -n 5 --oneline
+
+- Xem chi tiết những dòng code vừa thay đổi (so với lần commit trước):
+  git diff
+
+
+3. ĐỒNG BỘ CODE TỪ GITHUB VỀ MÁY TÍNH
+--------------------------------------------------------------------------------
+- Kéo code mới nhất từ GitHub về máy (cập nhật nhánh main):
+  git pull origin main
+
+- Kiểm tra xem máy đang liên kết với kho GitHub nào:
+  git remote -v
+
+
+4. HỦY THAY ĐỔI & PHỤC HỒI (KHI LÀM SAI)
+--------------------------------------------------------------------------------
+- Hủy bỏ các chỉnh sửa chưa lưu ở 1 file cụ thể (quay về trạng thái cũ):
+  git restore <tên_file>
+  (Ví dụ: git restore static/js/app.js)
+
+- Hủy bỏ toàn bộ chỉnh sửa chưa lưu trong cả dự án:
+  git restore .
+
+- Bỏ chọn các file đã lỡ chạy 'git add' (đưa về lại trạng thái chưa stage):
+  git restore --staged .
+
+- Hủy commit gần nhất nhưng VẪN GIỮ NGUYÊN code vừa sửa:
+  git reset --soft HEAD~1
+
+
+5. LÀM VIỆC VỚI NHÁNH (BRANCH)
+--------------------------------------------------------------------------------
+- Xem danh sách các nhánh hiện có:
+  git branch
+
+- Tạo một nhánh mới để thử nghiệm tính năng mà không ảnh hưởng nhánh chính:
+  git checkout -b ten-nhanh-moi
+
+- Chuyển về lại nhánh chính:
+  git checkout main
+
+- Gộp tính năng từ nhánh mới vào nhánh main:
+  (Đang đứng ở nhánh main) -> git merge ten-nhanh-moi
+
+
+6. MẸO XỬ LÝ KHI GẶP LỖI
+--------------------------------------------------------------------------------
+* Lỗi: Push bị từ chối (Updates were rejected because the remote contains work...)
+  -> Do trên GitHub có code mới mà dưới máy chưa có.
+  -> Cách xử lý: Chạy `git pull origin main`, sau đó mới chạy lại `git push origin main`.
+
+* Đổi tin nhắn của commit vừa tạo gần nhất:
+  git commit --amend -m "Tin nhắn mới chính xác hơn"
+================================================================================
