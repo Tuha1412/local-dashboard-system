@@ -5218,62 +5218,275 @@
                     </div>
                 </div>
 
-                <!-- 2. Interactive 3D Weather Diorama Stage & Zen Focus Stage (Centerpiece) -->
-                <div class="ws-zen-stage dashboard-panel" id="ws-zen-stage-panel">
-                    <div class="zen-stage-header">
-                        <div class="zen-title-group">
-                            <span class="zen-icon">🎭</span>
-                            <div>
-                                <h3 id="ws-stage-title">Interactive 3D Weather Diorama Stage</h3>
-                                <span class="zen-sub" id="ws-stage-subtitle">Sân khấu cảnh vật khí tượng điện ảnh tương tác thời gian thực kết hợp đồng hồ số Neon</span>
+                <!-- 2. Dual Studio Workspace: Interactive 2.5D Diorama Stage (65%) & Live Particle Physics Console (35%) -->
+                <div class="ws-studio-workspace" id="ws-studio-workspace">
+                    <!-- LEFT 65%: 2.5D Diorama Stage Viewport -->
+                    <div class="ws-viewport-col">
+                        <div class="ws-zen-stage dashboard-panel" id="ws-zen-stage-panel">
+                            <div class="zen-stage-header">
+                                <div class="zen-title-group">
+                                    <span class="zen-icon">🎭</span>
+                                    <div>
+                                        <h3 id="ws-stage-title">Interactive 2.5D Anime/Cyber Weather Diorama Stage</h3>
+                                        <span class="zen-sub" id="ws-stage-subtitle">Sân khấu đa tầng Parallax điện ảnh phản hồi tương tác chuột & thời gian thực</span>
+                                    </div>
+                                </div>
+                                <div class="zen-controls">
+                                    <button id="btn-zen-clock-format" class="control-btn" title="Chuyển định dạng 24h / 12h">
+                                        <span id="zen-clock-format-text">12H / 24H</span>
+                                    </button>
+                                    <button id="btn-zen-fullscreen" class="control-btn zen-fs-btn" title="Bật chế độ Zen Screensaver toàn màn hình (Phím Esc để thoát)">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                        </svg>
+                                        <span>⛶ Zen Ambient Mode</span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="zen-controls">
-                            <button id="btn-zen-clock-format" class="control-btn" title="Chuyển định dạng 24h / 12h">
-                                <span id="zen-clock-format-text">12H / 24H</span>
-                            </button>
-                            <button id="btn-zen-fullscreen" class="control-btn zen-fs-btn" title="Bật chế độ Screensaver toàn màn hình (Phím Esc để thoát)">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                                </svg>
-                                <span>⛶ Toàn Màn Hình</span>
-                            </button>
+
+                            <div class="zen-stage-viewport" id="zen-stage-viewport">
+                                <!-- 4-Layer Multi-layer Parallax Diorama Stage -->
+                                <div id="ws-diorama-stage" class="ws-diorama-stage" aria-label="Interactive weather diorama">
+                                    <!-- Layer 1: Sky & Atmosphere (Depth: 2px) -->
+                                    <div class="ws-diorama-layer ws-sky-layer" data-parallax-depth="2">
+                                        <div class="ws-sky-backdrop"></div>
+                                        <div class="ws-god-rays"></div>
+                                        <div class="ws-aurora-waves"></div>
+                                        <div class="ws-sun"></div>
+                                        <div class="ws-moon"></div>
+                                        <div class="ws-stars-field"></div>
+                                        <div class="ws-cloud ws-cloud-a"></div>
+                                        <div class="ws-cloud ws-cloud-b"></div>
+                                        <div class="ws-cloud ws-cloud-c"></div>
+                                    </div>
+
+                                    <!-- Layer 2: Distant Mountains & Mist (Depth: 6px) -->
+                                    <svg class="ws-diorama-layer ws-mountain-layer" data-parallax-depth="6" viewBox="0 0 1200 560" preserveAspectRatio="none" aria-hidden="true">
+                                        <defs>
+                                            <linearGradient id="ws-mist-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+                                                <stop offset="100%" stop-color="rgba(255,255,255,0.35)" />
+                                            </linearGradient>
+                                        </defs>
+                                        <path class="ws-mountain-back" d="M0 390 L130 250 250 350 420 185 570 345 730 220 890 350 1050 175 1200 330 V560 H0Z"></path>
+                                        <path class="ws-mountain-front" d="M0 440 L170 315 320 405 470 280 650 420 815 300 990 420 1110 315 1200 385 V560 H0Z"></path>
+                                        <path class="ws-mist" d="M0 420 Q150 375 300 425 T600 420 T900 430 T1200 410 V560 H0Z"></path>
+                                    </svg>
+
+                                    <!-- Layer 3: Hero Architectural Object (Depth: 12px) -->
+                                    <div class="ws-diorama-layer ws-hero-layer" data-parallax-depth="12">
+                                        <!-- Anime Ghibli Windmill with dynamic rotating blades -->
+                                        <button id="ws-windmill-target" class="ws-windmill-target" type="button" aria-label="Tăng tốc cối xay gió (Click để tăng tốc 3s)">
+                                            <span class="ws-windmill-blades" id="ws-windmill-blades">
+                                                <i class="ws-blade b1"></i>
+                                                <i class="ws-blade b2"></i>
+                                                <i class="ws-blade b3"></i>
+                                                <i class="ws-blade b4"></i>
+                                                <span class="ws-blade-hub"></span>
+                                            </span>
+                                            <span class="ws-windmill-roof"></span>
+                                            <span class="ws-windmill-tower">
+                                                <span class="ws-windmill-window"></span>
+                                                <span class="ws-windmill-door"></span>
+                                            </span>
+                                            <span class="ws-chimney">
+                                                <span class="ws-smoke-stream"></span>
+                                            </span>
+                                        </button>
+
+                                        <!-- Cyberpunk Telecom Transmission Tower -->
+                                        <div class="ws-cyber-tower" id="ws-cyber-tower" aria-hidden="true">
+                                            <span class="ws-beacon-led"></span>
+                                            <span class="ws-tower-signal"></span>
+                                            <span class="ws-tower-sign">WEATHER//NODE</span>
+                                            <span class="ws-mast-lattice"><b></b><b></b><b></b></span>
+                                            <span class="ws-dish"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Layer 4: Foreground & Flora (Depth: 20px) -->
+                                    <div class="ws-diorama-layer ws-foreground-layer" data-parallax-depth="20">
+                                        <div class="ws-grass-bank"></div>
+                                        <div class="ws-wildflowers" id="ws-wildflowers">
+                                            <span class="flower f1">🌸</span>
+                                            <span class="flower f2">🌼</span>
+                                            <span class="flower f3">🌷</span>
+                                            <span class="flower f4">🌸</span>
+                                            <span class="flower f5">🌼</span>
+                                            <span class="flower f6">🌾</span>
+                                            <span class="flower f7">🌺</span>
+                                            <span class="flower f8">🌸</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Weather FX Particle Canvas Overlay -->
+                                <canvas id="zen-stage-canvas" class="zen-stage-canvas"></canvas>
+                                
+                                <!-- Floating Minimal Glassmorphism HUD Pill (Top-Left) -->
+                                <div class="zen-clock-overlay ws-glass-pill" id="zen-clock-overlay">
+                                    <div class="zen-pill-header">
+                                        <span class="zen-clock-location" id="zen-clock-location">GHIBLI MEADOWS • SUNNY BREEZE</span>
+                                        <span class="ws-hud-status-badge" id="ws-hud-live-tag">● LIVE</span>
+                                    </div>
+                                    <div class="zen-digital-time" id="zen-digital-time">12:00:00</div>
+                                    <div class="zen-digital-date" id="zen-digital-date">Thứ Hai, 1 Tháng 9, 2026</div>
+                                    <div class="zen-quote-pill" id="zen-quote-pill">
+                                        <span id="zen-quote-icon">✨</span>
+                                        <span id="zen-quote-text">Stay focused, code with passion, and build the future.</span>
+                                    </div>
+                                </div>
+
+                                <!-- Floating Glassmorphism Scenery Action Cluster (Bottom-Right) -->
+                                <div class="ws-scenery-action-cluster" id="ws-scenery-cluster">
+                                    <!-- View Mode Toggle (Dynamic Diorama vs Pure Particles) -->
+                                    <button id="btn-ws-toggle-viewmode" class="ws-scenery-btn active" title="Chuyển đổi giữa chế độ Phong cảnh hoạt họa (Dynamic Diorama) và Hạt tối giản (Pure Particles)">
+                                        <span class="btn-icon" id="ws-viewmode-icon">🎬</span>
+                                        <span class="btn-label" id="ws-viewmode-label">Diorama 2.5D</span>
+                                    </button>
+
+                                    <!-- Day/Night Lighting Toggle -->
+                                    <button id="btn-ws-toggle-lighting" class="ws-scenery-btn" title="Chuyển đổi chu kỳ ánh sáng: Tự động theo giờ / Ban ngày / Hoàng hôn / Ban đêm">
+                                        <span class="btn-icon" id="ws-lighting-icon">🕒</span>
+                                        <span class="btn-label" id="ws-lighting-label">Tự Động</span>
+                                    </button>
+
+                                    <!-- Tempest Burst Trigger -->
+                                    <button id="btn-ws-trigger-tempest" class="ws-scenery-btn ws-tempest-btn" title="Kích hoạt luồng gió bão xoáy cuốn 3 giây tăng tốc cánh cối xay gió và bão hạt">
+                                        <span class="btn-icon">⚡</span>
+                                        <span class="btn-label">Gió Bão 3s</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="zen-stage-viewport" id="zen-stage-viewport">
-                        <canvas id="zen-stage-canvas" class="zen-stage-canvas"></canvas>
-                        
-                        <!-- Floating Frosted Glass HUD (Top-Left) -->
-                        <div class="zen-clock-overlay">
-                            <div class="zen-clock-location" id="zen-clock-location">GHIBLI MEADOWS • SUNNY BREEZE</div>
-                            <div class="zen-digital-time" id="zen-digital-time">12:00:00</div>
-                            <div class="zen-digital-date" id="zen-digital-date">Thứ Hai, 1 Tháng 9, 2026</div>
-                            <div class="zen-quote-pill" id="zen-quote-pill">
-                                <span id="zen-quote-icon">✨</span>
-                                <span id="zen-quote-text">Stay focused, code with passion, and build the future.</span>
+                    <!-- RIGHT 35%: Particle Physics Console -->
+                    <div class="ws-physics-col" id="ws-physics-col">
+                        <div class="ws-physics-card dashboard-panel">
+                            <div class="ws-physics-header">
+                                <div class="ws-physics-title-wrap">
+                                    <span class="ws-physics-icon">🎛️</span>
+                                    <div>
+                                        <h3 class="ws-physics-title">Particle Physics Console</h3>
+                                        <span class="ws-physics-sub">Bảng điều khiển Vật lý hạt Thời gian thực (Zero-Lag)</span>
+                                    </div>
+                                </div>
+                                <button id="btn-ws-reset-physics" class="control-btn ws-reset-physics-btn" title="Khôi phục toàn bộ thông số vật lý về mặc định">
+                                    <span>🔄 Reset Mặc Định</span>
+                                </button>
                             </div>
-                        </div>
 
-                        <!-- Floating Glassmorphism Scenery & Lighting Control Cluster (Bottom Right) -->
-                        <div class="ws-scenery-action-cluster" id="ws-scenery-cluster">
-                            <!-- View Mode Toggle (Dynamic Diorama vs Pure Particles) -->
-                            <button id="btn-ws-toggle-viewmode" class="ws-scenery-btn active" title="Chuyển đổi giữa chế độ Phong cảnh hoạt họa (Dynamic Diorama) và Hạt tối giản (Pure Particles)">
-                                <span class="btn-icon" id="ws-viewmode-icon">🎬</span>
-                                <span class="btn-label" id="ws-viewmode-label">Diorama 2.5D</span>
-                            </button>
+                            <div class="ws-physics-body">
+                                <!-- Slider 1: Particle Density -->
+                                <div class="ws-physics-slider-row">
+                                    <div class="ws-slider-head">
+                                        <label for="ws-phys-density">🌪️ Mật Độ Hạt (Density)</label>
+                                        <span id="ws-val-density" class="ws-val-pill">120 hạt</span>
+                                    </div>
+                                    <input type="range" id="ws-phys-density" class="ws-physics-range" min="15" max="350" step="5" value="120">
+                                    <div class="ws-range-marks">
+                                        <span>15 (Thưa nhẹ)</span>
+                                        <span>120</span>
+                                        <span>350 (Dày đặc)</span>
+                                    </div>
+                                </div>
 
-                            <!-- Day/Night Lighting Toggle -->
-                            <button id="btn-ws-toggle-lighting" class="ws-scenery-btn" title="Chuyển đổi chu kỳ ánh sáng: Tự động theo giờ / Ban ngày / Hoàng hôn / Ban đêm">
-                                <span class="btn-icon" id="ws-lighting-icon">🕒</span>
-                                <span class="btn-label" id="ws-lighting-label">Tự Động</span>
-                            </button>
+                                <!-- Slider 2: Fall Speed Multiplier -->
+                                <div class="ws-physics-slider-row">
+                                    <div class="ws-slider-head">
+                                        <label for="ws-phys-speed">⚡ Tốc Độ Rơi & Chuyển Động (Speed)</label>
+                                        <span id="ws-val-speed" class="ws-val-pill">1.0x</span>
+                                    </div>
+                                    <input type="range" id="ws-phys-speed" class="ws-physics-range" min="0.2" max="3.0" step="0.1" value="1.0">
+                                    <div class="ws-range-marks">
+                                        <span>0.2x (Slow-mo)</span>
+                                        <span>1.0x</span>
+                                        <span>3.0x (Bão tố)</span>
+                                    </div>
+                                </div>
 
-                            <!-- Tempest Burst Trigger -->
-                            <button id="btn-ws-trigger-tempest" class="ws-scenery-btn ws-tempest-btn" title="Kích hoạt luồng gió bão xoáy cuốn 3 giây tăng tốc cánh cối xay gió và bão hạt">
-                                <span class="btn-icon">⚡</span>
-                                <span class="btn-label">Gió Bão 3s</span>
-                            </button>
+                                <!-- Slider 3: Wind Force & Angle -->
+                                <div class="ws-physics-slider-row">
+                                    <div class="ws-slider-head">
+                                        <label for="ws-phys-wind">💨 Hướng Gió & Tốc Độ Gió (Wind Vector)</label>
+                                        <span id="ws-val-wind" class="ws-val-pill">12 km/h</span>
+                                    </div>
+                                    <input type="range" id="ws-phys-wind" class="ws-physics-range" min="-45" max="45" step="1" value="12">
+                                    <div class="ws-range-marks">
+                                        <span>-45° ⬅️ Gió Trái</span>
+                                        <span>0° Đứng</span>
+                                        <span>+45° ➡️ Gió Phải</span>
+                                    </div>
+                                </div>
+
+                                <!-- Slider 4: Particle Size -->
+                                <div class="ws-physics-slider-row">
+                                    <div class="ws-slider-head">
+                                        <label for="ws-phys-size">🔮 Kích Thước Hạt (Particle Size)</label>
+                                        <span id="ws-val-size" class="ws-val-pill">2.5px</span>
+                                    </div>
+                                    <input type="range" id="ws-phys-size" class="ws-physics-range" min="0.5" max="8.0" step="0.2" value="2.5">
+                                    <div class="ws-range-marks">
+                                        <span>0.5px (Mịn)</span>
+                                        <span>2.5px</span>
+                                        <span>8.0px (Lớn)</span>
+                                    </div>
+                                </div>
+
+                                <!-- Slider 5: Neon Glow Intensity -->
+                                <div class="ws-physics-slider-row">
+                                    <div class="ws-slider-head">
+                                        <label for="ws-phys-glow">✨ Độ Phát Sáng Neon (Glow Blur)</label>
+                                        <span id="ws-val-glow" class="ws-val-pill">8px</span>
+                                    </div>
+                                    <input type="range" id="ws-phys-glow" class="ws-physics-range" min="0" max="20" step="1" value="8">
+                                    <div class="ws-range-marks">
+                                        <span>0px (Tắt Glow)</span>
+                                        <span>8px</span>
+                                        <span>20px (Rực sáng)</span>
+                                    </div>
+                                </div>
+
+                                <!-- Slider 6: Atmosphere Opacity -->
+                                <div class="ws-physics-slider-row">
+                                    <div class="ws-slider-head">
+                                        <label for="ws-phys-opacity">🌌 Độ Mờ Khí Quyển (Atmosphere Opacity)</label>
+                                        <span id="ws-val-opacity" class="ws-val-pill">100%</span>
+                                    </div>
+                                    <input type="range" id="ws-phys-opacity" class="ws-physics-range" min="10" max="100" step="5" value="100">
+                                    <div class="ws-range-marks">
+                                        <span>10% (Siêu mờ)</span>
+                                        <span>50%</span>
+                                        <span>100% (Đậm nét)</span>
+                                    </div>
+                                </div>
+
+                                <!-- Switches Section -->
+                                <div class="ws-physics-switches">
+                                    <div class="ws-switch-item">
+                                        <div class="ws-switch-info">
+                                            <span class="ws-switch-title">⛈️ Sấm Chớp Nền (Ambient Flash)</span>
+                                            <span class="ws-switch-desc">Tạo tia chớp sáng nền ngẫu nhiên sống động</span>
+                                        </div>
+                                        <label class="cyber-switch">
+                                            <input type="checkbox" id="ws-toggle-lightning" checked>
+                                            <span class="cyber-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="ws-switch-item">
+                                        <div class="ws-switch-info">
+                                            <span class="ws-switch-title">🌀 Nhiễu Động Hạt (Turbulence)</span>
+                                            <span class="ws-switch-desc">Hạt bay lượn sóng tự nhiên theo gió</span>
+                                        </div>
+                                        <label class="cyber-switch">
+                                            <input type="checkbox" id="ws-toggle-turbulence" checked>
+                                            <span class="cyber-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

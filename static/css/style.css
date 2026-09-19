@@ -17884,6 +17884,677 @@ select option {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ==========================================================================
+   2.5D ANIME / CYBER MULTI-LAYER PARALLAX DIORAMA STAGE ENGINE
+   ========================================================================== */
+.ws-diorama-stage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    z-index: 1;
+}
+
+.ws-diorama-layer {
+    position: absolute;
+    inset: -30px; /* Overscan for 3D parallax margin */
+    width: calc(100% + 60px);
+    height: calc(100% + 60px);
+    pointer-events: none;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    transition: transform 0.08s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+/* --------------------------------------------------------------------------
+   LAYER 1: Sky & Atmosphere (Depth 2px)
+   -------------------------------------------------------------------------- */
+.ws-sky-layer {
+    z-index: 1;
+}
+
+.ws-sky-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #0284c7 0%, #38bdf8 52%, #bae6fd 100%);
+    transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Day Mode Sky */
+.ws-diorama-stage.mode-day .ws-sky-backdrop {
+    background: linear-gradient(180deg, #0284c7 0%, #38bdf8 50%, #bae6fd 100%);
+}
+
+/* Sunset Mode Sky */
+.ws-diorama-stage.mode-sunset .ws-sky-backdrop {
+    background: linear-gradient(180deg, #1e1b4b 0%, #c026d3 46%, #fb923c 85%, #fde047 100%);
+}
+
+/* Night Mode Sky */
+.ws-diorama-stage.mode-night .ws-sky-backdrop {
+    background: radial-gradient(ellipse at 75% 25%, #1e1b4b 0%, #0a0f1d 55%, #020617 100%);
+}
+
+/* God Rays */
+.ws-god-rays {
+    position: absolute;
+    top: -50px;
+    right: 15%;
+    width: 500px;
+    height: 500px;
+    background: conic-gradient(from 45deg at 50% 50%, 
+        rgba(254, 240, 138, 0.12) 0deg 20deg, 
+        transparent 20deg 45deg,
+        rgba(254, 240, 138, 0.16) 45deg 65deg,
+        transparent 65deg 90deg,
+        rgba(254, 240, 138, 0.1) 90deg 115deg,
+        transparent 115deg 140deg,
+        rgba(254, 240, 138, 0.15) 140deg 165deg,
+        transparent 165deg 360deg);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.85;
+    animation: godRaySpin 60s linear infinite;
+    mix-blend-mode: screen;
+    transition: opacity 0.8s ease;
+}
+
+@keyframes godRaySpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.ws-diorama-stage.mode-night .ws-god-rays {
+    opacity: 0;
+}
+
+/* Aurora Waves */
+.ws-aurora-waves {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 255, 135, 0.35) 25%, 
+        rgba(96, 239, 255, 0.45) 50%, 
+        rgba(0, 255, 135, 0.3) 75%, 
+        transparent 100%);
+    filter: blur(28px);
+    opacity: 0;
+    transform: skewY(-4deg);
+    transition: opacity 1s ease;
+    animation: auroraWave 8s ease-in-out infinite alternate;
+}
+
+@keyframes auroraWave {
+    0% { transform: skewY(-4deg) translateY(0); filter: blur(28px); }
+    100% { transform: skewY(-2deg) translateY(-20px) scaleY(1.2); filter: blur(34px); }
+}
+
+.ws-diorama-stage.theme-aurora .ws-aurora-waves,
+.ws-diorama-stage.mode-night .ws-aurora-waves {
+    opacity: 0.75;
+}
+
+/* Sun */
+.ws-sun {
+    position: absolute;
+    top: 45px;
+    right: 22%;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fef08a 0%, #facc15 65%, #f59e0b 100%);
+    box-shadow: 0 0 35px #facc15, 0 0 85px rgba(250, 204, 21, 0.55);
+    opacity: 1;
+    transition: all 1s ease;
+}
+
+.ws-diorama-stage.mode-sunset .ws-sun {
+    top: 140px;
+    right: 32%;
+    background: radial-gradient(circle, #fef08a 0%, #fb923c 65%, #ea580c 100%);
+    box-shadow: 0 0 45px #fb923c, 0 0 100px rgba(249, 115, 22, 0.75);
+}
+
+.ws-diorama-stage.mode-night .ws-sun {
+    opacity: 0;
+    transform: translateY(120px);
+}
+
+/* Moon */
+.ws-moon {
+    position: absolute;
+    top: 50px;
+    right: 22%;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    box-shadow: 12px 10px 0 0 #f8fafc, 12px 10px 30px rgba(255, 255, 255, 0.65), 12px 10px 60px rgba(56, 189, 248, 0.4);
+    opacity: 0;
+    transform: translateY(-40px);
+    transition: all 1s ease;
+}
+
+.ws-diorama-stage.mode-night .ws-moon {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Star field */
+.ws-stars-field {
+    position: absolute;
+    inset: 0;
+    height: 60%;
+    background-image: 
+        radial-gradient(1.5px 1.5px at 15% 25%, #ffffff, transparent),
+        radial-gradient(1.8px 1.8px at 35% 15%, #bae6fd, transparent),
+        radial-gradient(1.2px 1.2px at 55% 35%, #ffffff, transparent),
+        radial-gradient(2px 2px at 70% 18%, #fef08a, transparent),
+        radial-gradient(1.5px 1.5px at 85% 40%, #ffffff, transparent),
+        radial-gradient(1px 1px at 25% 45%, #ffffff, transparent),
+        radial-gradient(2.2px 2.2px at 45% 20%, #e0f2fe, transparent),
+        radial-gradient(1.5px 1.5px at 92% 15%, #ffffff, transparent);
+    background-size: 100% 100%;
+    opacity: 0;
+    transition: opacity 1s ease;
+    animation: starsTwinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes starsTwinkle {
+    0% { opacity: 0.6; }
+    100% { opacity: 1.0; }
+}
+
+.ws-diorama-stage.mode-night .ws-stars-field {
+    opacity: 0.9;
+}
+.ws-diorama-stage.mode-sunset .ws-stars-field {
+    opacity: 0.4;
+}
+
+/* Floating Anime Clouds */
+.ws-cloud {
+    position: absolute;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.06));
+}
+
+.ws-cloud::before, .ws-cloud::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+}
+
+.ws-cloud-a {
+    top: 75px;
+    left: 8%;
+    width: 140px;
+    height: 38px;
+    animation: cloudDrift 42s linear infinite;
+}
+.ws-cloud-a::before { width: 50px; height: 50px; top: -22px; left: 24px; }
+.ws-cloud-a::after { width: 62px; height: 62px; top: -30px; left: 60px; }
+
+.ws-cloud-b {
+    top: 130px;
+    left: 55%;
+    width: 180px;
+    height: 44px;
+    opacity: 0.82;
+    animation: cloudDrift 56s linear infinite reverse;
+}
+.ws-cloud-b::before { width: 58px; height: 58px; top: -26px; left: 32px; }
+.ws-cloud-b::after { width: 74px; height: 74px; top: -38px; left: 75px; }
+
+.ws-cloud-c {
+    top: 40px;
+    left: 80%;
+    width: 110px;
+    height: 32px;
+    opacity: 0.65;
+    animation: cloudDrift 68s linear infinite;
+}
+.ws-cloud-c::before { width: 40px; height: 40px; top: -18px; left: 18px; }
+.ws-cloud-c::after { width: 48px; height: 48px; top: -24px; left: 46px; }
+
+@keyframes cloudDrift {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(60px); }
+    100% { transform: translateX(0); }
+}
+
+.ws-diorama-stage.mode-sunset .ws-cloud {
+    background: rgba(254, 215, 170, 0.82);
+}
+.ws-diorama-stage.mode-night .ws-cloud {
+    background: rgba(30, 41, 59, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   LAYER 2: Distant Mountains & Mist (Depth 6px)
+   -------------------------------------------------------------------------- */
+.ws-mountain-layer {
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.ws-mountain-back {
+    fill: #334155;
+    opacity: 0.55;
+    transition: fill 1s ease;
+}
+
+.ws-mountain-front {
+    fill: #1e293b;
+    opacity: 0.85;
+    transition: fill 1s ease;
+}
+
+.ws-mist {
+    fill: url(#ws-mist-grad);
+    animation: mistFloat 6s ease-in-out infinite alternate;
+}
+
+@keyframes mistFloat {
+    from { transform: translateY(0); opacity: 0.7; }
+    to { transform: translateY(-8px); opacity: 0.95; }
+}
+
+.ws-diorama-stage.mode-day .ws-mountain-back { fill: #475569; }
+.ws-diorama-stage.mode-day .ws-mountain-front { fill: #1e293b; }
+
+.ws-diorama-stage.mode-sunset .ws-mountain-back { fill: #4a1d96; opacity: 0.65; }
+.ws-diorama-stage.mode-sunset .ws-mountain-front { fill: #2e1065; opacity: 0.9; }
+
+.ws-diorama-stage.mode-night .ws-mountain-back { fill: #0f172a; opacity: 0.85; }
+.ws-diorama-stage.mode-night .ws-mountain-front { fill: #020617; opacity: 0.95; }
+
+/* --------------------------------------------------------------------------
+   LAYER 3: Hero Architectural Object (Depth 12px)
+   -------------------------------------------------------------------------- */
+.ws-hero-layer {
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* Windmill Cottage Target Button */
+.ws-windmill-target {
+    position: absolute;
+    bottom: 85px;
+    right: 24%;
+    width: 160px;
+    height: 240px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    pointer-events: auto;
+    outline: none;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ws-windmill-target:hover {
+    transform: scale(1.04);
+}
+
+.ws-windmill-target:active {
+    transform: scale(0.98);
+}
+
+/* Windmill Conical Roof */
+.ws-windmill-roof {
+    position: absolute;
+    top: 25px;
+    left: 45px;
+    width: 0;
+    height: 0;
+    border-left: 35px solid transparent;
+    border-right: 35px solid transparent;
+    border-bottom: 45px solid #92400e; /* Thatched terracotta */
+    z-index: 2;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25));
+}
+
+.ws-windmill-roof::after {
+    content: '';
+    position: absolute;
+    top: 45px;
+    left: -38px;
+    width: 76px;
+    height: 8px;
+    background: #78350f;
+    border-radius: 4px;
+}
+
+/* Windmill Stone Tower Body */
+.ws-windmill-tower {
+    position: absolute;
+    top: 75px;
+    left: 48px;
+    width: 64px;
+    height: 125px;
+    background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 60%, #cbd5e1 100%);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+    border-top: 3px solid #78350f;
+    z-index: 1;
+    box-shadow: inset -8px 0 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Windmill Glowing Windows */
+.ws-windmill-window {
+    position: absolute;
+    top: 32px;
+    left: 23px;
+    width: 18px;
+    height: 22px;
+    background: #fbbf24;
+    border: 2px solid #451a03;
+    border-radius: 9px 9px 2px 2px;
+    box-shadow: 0 0 14px #f59e0b;
+}
+
+.ws-windmill-window::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: #451a03;
+}
+.ws-windmill-window::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1.5px;
+    height: 100%;
+    background: #451a03;
+}
+
+/* Door */
+.ws-windmill-door {
+    position: absolute;
+    bottom: 0;
+    left: 22px;
+    width: 20px;
+    height: 32px;
+    background: #78350f;
+    border: 2px solid #451a03;
+    border-radius: 6px 6px 0 0;
+}
+
+/* Chimney & Smoke Stream */
+.ws-chimney {
+    position: absolute;
+    top: 55px;
+    left: 28px;
+    width: 14px;
+    height: 28px;
+    background: #475569;
+    border-radius: 2px;
+    z-index: 0;
+}
+
+.ws-smoke-stream {
+    position: absolute;
+    top: -15px;
+    left: 2px;
+    width: 8px;
+    height: 8px;
+    background: rgba(241, 245, 249, 0.7);
+    border-radius: 50%;
+    box-shadow: 
+        4px -14px 0 3px rgba(241, 245, 249, 0.5),
+        10px -28px 0 6px rgba(241, 245, 249, 0.35),
+        18px -44px 0 9px rgba(241, 245, 249, 0.15);
+    animation: smokePuff 3.5s ease-out infinite;
+}
+
+@keyframes smokePuff {
+    0% { transform: translateY(0) scale(0.8); opacity: 0.8; }
+    50% { transform: translateY(-10px) scale(1.1); opacity: 0.6; }
+    100% { transform: translateY(-22px) scale(1.4); opacity: 0; }
+}
+
+/* Windmill Blades Rotor Assembly */
+.ws-windmill-blades {
+    position: absolute;
+    top: 66px;
+    left: 80px;
+    width: 0;
+    height: 0;
+    z-index: 5;
+    will-change: transform;
+    transform: rotate(0deg);
+}
+
+.ws-blade-hub {
+    position: absolute;
+    top: -7px;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #451a03;
+    border: 2px solid #f59e0b;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+}
+
+.ws-blade {
+    position: absolute;
+    top: -95px;
+    left: -12px;
+    width: 24px;
+    height: 95px;
+    transform-origin: 12px 95px;
+}
+
+.ws-blade::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+    width: 4px;
+    height: 95px;
+    background: #78350f; /* Spar */
+}
+
+.ws-blade::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 14px;
+    width: 18px;
+    height: 75px;
+    background: rgba(254, 243, 199, 0.92); /* Anime Cream Sail */
+    border: 1px solid #b45309;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.ws-blade.b1 { transform: rotate(0deg); }
+.ws-blade.b2 { transform: rotate(90deg); }
+.ws-blade.b3 { transform: rotate(180deg); }
+.ws-blade.b4 { transform: rotate(270deg); }
+
+/* Turbo Spin Burst on Click */
+.ws-windmill-target.turbo-boost .ws-windmill-blades {
+    animation: bladeTurbo 0.35s linear infinite !important;
+}
+
+@keyframes bladeTurbo {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Cyberpunk Telecom Tower */
+.ws-cyber-tower {
+    position: absolute;
+    bottom: 80px;
+    right: 25%;
+    width: 110px;
+    height: 250px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+.ws-diorama-stage.mode-night .ws-cyber-tower {
+    opacity: 1;
+    pointer-events: auto;
+}
+.ws-diorama-stage.mode-night .ws-windmill-target {
+    opacity: 0.15; /* Subdued at night */
+}
+
+/* Beacon LED Light */
+.ws-beacon-led {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    box-shadow: 0 0 16px #ef4444, 0 0 32px #ef4444;
+    animation: beaconFlash 1.2s infinite ease-in-out;
+}
+
+@keyframes beaconFlash {
+    0%, 100% { opacity: 0.2; transform: translateX(-50%) scale(0.8); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.3); box-shadow: 0 0 24px #ef4444, 0 0 45px #ff4757; }
+}
+
+/* Neon Sign */
+.ws-tower-sign {
+    position: absolute;
+    top: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid #00f2fe;
+    color: #00f2fe;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    box-shadow: 0 0 14px rgba(0, 242, 254, 0.65);
+    white-space: nowrap;
+    animation: neonFlicker 3.5s infinite;
+}
+
+@keyframes neonFlicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 14px rgba(0, 242, 254, 0.65), 0 0 24px rgba(0, 242, 254, 0.35);
+    }
+    20%, 24%, 55% {
+        opacity: 0.35;
+        box-shadow: none;
+    }
+}
+
+/* Tower Lattice Mast */
+.ws-mast-lattice {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 190px;
+    border-left: 3px solid #38bdf8;
+    border-right: 3px solid #38bdf8;
+}
+
+.ws-mast-lattice b {
+    display: block;
+    width: 100%;
+    height: 45px;
+    border-bottom: 2px solid #0284c7;
+    background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(56, 189, 248, 0.4) 8px, rgba(56, 189, 248, 0.4) 10px);
+}
+
+/* --------------------------------------------------------------------------
+   LAYER 4: Foreground & Flora (Depth 20px)
+   -------------------------------------------------------------------------- */
+.ws-foreground-layer {
+    z-index: 4;
+}
+
+/* Rolling Lush Emerald Hills */
+.ws-grass-bank {
+    position: absolute;
+    bottom: -15px;
+    left: -5%;
+    width: 110%;
+    height: 135px;
+    border-radius: 50% 50% 0 0 / 40px 40px 0 0;
+    background: linear-gradient(180deg, #22c55e 0%, #16a34a 35%, #15803d 70%, #064e3b 100%);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+    transition: background 1s ease;
+}
+
+.ws-diorama-stage.mode-sunset .ws-grass-bank {
+    background: linear-gradient(180deg, #15803d 0%, #166534 50%, #064e3b 100%);
+}
+
+.ws-diorama-stage.mode-night .ws-grass-bank {
+    background: linear-gradient(180deg, #064e3b 0%, #022c22 65%, #011612 100%);
+}
+
+/* Swaying Wildflowers */
+.ws-wildflowers {
+    position: absolute;
+    bottom: 20px;
+    left: 10%;
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+    pointer-events: none;
+}
+
+.ws-wildflowers .flower {
+    font-size: 1.4rem;
+    display: inline-block;
+    transform-origin: bottom center;
+    animation: flowerSway var(--sway-duration, 2.8s) ease-in-out infinite alternate;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+.ws-wildflowers .flower:nth-child(even) {
+    animation-delay: -1.2s;
+}
+
+.ws-wildflowers .flower:nth-child(3n) {
+    animation-delay: -0.6s;
+    font-size: 1.1rem;
+}
+
+@keyframes flowerSway {
+    0% { transform: rotate(calc(-1 * var(--sway-angle, 6deg))); }
+    100% { transform: rotate(var(--sway-angle, 6deg)); }
+}
+
+/* Canvas FX Layer on Top */
 .zen-stage-canvas {
     position: absolute;
     top: 0;
@@ -17891,28 +18562,49 @@ select option {
     width: 100%;
     height: 100%;
     display: block;
-    z-index: 1;
+    z-index: 5;
+    pointer-events: none;
 }
 
-/* Floating Frosted Glass HUD Overlay (Top-Left) */
-.zen-clock-overlay {
+/* --------------------------------------------------------------------------
+   HUD: Compact Minimal Glassmorphism Pill (Top-Left)
+   -------------------------------------------------------------------------- */
+.zen-clock-overlay.ws-glass-pill {
     position: absolute;
     top: 18px;
     left: 18px;
-    z-index: 6;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 12px 18px;
-    background: rgba(10, 15, 29, 0.65);
+    padding: 10px 16px;
+    background: rgba(10, 15, 29, 0.75);
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 242, 254, 0.08);
-    pointer-events: none;
-    max-width: 380px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 16px rgba(0, 242, 254, 0.1);
+    pointer-events: auto;
+    max-width: 320px;
     transition: all 0.3s ease;
+}
+
+.zen-pill-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.ws-hud-status-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(188, 248, 70, 0.15);
+    border: 1px solid rgba(188, 248, 70, 0.35);
+    color: var(--accent-lime);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.65rem;
+    font-weight: 800;
 }
 
 .zen-clock-location {
@@ -17927,13 +18619,13 @@ select option {
     gap: 6px;
 }
 
-.zen-digital-time {
+.zen-clock-overlay.ws-glass-pill .zen-digital-time {
     font-family: var(--font-mono, monospace);
-    font-size: 2.3rem;
+    font-size: 2.1rem;
     font-weight: 900;
     line-height: 1.05;
     color: #ffffff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 4px 10px rgba(0, 0, 0, 0.9);
+    text-shadow: 0 0 18px rgba(255, 255, 255, 0.4), 0 2px 8px rgba(0, 0, 0, 0.9);
     letter-spacing: 0.04em;
 }
 
@@ -17945,18 +18637,18 @@ select option {
 }
 
 .zen-quote-pill {
-    margin-top: 6px;
+    margin-top: 4px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 9999px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: #94a3b8;
     font-style: italic;
-    max-width: 320px;
+    max-width: 280px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -18041,7 +18733,7 @@ select option {
     }
 }
 
-/* Fullscreen Diorama Screensaver */
+/* Fullscreen Zen Ambient Screensaver */
 .ws-zen-stage.fullscreen-zen {
     position: fixed;
     top: 0;
@@ -18080,5 +18772,5 @@ select option {
 }
 
 .ws-zen-stage.fullscreen-zen .zen-digital-time {
-    font-size: 6.5rem;
+    font-size: 5rem;
 }

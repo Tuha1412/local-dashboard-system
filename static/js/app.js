@@ -48,13 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Automatic backend API & WebSocket origin resolver (supports both http://localhost:8000 and file:// protocol)
-    const API_BASE = (window.location.protocol === 'file:' || !window.location.host) 
-        ? 'http://127.0.0.1:8000' 
-        : '';
-    const WS_BASE = (window.location.protocol === 'file:' || !window.location.host)
-        ? 'ws://127.0.0.1:8000'
-        : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`;
+    // Automatic backend API & WebSocket dynamic host resolver (supports LAN/Wi-Fi IP, custom domain, https/wss, and file:// fallback)
+    const isFileProtocol = window.location.protocol === 'file:' || !window.location.host;
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const currentHost = window.location.host;
+
+    const API_BASE = isFileProtocol ? 'http://127.0.0.1:8000' : '';
+    const WS_BASE = isFileProtocol 
+        ? 'ws://127.0.0.1:8000' 
+        : `${wsProtocol}//${currentHost}`;
 
     // Intercept window.fetch to automatically resolve relative /api routes if opened via file://
     const _originalFetch = window.fetch;
@@ -14358,8 +14360,20 @@ ${css}`;
             // 3D Parallax & Camera Tracking
             parallax: { x: 0, y: 0, targetX: 0, targetY: 0, mouseX: 0, mouseY: 0, isHover: false },
             
-            // Tempest (3-second tempest gust burst)
+            // Live Particle Physics Console variables
+            windSpeed: parseFloat(localStorage.getItem('ws_phys_wind') || '12'),
+            particleDensity: parseInt(localStorage.getItem('ws_phys_density') || '120', 10),
+            particleSpeed: parseFloat(localStorage.getItem('ws_phys_speed') || '1.0'),
+            particleSize: parseFloat(localStorage.getItem('ws_phys_size') || '2.5'),
+            glowBlur: parseInt(localStorage.getItem('ws_phys_glow') || '8', 10),
+            atmosphereOpacity: parseInt(localStorage.getItem('ws_phys_opacity') || '100', 10),
+            enableLightning: localStorage.getItem('ws_phys_lightning') !== 'false',
+            enableTurbulence: localStorage.getItem('ws_phys_turbulence') !== 'false',
+
+            // Tempest & Windmill Turbo Spin Boost
             tempest: { active: false, intensity: 0, timer: 0 },
+            turboSpinActive: false,
+            turboSpinTimer: 0,
             
             // Ghibli Windmill & Scenery Objects
             windmillAngle: 0,
@@ -14376,6 +14390,7 @@ ${css}`;
             droplets: [],      // Condensation droplets on glass
             ripples: [],       // Surface water ripples at bottom
             shootingStars: [], // Interactive 3D shooting stars
+            lightningBolts: [],// Interactive lightning bolts
             snowVortices: [],  // Click-generated snow whirlwind vortices
             sakuraBursts: [],  // Click/tempest blossom bursts
             mountains: [],     // Low-poly mountain vertices
@@ -14398,6 +14413,8 @@ ${css}`;
         init() {
             this.cacheDom();
             this.bindEvents();
+            this.syncPhysicsConsoleUI();
+            this.initVisibilityListener();
             this.renderCards();
             this.startClock();
             this.initZenCanvas();
@@ -14437,18 +14454,212 @@ ${css}`;
                 lightingLabel: document.getElementById('ws-lighting-label'),
                 lightingIcon: document.getElementById('ws-lighting-icon'),
                 btnTriggerTempest: document.getElementById('btn-ws-trigger-tempest'),
+
+                // Diorama Stage & Vector Layers
+                dioramaStage: document.getElementById('ws-diorama-stage'),
+                skyLayer: document.querySelector('.ws-sky-layer'),
+                mountainLayer: document.querySelector('.ws-mountain-layer'),
+                heroLayer: document.querySelector('.ws-hero-layer'),
+                foregroundLayer: document.querySelector('.ws-foreground-layer'),
+                windmillTarget: document.getElementById('ws-windmill-target'),
+                windmillBlades: document.getElementById('ws-windmill-blades'),
+                cyberTower: document.getElementById('ws-cyber-tower'),
+                wildflowers: document.getElementById('ws-wildflowers'),
+
+                // Particle Physics Console (35% Right Column)
+                physDensity: document.getElementById('ws-phys-density'),
+                valDensity: document.getElementById('ws-val-density'),
+                physSpeed: document.getElementById('ws-phys-speed'),
+                valSpeed: document.getElementById('ws-val-speed'),
+                physWind: document.getElementById('ws-phys-wind'),
+                valWind: document.getElementById('ws-val-wind'),
+                physSize: document.getElementById('ws-phys-size'),
+                valSize: document.getElementById('ws-val-size'),
+                physGlow: document.getElementById('ws-phys-glow'),
+                valGlow: document.getElementById('ws-val-glow'),
+                physOpacity: document.getElementById('ws-phys-opacity'),
+                valOpacity: document.getElementById('ws-val-opacity'),
+                toggleLightning: document.getElementById('ws-toggle-lightning'),
+                toggleTurbulence: document.getElementById('ws-toggle-turbulence'),
+                btnResetPhysics: document.getElementById('btn-ws-reset-physics'),
+
+                // Customizer Modal (Fallback)
                 customizerModal: document.getElementById('ws-customizer-modal'),
                 btnCloseCustomizer: document.getElementById('btn-close-ws-customizer'),
                 sliderDensity: document.getElementById('ws-slider-density'),
                 sliderSpeed: document.getElementById('ws-slider-speed'),
-                sliderOpacity: document.getElementById('ws-slider-opacity'),
-                toggleTurbulence: document.getElementById('ws-toggle-turbulence'),
-                valDensity: document.getElementById('ws-density-val'),
-                valSpeed: document.getElementById('ws-speed-val'),
-                valOpacity: document.getElementById('ws-opacity-val'),
-                btnResetCustomizer: document.getElementById('btn-ws-reset-customizer'),
-                btnSaveCustomizer: document.getElementById('btn-ws-save-customizer')
+                sliderOpacity: document.getElementById('ws-slider-opacity')
             };
+        },
+
+        initVisibilityListener() {
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    this.onTabDeactivated();
+                } else if (this.state.isTabActive) {
+                    this.onTabActivated();
+                }
+            });
+        },
+
+        syncPhysicsConsoleUI() {
+            if (this.dom.physWind) this.dom.physWind.value = this.state.windSpeed;
+            if (this.dom.valWind) this.dom.valWind.textContent = `${this.state.windSpeed > 0 ? '+' : ''}${this.state.windSpeed} km/h`;
+
+            if (this.dom.physDensity) this.dom.physDensity.value = this.state.particleDensity;
+            if (this.dom.valDensity) this.dom.valDensity.textContent = `${this.state.particleDensity} hạt`;
+
+            if (this.dom.physSpeed) this.dom.physSpeed.value = this.state.particleSpeed;
+            if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${parseFloat(this.state.particleSpeed).toFixed(1)}x`;
+
+            if (this.dom.physSize) this.dom.physSize.value = this.state.particleSize;
+            if (this.dom.valSize) this.dom.valSize.textContent = `${parseFloat(this.state.particleSize).toFixed(1)}px`;
+
+            if (this.dom.physGlow) this.dom.physGlow.value = this.state.glowBlur;
+            if (this.dom.valGlow) this.dom.valGlow.textContent = `${this.state.glowBlur}px`;
+
+            if (this.dom.physOpacity) this.dom.physOpacity.value = this.state.atmosphereOpacity;
+            if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${this.state.atmosphereOpacity}%`;
+
+            if (this.dom.toggleLightning) this.dom.toggleLightning.checked = this.state.enableLightning;
+            if (this.dom.toggleTurbulence) this.dom.toggleTurbulence.checked = this.state.enableTurbulence;
+
+            this.syncWindToDiorama();
+            this.adjustParticleCount();
+        },
+
+        syncWindToDiorama() {
+            const wind = Math.abs(this.state.windSpeed || 12);
+            const swayDuration = Math.max(0.7, (3.2 - (wind / 45) * 2.1)).toFixed(2) + 's';
+            const swayAngle = (4 + (wind / 45) * 12).toFixed(1) + 'deg';
+            if (this.dom.wildflowers) {
+                this.dom.wildflowers.style.setProperty('--sway-duration', swayDuration);
+                this.dom.wildflowers.style.setProperty('--sway-angle', swayAngle);
+            }
+            if (this.dom.dioramaStage) {
+                this.dom.dioramaStage.style.setProperty('--sway-duration', swayDuration);
+                this.dom.dioramaStage.style.setProperty('--sway-angle', swayAngle);
+            }
+        },
+
+        adjustParticleCount() {
+            const targetCount = this.state.particleDensity || 120;
+            const w = this.state.zenWidth || 1000;
+            const h = this.state.zenHeight || 560;
+
+            while (this.state.zenParticles.length < targetCount) {
+                this.state.zenParticles.push({
+                    x: Math.random() * (w + 120) - 60,
+                    y: Math.random() * h,
+                    length: Math.random() * 26 + 12,
+                    speed: Math.random() * 4.5 + 3.0,
+                    radius: Math.random() * 2.4 + 1.2,
+                    opacity: Math.random() * 0.5 + 0.4
+                });
+            }
+            if (this.state.zenParticles.length > targetCount) {
+                this.state.zenParticles.length = targetCount;
+            }
+        },
+
+        resetPhysicsDefaults() {
+            this.state.windSpeed = 12;
+            this.state.particleDensity = 120;
+            this.state.particleSpeed = 1.0;
+            this.state.particleSize = 2.5;
+            this.state.glowBlur = 8;
+            this.state.atmosphereOpacity = 100;
+            this.state.enableLightning = true;
+            this.state.enableTurbulence = true;
+
+            localStorage.setItem('ws_phys_wind', '12');
+            localStorage.setItem('ws_phys_density', '120');
+            localStorage.setItem('ws_phys_speed', '1.0');
+            localStorage.setItem('ws_phys_size', '2.5');
+            localStorage.setItem('ws_phys_glow', '8');
+            localStorage.setItem('ws_phys_opacity', '100');
+            localStorage.setItem('ws_phys_lightning', 'true');
+            localStorage.setItem('ws_phys_turbulence', 'true');
+
+            this.syncPhysicsConsoleUI();
+        },
+
+        triggerWindmillBoost() {
+            this.state.turboSpinActive = true;
+            this.state.turboSpinTimer = 3.0; // 3 seconds boost
+            if (this.dom.windmillTarget) this.dom.windmillTarget.classList.add('turbo-boost');
+
+            // Emit playful wind & dandelion particles
+            const w = this.state.zenWidth || 1000;
+            const h = this.state.zenHeight || 560;
+            const targetRect = this.dom.windmillTarget ? this.dom.windmillTarget.getBoundingClientRect() : null;
+            const originX = w * 0.74;
+            const originY = h * 0.65;
+
+            for (let i = 0; i < 24; i++) {
+                this.state.dandelions.push({
+                    x: originX + (Math.random() - 0.5) * 40,
+                    y: originY + (Math.random() - 0.5) * 40,
+                    vx: Math.random() * 7 + 4,
+                    vy: (Math.random() - 0.5) * 5,
+                    size: Math.random() * 5 + 3,
+                    rot: Math.random() * Math.PI * 2,
+                    rotSpeed: (Math.random() - 0.5) * 0.2,
+                    alpha: 0.9
+                });
+            }
+
+            if (typeof showActionToast === 'function') {
+                showActionToast('🍃 Cánh cối xay gió tăng tốc cuộn xoáy trong 3 giây!');
+            }
+        },
+
+        triggerShootingStar(cx, cy) {
+            const w = this.state.zenWidth || 1000;
+            const h = this.state.zenHeight || 560;
+            const sx = cx !== undefined ? cx : (Math.random() * (w * 0.6) + w * 0.1);
+            const sy = cy !== undefined ? cy : (Math.random() * (h * 0.3) + 20);
+            const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.35;
+            const speed = Math.random() * 12 + 16;
+
+            this.state.shootingStars.push({
+                x: sx,
+                y: sy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                len: Math.random() * 80 + 70,
+                size: Math.random() * 2.5 + 2.0,
+                alpha: 1.0,
+                color: '#fef08a'
+            });
+        },
+
+        triggerLightningStrike(startX) {
+            const w = this.state.zenWidth || 1000;
+            const h = this.state.zenHeight || 560;
+            const x0 = startX !== undefined ? startX : (Math.random() * (w * 0.7) + w * 0.15);
+
+            const points = [{ x: x0, y: 0 }];
+            let curX = x0;
+            let curY = 0;
+            while (curY < h * 0.75) {
+                curY += Math.random() * 35 + 25;
+                curX += (Math.random() - 0.5) * 50;
+                points.push({ x: curX, y: curY });
+            }
+
+            const midIdx = Math.floor(points.length / 2);
+            this.state.lightningBolts.push({
+                points,
+                alpha: 1.0,
+                branch: Math.random() > 0.4 ? {
+                    points: [
+                        { x: points[midIdx].x, y: points[midIdx].y },
+                        { x: points[midIdx].x + 35, y: points[midIdx].y + 40 },
+                        { x: points[midIdx].x + 55, y: points[midIdx].y + 75 }
+                    ]
+                } : null
+            });
         },
 
         updateControlClusterUI() {
@@ -14504,6 +14715,15 @@ ${css}`;
             });
             if (this.dom.btnTriggerTempest) this.dom.btnTriggerTempest.addEventListener('click', (e) => { e.stopPropagation(); this.triggerTempest(); });
 
+            // Windmill Click Easter Egg
+            if (this.dom.windmillTarget) {
+                this.dom.windmillTarget.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.triggerWindmillBoost();
+                });
+            }
+
+            // Mouse 3D Parallax Tracking
             if (this.dom.zenStageViewport) {
                 this.dom.zenStageViewport.addEventListener('mousemove', (e) => {
                     const rect = this.dom.zenStageViewport.getBoundingClientRect();
@@ -14513,29 +14733,101 @@ ${css}`;
                     this.state.parallax.targetY = (my / rect.height - 0.5) * 32;
                     this.state.parallax.isHover = true;
                 });
-                this.dom.zenStageViewport.addEventListener('mouseleave', () => { this.state.parallax.targetX = 0; this.state.parallax.targetY = 0; this.state.parallax.isHover = false; });
+                this.dom.zenStageViewport.addEventListener('mouseleave', () => { 
+                    this.state.parallax.targetX = 0; 
+                    this.state.parallax.targetY = 0; 
+                    this.state.parallax.isHover = false; 
+                });
                 this.dom.zenStageViewport.addEventListener('click', (e) => {
-                    if (e.target.closest('.ws-scenery-action-cluster') || e.target.closest('.control-btn')) return;
+                    if (e.target.closest('.ws-scenery-action-cluster') || e.target.closest('.control-btn') || e.target.closest('.ws-windmill-target')) return;
                     const rect = this.dom.zenStageViewport.getBoundingClientRect();
                     this.handleStageClick(e.clientX - rect.left, e.clientY - rect.top);
                 });
             }
 
+            // Particle Physics Console Sliders & Switches
+            if (this.dom.physWind) {
+                this.dom.physWind.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    this.state.windSpeed = val;
+                    if (this.dom.valWind) this.dom.valWind.textContent = `${val > 0 ? '+' : ''}${val} km/h`;
+                    localStorage.setItem('ws_phys_wind', String(val));
+                    this.syncWindToDiorama();
+                });
+            }
+
+            if (this.dom.physDensity) {
+                this.dom.physDensity.addEventListener('input', (e) => {
+                    const val = parseInt(e.target.value, 10);
+                    this.state.particleDensity = val;
+                    if (this.dom.valDensity) this.dom.valDensity.textContent = `${val} hạt`;
+                    localStorage.setItem('ws_phys_density', String(val));
+                    this.adjustParticleCount();
+                });
+            }
+
+            if (this.dom.physSpeed) {
+                this.dom.physSpeed.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    this.state.particleSpeed = val;
+                    if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${val.toFixed(1)}x`;
+                    localStorage.setItem('ws_phys_speed', String(val));
+                });
+            }
+
+            if (this.dom.physSize) {
+                this.dom.physSize.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    this.state.particleSize = val;
+                    if (this.dom.valSize) this.dom.valSize.textContent = `${val.toFixed(1)}px`;
+                    localStorage.setItem('ws_phys_size', String(val));
+                });
+            }
+
+            if (this.dom.physGlow) {
+                this.dom.physGlow.addEventListener('input', (e) => {
+                    const val = parseInt(e.target.value, 10);
+                    this.state.glowBlur = val;
+                    if (this.dom.valGlow) this.dom.valGlow.textContent = `${val}px`;
+                    localStorage.setItem('ws_phys_glow', String(val));
+                });
+            }
+
+            if (this.dom.physOpacity) {
+                this.dom.physOpacity.addEventListener('input', (e) => {
+                    const val = parseInt(e.target.value, 10);
+                    this.state.atmosphereOpacity = val;
+                    if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${val}%`;
+                    localStorage.setItem('ws_phys_opacity', String(val));
+                });
+            }
+
+            if (this.dom.toggleLightning) {
+                this.dom.toggleLightning.addEventListener('change', (e) => {
+                    this.state.enableLightning = e.target.checked;
+                    localStorage.setItem('ws_phys_lightning', String(e.target.checked));
+                });
+            }
+
+            if (this.dom.toggleTurbulence) {
+                this.dom.toggleTurbulence.addEventListener('change', (e) => {
+                    this.state.enableTurbulence = e.target.checked;
+                    localStorage.setItem('ws_phys_turbulence', String(e.target.checked));
+                });
+            }
+
+            if (this.dom.btnResetPhysics) {
+                this.dom.btnResetPhysics.addEventListener('click', () => {
+                    this.resetPhysicsDefaults();
+                    if (typeof showActionToast === 'function') {
+                        showActionToast('🔄 Đã khôi phục toàn bộ thông số vật lý về mặc định!');
+                    }
+                });
+            }
+
+            // Fallback customizer modal controls
             if (this.dom.btnCloseCustomizer) this.dom.btnCloseCustomizer.addEventListener('click', () => this.closeCustomizer());
             if (this.dom.customizerModal) this.dom.customizerModal.addEventListener('click', (e) => { if (e.target === this.dom.customizerModal) this.closeCustomizer(); });
-            if (this.dom.sliderDensity) this.dom.sliderDensity.addEventListener('input', (e) => { if (this.dom.valDensity) this.dom.valDensity.textContent = `${e.target.value}%`; });
-            if (this.dom.sliderSpeed) this.dom.sliderSpeed.addEventListener('input', (e) => { if (this.dom.valSpeed) this.dom.valSpeed.textContent = `${parseFloat(e.target.value).toFixed(1)}x`; });
-            if (this.dom.sliderOpacity) this.dom.sliderOpacity.addEventListener('input', (e) => { if (this.dom.valOpacity) this.dom.valOpacity.textContent = `${e.target.value}%`; });
-            if (this.dom.btnResetCustomizer) this.dom.btnResetCustomizer.addEventListener('click', () => {
-                this.dom.sliderDensity.value = 100; this.dom.sliderSpeed.value = 1.0; this.dom.sliderOpacity.value = 100; this.dom.toggleTurbulence.checked = true;
-                if (this.dom.valDensity) this.dom.valDensity.textContent = '100%';
-                if (this.dom.valSpeed) this.dom.valSpeed.textContent = '1.0x';
-                if (this.dom.valOpacity) this.dom.valOpacity.textContent = '100%';
-            });
-            if (this.dom.btnSaveCustomizer) this.dom.btnSaveCustomizer.addEventListener('click', () => {
-                weatherThemeEngine.saveUserConfig({ density: parseFloat(this.dom.sliderDensity.value) / 100, speed: parseFloat(this.dom.sliderSpeed.value), opacity: parseFloat(this.dom.sliderOpacity.value) / 100, turbulence: this.dom.toggleTurbulence.checked });
-                this.closeCustomizer();
-            });
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
@@ -14571,7 +14863,9 @@ ${css}`;
                 });
             }
 
-            showActionToast('⚡ Gió Bão Cấp 8 Kích Hoạt! Tăng tốc cánh quay cối xay gió & bão hạt 3 giây.');
+            if (typeof showActionToast === 'function') {
+                showActionToast('⚡ Gió Bão Cấp 8 Kích Hoạt! Tăng tốc cánh quay cối xay gió & bão hạt 3 giây.');
+            }
         },
 
         handleStageClick(cx, cy) {
@@ -14580,6 +14874,24 @@ ${css}`;
             const type = preset.type;
             const w = this.state.zenWidth || 1000;
             const h = this.state.zenHeight || 560;
+
+            // Easter egg: Click on sky
+            if (cy < h * 0.52) {
+                const isStormy = type === 'rain' || type === 'thunder' || type === 'cyber_rain';
+                if (isStormy && this.state.enableLightning) {
+                    this.triggerLightningStrike(cx);
+                    if (typeof showActionToast === 'function') {
+                        showActionToast('⚡ Tia sét rạch ngang bầu trời đêm!');
+                    }
+                    return;
+                } else {
+                    this.triggerShootingStar(cx, cy);
+                    if (typeof showActionToast === 'function') {
+                        showActionToast('🌠 Một vệt sao băng vừa vụt qua bầu trời!');
+                    }
+                    return;
+                }
+            }
 
             if (type === 'sakura' || type === 'nature') {
                 // Spawn Sakura Petal Burst at click point
@@ -14977,11 +15289,51 @@ ${css}`;
 
             ctx.clearRect(0, 0, w, h);
             if (this.state.viewMode === 'diorama') {
-                this.renderSkyAndCelestial(ctx, w, h, plx, lighting, preset);
-                this.renderDistantMountainsAndSkyline(ctx, w, h, plx, lighting, preset);
-                this.renderHeroMidground(ctx, w, h, plx, lighting, preset, tmp);
-                this.renderForegroundMeadowAndFlora(ctx, w, h, plx, lighting, preset, tmp);
+                // Update 2.5D Diorama Stage DOM Vector Layers Parallax
+                if (this.dom.dioramaStage) {
+                    this.dom.dioramaStage.style.display = 'block';
+                    this.dom.dioramaStage.style.transform = `perspective(1000px) rotateY(${plx.x * 0.04}deg) rotateX(${-plx.y * 0.03}deg)`;
+                    
+                    this.dom.dioramaStage.classList.remove('mode-day', 'mode-sunset', 'mode-night');
+                    this.dom.dioramaStage.classList.add(`mode-${lighting.mode}`);
+                    this.dom.dioramaStage.classList.toggle('theme-aurora', activeKey.includes('aurora'));
+                }
+                if (this.dom.skyLayer) {
+                    this.dom.skyLayer.style.transform = `translate3d(${plx.x * 0.05}px, ${plx.y * 0.04}px, 0)`;
+                }
+                if (this.dom.mountainLayer) {
+                    this.dom.mountainLayer.style.transform = `translate3d(${plx.x * 0.15}px, ${plx.y * 0.08}px, 0)`;
+                }
+                if (this.dom.heroLayer) {
+                    this.dom.heroLayer.style.transform = `translate3d(${plx.x * 0.28}px, ${plx.y * 0.15}px, 0)`;
+                }
+                if (this.dom.foregroundLayer) {
+                    this.dom.foregroundLayer.style.transform = `translate3d(${plx.x * 0.45}px, ${plx.y * 0.25}px, 0)`;
+                }
+
+                // Dynamic Windmill rotation driven by windSpeed + turbo multiplier
+                const windVal = Math.abs(this.state.windSpeed !== undefined ? this.state.windSpeed : 12);
+                const turboMul = this.state.turboSpinActive ? 4.5 : (tmp.active ? 3.0 : 1.0);
+                const spinDelta = (0.012 + (windVal / 45) * 0.045) * turboMul;
+                this.state.windmillAngle = (this.state.windmillAngle + spinDelta) % (Math.PI * 2);
+
+                if (this.dom.windmillBlades) {
+                    const deg = (this.state.windmillAngle * 180 / Math.PI).toFixed(1);
+                    this.dom.windmillBlades.style.transform = `rotate(${deg}deg)`;
+                }
+
+                // Turbo spin boost timer decrement
+                if (this.state.turboSpinActive) {
+                    this.state.turboSpinTimer -= 0.016;
+                    if (this.state.turboSpinTimer <= 0) {
+                        this.state.turboSpinActive = false;
+                        if (this.dom.windmillTarget) this.dom.windmillTarget.classList.remove('turbo-boost');
+                    }
+                }
             } else {
+                if (this.dom.dioramaStage) {
+                    this.dom.dioramaStage.style.display = 'none';
+                }
                 const grad = ctx.createRadialGradient(w * 0.5, h * 0.4, 10, w * 0.5, h * 0.5, Math.max(w, h));
                 grad.addColorStop(0, 'rgba(15, 23, 42, 0.7)');
                 grad.addColorStop(1, 'rgba(2, 6, 23, 0.98)');
@@ -15762,118 +16114,171 @@ ${css}`;
             ctx.save();
             const type = preset.type;
             const accent = preset.accent || '#38bdf8';
-            const speedMul = (tmp.active ? 2.5 : 1.0) * (weatherThemeEngine.userConfig.speed || 1.0);
-            const opacityMul = weatherThemeEngine.userConfig.opacity || 1.0;
+
+            // Live Particle Physics Console variables
+            const pSpeed = this.state.particleSpeed !== undefined ? this.state.particleSpeed : 1.0;
+            const speedMul = (tmp.active ? 2.5 : 1.0) * pSpeed;
+            const pOpacity = this.state.atmosphereOpacity !== undefined ? (this.state.atmosphereOpacity / 100) : 1.0;
+            const sizeMul = (this.state.particleSize !== undefined ? this.state.particleSize : 2.5) / 2.5;
+            const glowBlur = this.state.glowBlur !== undefined ? this.state.glowBlur : 8;
+            const wind = this.state.windSpeed !== undefined ? this.state.windSpeed : 12;
+            const windDriftX = (wind / 18) * speedMul;
+            const turbulence = this.state.enableTurbulence !== false;
 
             if (type === 'rain' || type === 'thunder' || type === 'drizzle' || type === 'cyber_rain') {
                 ctx.strokeStyle = accent;
-                ctx.lineWidth = 1.8;
+                ctx.lineWidth = Math.max(1.0, 1.8 * sizeMul);
+                if (glowBlur > 0) {
+                    ctx.shadowBlur = glowBlur;
+                    ctx.shadowColor = accent;
+                }
                 this.state.zenParticles.forEach(p => {
+                    const turbX = turbulence ? Math.sin(p.y * 0.02 + p.x * 0.01) * 0.45 : 0;
                     p.y += p.speed * speedMul;
-                    p.x -= (p.speed * 0.35) * speedMul;
+                    p.x += (windDriftX + turbX) * p.speed * 0.25;
 
-                    if (p.y > h + 20) {
+                    if (p.y > h + 25) {
                         p.y = -20;
-                        p.x = Math.random() * (w + 100);
+                        p.x = Math.random() * (w + 140) - 70;
                     }
+                    if (p.x < -80) p.x = w + 70;
+                    if (p.x > w + 80) p.x = -70;
 
                     ctx.beginPath();
-                    ctx.globalAlpha = p.opacity * opacityMul;
+                    ctx.globalAlpha = Math.min(1.0, Math.max(0.05, p.opacity * pOpacity));
+                    const slantX = (windDriftX * 3.5);
+                    const len = (p.length || 20) * sizeMul;
                     ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p.x - p.length * 0.35, p.y + p.length);
+                    ctx.lineTo(p.x + slantX, p.y + len);
                     ctx.stroke();
                 });
             } else if (type === 'snow' || type === 'gentle_snow' || type === 'freeze') {
                 ctx.fillStyle = '#ffffff';
+                if (glowBlur > 0) {
+                    ctx.shadowBlur = glowBlur;
+                    ctx.shadowColor = '#ffffff';
+                }
                 this.state.zenParticles.forEach(p => {
+                    const turbX = turbulence ? Math.sin(p.y * 0.035) * 1.5 : 0;
                     p.y += p.speed * 0.65 * speedMul;
-                    p.x += Math.sin(p.y * 0.04) * 1.2;
-
-                    if (p.y > h + 10) {
-                        p.y = -10;
-                        p.x = Math.random() * w;
-                    }
-
-                    ctx.beginPath();
-                    ctx.globalAlpha = p.opacity * opacityMul;
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-            } else if (type === 'sakura') {
-                this.state.zenParticles.forEach(p => {
-                    p.y += p.speed * 0.55 * speedMul;
-                    p.x += Math.sin(p.y * 0.03) * 1.8;
+                    p.x += (windDriftX * 0.8) + turbX;
 
                     if (p.y > h + 15) {
                         p.y = -15;
-                        p.x = Math.random() * w;
+                        p.x = Math.random() * (w + 100) - 50;
                     }
+                    if (p.x < -60) p.x = w + 50;
+                    if (p.x > w + 60) p.x = -50;
+
+                    ctx.beginPath();
+                    ctx.globalAlpha = Math.min(1.0, Math.max(0.05, p.opacity * pOpacity));
+                    ctx.arc(p.x, p.y, Math.max(0.8, (p.radius || 2) * sizeMul), 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            } else if (type === 'sakura') {
+                if (glowBlur > 0) {
+                    ctx.shadowBlur = glowBlur;
+                    ctx.shadowColor = '#ff758c';
+                }
+                this.state.zenParticles.forEach(p => {
+                    const turbX = turbulence ? Math.sin(p.y * 0.03) * 2.2 : 0;
+                    p.y += p.speed * 0.55 * speedMul;
+                    p.x += (windDriftX * 1.1) + turbX;
+
+                    if (p.y > h + 18) {
+                        p.y = -18;
+                        p.x = Math.random() * (w + 100) - 50;
+                    }
+                    if (p.x < -60) p.x = w + 50;
+                    if (p.x > w + 60) p.x = -50;
 
                     ctx.save();
                     ctx.translate(p.x, p.y);
-                    ctx.rotate(p.y * 0.05);
+                    ctx.rotate((p.y * 0.05) + (p.x * 0.02));
                     ctx.fillStyle = '#ff758c';
-                    ctx.globalAlpha = p.opacity * opacityMul;
+                    ctx.globalAlpha = Math.min(1.0, Math.max(0.05, p.opacity * pOpacity));
+                    const r = Math.max(1.0, (p.radius || 2) * sizeMul);
                     ctx.beginPath();
-                    ctx.ellipse(0, 0, p.radius * 2.2, p.radius * 1.2, 0, 0, Math.PI * 2);
+                    ctx.ellipse(0, 0, r * 2.4, r * 1.3, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
                 });
             } else if (type === 'embers') {
                 ctx.fillStyle = accent;
+                if (glowBlur > 0) {
+                    ctx.shadowBlur = glowBlur * 1.2;
+                    ctx.shadowColor = accent;
+                }
                 this.state.zenParticles.forEach(p => {
-                    p.y -= p.speed * 0.6 * speedMul;
-                    p.x += (Math.random() - 0.5) * 1.2;
+                    const turbX = turbulence ? (Math.random() - 0.5) * 1.6 : 0;
+                    p.y -= p.speed * 0.65 * speedMul;
+                    p.x += (windDriftX * 0.6) + turbX;
 
-                    if (p.y < -10) {
-                        p.y = h + 10;
+                    if (p.y < -15) {
+                        p.y = h + 15;
                         p.x = Math.random() * w;
                     }
+                    if (p.x < -40) p.x = w + 30;
+                    if (p.x > w + 40) p.x = -30;
 
                     ctx.beginPath();
-                    ctx.globalAlpha = p.opacity * opacityMul;
-                    ctx.arc(p.x, p.y, p.radius * 1.2, 0, Math.PI * 2);
+                    ctx.globalAlpha = Math.min(1.0, Math.max(0.05, p.opacity * pOpacity));
+                    ctx.arc(p.x, p.y, Math.max(0.8, (p.radius || 2) * 1.2 * sizeMul), 0, Math.PI * 2);
                     ctx.fill();
                 });
             } else if (type === 'stars') {
                 // Nebula Stars
                 ctx.fillStyle = '#ffffff';
+                if (glowBlur > 0) {
+                    ctx.shadowBlur = glowBlur;
+                    ctx.shadowColor = '#67e8f9';
+                }
                 this.state.zenParticles.forEach(p => {
                     ctx.beginPath();
-                    ctx.globalAlpha = p.opacity * opacityMul;
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.globalAlpha = Math.min(1.0, Math.max(0.05, p.opacity * pOpacity));
+                    ctx.arc(p.x, p.y, Math.max(0.6, (p.radius || 1.8) * sizeMul), 0, Math.PI * 2);
                     ctx.fill();
                 });
             } else if (type === 'aurora') {
                 // Dynamic Aurora Waves in Sky
                 this.state.zenPhase += 0.02 * speedMul;
-                const aGrad = ctx.createLinearGradient(0, 30, 0, h * 0.5);
+                const aGrad = ctx.createLinearGradient(0, 30, 0, h * 0.55);
                 aGrad.addColorStop(0, 'rgba(0, 255, 135, 0)');
-                aGrad.addColorStop(0.5, 'rgba(0, 255, 135, 0.45)');
+                aGrad.addColorStop(0.5, `rgba(0, 255, 135, ${0.45 * pOpacity})`);
                 aGrad.addColorStop(1, 'rgba(96, 239, 255, 0)');
 
                 ctx.fillStyle = aGrad;
                 ctx.beginPath();
                 ctx.moveTo(0, h * 0.45);
-                for (let x = 0; x <= w; x += 30) {
-                    const y = h * 0.25 + Math.sin(x * 0.008 + this.state.zenPhase) * 45;
+                for (let x = 0; x <= w; x += 25) {
+                    const y = h * 0.25 + Math.sin(x * 0.008 + this.state.zenPhase) * (35 + (wind / 45) * 15);
                     ctx.lineTo(x, y);
                 }
-                ctx.lineTo(w, h * 0.5);
+                ctx.lineTo(w, h * 0.55);
                 ctx.closePath();
                 ctx.fill();
             } else {
                 // Default: Golden Dust / Sunshine motes
                 ctx.fillStyle = accent;
+                if (glowBlur > 0) {
+                    ctx.shadowBlur = glowBlur;
+                    ctx.shadowColor = accent;
+                }
                 this.state.zenParticles.forEach(p => {
+                    const turbX = turbulence ? Math.sin(p.y * 0.02) * 0.8 : 0;
                     p.y -= p.speed * 0.3 * speedMul;
-                    if (p.y < -10) {
-                        p.y = h + 10;
+                    p.x += (windDriftX * 0.4) + turbX;
+
+                    if (p.y < -12) {
+                        p.y = h + 12;
                         p.x = Math.random() * w;
                     }
+                    if (p.x < -40) p.x = w + 30;
+                    if (p.x > w + 40) p.x = -30;
+
                     ctx.beginPath();
-                    ctx.globalAlpha = p.opacity * opacityMul;
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.globalAlpha = Math.min(1.0, Math.max(0.05, p.opacity * pOpacity));
+                    ctx.arc(p.x, p.y, Math.max(0.8, (p.radius || 2) * sizeMul), 0, Math.PI * 2);
                     ctx.fill();
                 });
             }
@@ -15886,13 +16291,14 @@ ${css}`;
             ctx.save();
 
             // 1. Water Ripples
-            this.state.ripples.forEach((rp, idx) => {
+            for (let idx = this.state.ripples.length - 1; idx >= 0; idx--) {
+                const rp = this.state.ripples[idx];
                 rp.r += 1.2;
                 rp.alpha -= 0.025;
 
                 if (rp.alpha <= 0 || rp.r >= rp.maxR) {
                     this.state.ripples.splice(idx, 1);
-                    return;
+                    continue;
                 }
 
                 ctx.save();
@@ -15903,10 +16309,11 @@ ${css}`;
                 ctx.ellipse(rp.x, rp.y, rp.r * 2.2, rp.r * 0.7, 0, 0, Math.PI * 2);
                 ctx.stroke();
                 ctx.restore();
-            });
+            }
 
             // 2. Sakura Click Bursts
-            this.state.sakuraBursts.forEach((sb, idx) => {
+            for (let idx = this.state.sakuraBursts.length - 1; idx >= 0; idx--) {
+                const sb = this.state.sakuraBursts[idx];
                 sb.x += sb.vx;
                 sb.y += sb.vy;
                 sb.rot += sb.rotSpeed;
@@ -15914,7 +16321,7 @@ ${css}`;
 
                 if (sb.alpha <= 0) {
                     this.state.sakuraBursts.splice(idx, 1);
-                    return;
+                    continue;
                 }
 
                 ctx.save();
@@ -15928,17 +16335,18 @@ ${css}`;
                 ctx.ellipse(0, 0, sb.size * 1.8, sb.size, 0, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
-            });
+            }
 
             // 3. Shooting Stars
-            this.state.shootingStars.forEach((ss, idx) => {
+            for (let idx = this.state.shootingStars.length - 1; idx >= 0; idx--) {
+                const ss = this.state.shootingStars[idx];
                 ss.x += ss.vx;
                 ss.y += ss.vy;
                 ss.alpha -= 0.025;
 
                 if (ss.alpha <= 0 || ss.x > w + 50 || ss.y > h + 50) {
                     this.state.shootingStars.splice(idx, 1);
-                    return;
+                    continue;
                 }
 
                 ctx.save();
@@ -15952,10 +16360,11 @@ ${css}`;
                 ctx.lineTo(ss.x - ss.vx * 3.5, ss.y - ss.vy * 3.5);
                 ctx.stroke();
                 ctx.restore();
-            });
+            }
 
             // 4. Snow Whirlwind Vortices
-            this.state.snowVortices.forEach((vtx, vIdx) => {
+            for (let vIdx = this.state.snowVortices.length - 1; vIdx >= 0; vIdx--) {
+                const vtx = this.state.snowVortices[vIdx];
                 let alive = 0;
                 vtx.particles.forEach(p => {
                     p.x += p.vx;
@@ -15980,7 +16389,96 @@ ${css}`;
                 if (alive === 0) {
                     this.state.snowVortices.splice(vIdx, 1);
                 }
-            });
+            }
+
+            // 5. Windmill Dandelion Seeds
+            if (this.state.dandelions && this.state.dandelions.length > 0) {
+                const wind = this.state.windSpeed !== undefined ? this.state.windSpeed : 12;
+                const windDrift = (wind / 12) * 1.5;
+                for (let dIdx = this.state.dandelions.length - 1; dIdx >= 0; dIdx--) {
+                    const d = this.state.dandelions[dIdx];
+                    d.x += d.vx + windDrift;
+                    d.y += d.vy;
+                    d.rot += d.rotSpeed;
+                    d.alpha -= 0.008;
+
+                    if (d.alpha <= 0 || d.x > w + 60 || d.x < -60 || d.y > h + 60 || d.y < -60) {
+                        this.state.dandelions.splice(dIdx, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.translate(d.x, d.y);
+                    ctx.rotate(d.rot);
+                    ctx.globalAlpha = d.alpha;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.strokeStyle = 'rgba(254, 240, 138, 0.8)';
+                    ctx.lineWidth = 1;
+
+                    // Seed core
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Fluffy bristles radiating out
+                    for (let b = 0; b < 6; b++) {
+                        const bAng = (b * Math.PI) / 3;
+                        ctx.beginPath();
+                        ctx.moveTo(0, 0);
+                        ctx.lineTo(Math.cos(bAng) * d.size, Math.sin(bAng) * d.size);
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            // 6. Interactive Lightning Strikes
+            if (this.state.lightningBolts && this.state.lightningBolts.length > 0) {
+                for (let lIdx = this.state.lightningBolts.length - 1; lIdx >= 0; lIdx--) {
+                    const bolt = this.state.lightningBolts[lIdx];
+                    bolt.alpha -= 0.065;
+
+                    if (bolt.alpha <= 0) {
+                        this.state.lightningBolts.splice(lIdx, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = bolt.alpha;
+                    ctx.strokeStyle = '#e0f2fe';
+                    ctx.shadowColor = '#38bdf8';
+                    ctx.shadowBlur = 24;
+                    ctx.lineWidth = 3.5;
+
+                    // Main trunk
+                    ctx.beginPath();
+                    bolt.points.forEach((pt, pIdx) => {
+                        if (pIdx === 0) ctx.moveTo(pt.x, pt.y);
+                        else ctx.lineTo(pt.x, pt.y);
+                    });
+                    ctx.stroke();
+
+                    // Inner bright core
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.6;
+                    ctx.shadowBlur = 8;
+                    ctx.stroke();
+
+                    // Branch
+                    if (bolt.branch && bolt.branch.points) {
+                        ctx.strokeStyle = '#bae6fd';
+                        ctx.lineWidth = 2.0;
+                        ctx.beginPath();
+                        bolt.branch.points.forEach((bpt, bpIdx) => {
+                            if (bpIdx === 0) ctx.moveTo(bpt.x, bpt.y);
+                            else ctx.lineTo(bpt.x, bpt.y);
+                        });
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                }
+            }
 
             ctx.restore();
         },
